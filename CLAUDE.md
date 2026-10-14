@@ -8,7 +8,8 @@ You are in the **implementation folder**. The design and every decision are in t
 2. [`../kisaniti/docs/OPEN_ISSUES.md`](../kisaniti/docs/OPEN_ISSUES.md): what can break later and who decides.
 3. [`../kisaniti/docs/blueprint/08_CONTINUATION_TASKS.md`](../kisaniti/docs/blueprint/08_CONTINUATION_TASKS.md) and the work-package table W00–W12 in [`../kisaniti/docs/handoff/2026-10-14/KisanNiti_Layers_1_to_3_Handoff.md`](../kisaniti/docs/handoff/2026-10-14/KisanNiti_Layers_1_to_3_Handoff.md) §10.
 4. [`../kisaniti/docs/research/RESEARCH_AND_EXPERIMENT_PLAN.md`](../kisaniti/docs/research/RESEARCH_AND_EXPERIMENT_PLAN.md) for experiments.
-5. [STATUS.md](STATUS.md) in this folder for what is already done.
+5. [`../kisaniti/docs/QUALITY_AND_VERIFICATION.md`](../kisaniti/docs/QUALITY_AND_VERIFICATION.md) (CI, data audits, review rules) and [`../kisaniti/docs/design/UI_UX_PLAN.md`](../kisaniti/docs/design/UI_UX_PLAN.md) for frontend work.
+6. [STATUS.md](STATUS.md) in this folder for what is already done.
 
 ## 2. Gate — check before writing any product code
 

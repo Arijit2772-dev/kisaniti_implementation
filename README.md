@@ -15,3 +15,17 @@ This folder holds the **actual implementation**: code, machine-readable contract
 | `docs/reports/` | Completion report for every implementation task |
 
 Start here as an agent: [CLAUDE.md](CLAUDE.md). Current progress: [STATUS.md](STATUS.md).
+
+## Clone layout
+
+The planning repo must be cloned beside this one, in a folder named `kisaniti`:
+
+```bash
+git clone https://github.com/Arijit2772-dev/kisaniti_plan.git kisaniti
+```
+
+```bash
+git clone https://github.com/Arijit2772-dev/kisaniti_implementation.git kisaniti_implementation
+```
+
+Quality rules for all work here: [`../kisaniti/docs/QUALITY_AND_VERIFICATION.md`](../kisaniti/docs/QUALITY_AND_VERIFICATION.md).
