@@ -4,10 +4,10 @@ Created 15 October 2026. **Nothing is implemented yet.** This folder contains on
 
 | Gate | State | Source |
 |---|---|---|
-| Product coding | **PROHIBITED** until the user authorises it and W01 contracts are frozen | [planning blueprint status](../kisaniti/docs/blueprint/00_BLUEPRINT_STATUS.md) |
-| Version control | Local Git, branch `main`, first commit 15 Oct 2026; no remote yet (OI-09) | [open issues](../kisaniti/docs/OPEN_ISSUES.md) |
+| Product coding | **OPEN LAYER BY LAYER** (CHAT-28): a layer's code starts after its contracts are frozen; see [master plan](../kisaniti/docs/MASTER_PLAN.md) | [planning blueprint status](../kisaniti/docs/blueprint/00_BLUEPRINT_STATUS.md) |
+| Version control | Git, GitHub `kisaniti_implementation` (private) | [open issues](../kisaniti/docs/OPEN_ISSUES.md) |
 | Market-data access | Not available (OI-05; user must register) | [open issues](../kisaniti/docs/OPEN_ISSUES.md) |
-| Hardware | Not purchased/assembled | [hardware](../kisaniti/docs/HARDWARE_CURRENT.md) |
+| Hardware | ESP32 + SHT30 decided (CHAT-29); not purchased yet | [hardware](../kisaniti/docs/HARDWARE_CURRENT.md) |
 
 ## Work packages
 

@@ -13,6 +13,8 @@ You are in the **implementation folder**. The design and every decision are in t
 
 ## 2. Gate — check before writing any product code
 
+**Update 21 Oct 2026 (CHAT-28):** the gate now opens **layer by layer**. Product code for a layer may start once that layer's contracts are frozen and recorded in the planning decision register. Follow the milestones in [`../kisaniti/docs/MASTER_PLAN.md`](../kisaniti/docs/MASTER_PLAN.md). All algorithms go in the shared pure package `core/`, which the research repo imports; keep it free of web, database and network code. The paragraph below is the earlier rule, still valid for any layer whose contracts are not yet frozen.
+
 The governing gate is [`../kisaniti/docs/blueprint/00_BLUEPRINT_STATUS.md`](../kisaniti/docs/blueprint/00_BLUEPRINT_STATUS.md).
 
 - While it says **Product coding: PROHIBITED**, do not write product code here.

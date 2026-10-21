@@ -6,6 +6,7 @@ This folder holds the **actual implementation**: code, machine-readable contract
 
 | Folder | Holds |
 |---|---|
+| `core/` | Shared pure Python package with every algorithm (cleaning rules, forecasting evaluation, storage rule, hold-or-sell, optimizer, validator, exact kg/₹ math). Imported by both the backend and the research repo (CHAT-28) |
 | `backend/` | FastAPI modular monolith (Layers 1–5 services, InventoryService, optimizer, validators) |
 | `frontend/` | Next.js manager app (mobile-first) |
 | `firmware/` | ESP32-WROOM-32 + SHT30 node |
