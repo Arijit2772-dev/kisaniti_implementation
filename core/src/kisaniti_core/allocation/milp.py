@@ -31,7 +31,8 @@ from datetime import date
 from enum import StrEnum
 from fractions import Fraction
 
-from .backends import Backend, LinearModel, SolveStatus, make_backend
+from .backends import MAX_CPSAT_COEF, Backend, LinearModel, SolveStatus, make_backend
+from .leximin_flow import leximin_flow, uniform_increment
 from .model import AllocationInput, AllocationMode, MarketLoad, Plan, StorageCategory
 from .objective import ObjectiveTuple, choice_ranks, evaluate
 
@@ -91,13 +92,16 @@ class _Stop(Exception):
 
 
 class StagedSolver:
-    def __init__(self, inp: AllocationInput, backend: Backend, time_limit: float) -> None:
+    def __init__(self, inp: AllocationInput, backend: Backend, time_limit: float, leximin_method: str = "auto") -> None:
         self.inp = inp
+        self.leximin_method = leximin_method
         self.backend = backend
         self.deadline = time.perf_counter() + time_limit
         self.m = LinearModel()
         self.report = SolveReport(None, None, backend.version(), Hierarchy.KISANITI, "NONE", "COMPLETED")
         self.values: list[float] | None = None
+        self.has_fair_rows = False
+        self.v_star: list[Fraction] | None = None
         # CP-SAT works in exact integers, so it needs no floating tolerance on preserved fairness rows.
         self.tol = Fraction(0) if backend.name == "cpsat" else FAIR_TOL
         t0 = time.perf_counter()
@@ -162,6 +166,13 @@ class StagedSolver:
         rem = self._remaining()
         if rem <= 0:
             raise _Stop("TIME_LIMIT", f"time budget used up before stage {name}")
+        if self.backend.name == "cpsat" and self.has_fair_rows and self.fair_den > MAX_CPSAT_COEF:
+            self.report.stages.append(StageLog(name, SolveStatus.NOT_APPLICABLE.value, 0.0))
+            raise _Stop(
+                "NOT_APPLICABLE",
+                f"exact fulfilment ratios need a common denominator of {self.fair_den:.3g} "
+                "(> 2^40); CP-SAT works in integers only",
+            )
         out = self.backend.solve(self.m, objective, rem, abs_gap, self.values)
         self.report.solve_seconds += out.seconds
         self.report.stages.append(StageLog(name, out.status.value, out.seconds))
@@ -209,14 +220,68 @@ class StagedSolver:
             sched[self.inp.lot(a.lot_id).farmer_id] += a.quantity.units
         return sorted(Fraction(sched[f], self.P[f]) for f in self.farmers)
 
+    def _use_flow(self) -> bool:
+        if self.leximin_method == "milp" or self.inp.allocation_mode is AllocationMode.FULL or not self.farmers:
+            return False
+        ok = uniform_increment(self.inp) is not None
+        if self.leximin_method == "flow" and not ok:
+            raise _Stop("NOT_APPLICABLE", "flow leximin needs one common increment")
+        return ok
+
+    def fairness_by_flow(self, only_first: bool = False) -> None:
+        """Allocation + leximin from the exact water-filling (leximin_flow), then preserve rows for the MILP."""
+        t0 = time.perf_counter()
+        n, _ = leximin_flow(self.inp)
+        self.values = [0.0] * len(self.m.vars)
+        for key, k in n.items():
+            self.values[self.y[key]] = float(k)
+        total = sum(k * self.inc_q[key] for key, k in n.items())
+        self.m.add_row({self.y[k]: Fraction(q) for k, q in self.inc_q.items()}, total - Fraction(1, 2), None)
+        ratios = self._ratios()
+        F = len(ratios)
+        prefix, L = [], Fraction(0)
+        for v in ratios:
+            L += v
+            prefix.append(L)
+        last = {v: i for i, v in enumerate(ratios)}  # last index of each distinct value
+        for v, i in sorted(last.items()):
+            if only_first:
+                self._preserve_threshold(ratios[0], 1, prefix[0])
+                break
+            if v == 1 and i == F - 1:  # every remaining value is 1: one linear row (see module docstring)
+                j = ratios.index(v)
+                sum_r: dict[int, Fraction] = defaultdict(Fraction)
+                for f in self.farmers:
+                    for idx, c in self.r[f].items():
+                        sum_r[idx] += c
+                self.m.add_row(dict(sum_r), (prefix[j - 1] if j else Fraction(0)) + (F - j) - self.tol, None)
+                self.has_fair_rows = True
+            else:
+                self._preserve_threshold(v, i + 1, prefix[i])
+        self.values += [0.0] * (len(self.m.vars) - len(self.values))
+        if not only_first:
+            self.v_star = list(ratios)
+        dt = time.perf_counter() - t0
+        self.report.solve_seconds += dt
+        self.report.stages.append(
+            StageLog(
+                "ALLOCATION+LEXIMIN (flow water-filling)",
+                "OPTIMAL",
+                dt,
+                f"min {ratios[0] if ratios else '-'}; {len(last)} distinct values",
+            )
+        )
+        self.report.certified_stages += ["ALLOCATION", "MAXMIN" if only_first else "LEXIMIN"]
+
     def leximin(self, only_first: bool = False) -> None:
         if self.inp.allocation_mode is AllocationMode.FULL or not self.farmers:
             self.report.certified_stages.append("LEXIMIN")
             return
         F = len(self.farmers)
-        self.v_star: list[Fraction] = []
+        self.v_star = []
         L_prev = Fraction(0)
         last_threshold: Fraction | None = None
+        self.has_fair_rows = True
         for k in range(1, F + 1):
             theta = self.m.add_var(0, 1, integer=False, den=self.fair_den)
             w = {}
@@ -261,6 +326,7 @@ class StagedSolver:
 
     def _preserve_threshold(self, t: Fraction, k: int, L_k: Fraction) -> None:
         """sum_f (t - r_f)^+ <= k t - L_k*, with helper u_f >= t - r_f, u_f >= 0."""
+        self.has_fair_rows = True
         us = {}
         for f in self.farmers:
             u = self.m.add_var(0, 1, integer=False, den=self.fair_den)
@@ -341,12 +407,15 @@ class StagedSolver:
                 assert weights is not None
                 self.weighted(weights)
             else:
-                self.allocation()
+                fair = hierarchy in (Hierarchy.KISANITI, Hierarchy.MAXMIN)
+                if fair and self._use_flow():
+                    self.fairness_by_flow(only_first=hierarchy is Hierarchy.MAXMIN)
+                else:
+                    self.allocation()
+                    if fair:
+                        self.leximin(only_first=hierarchy is Hierarchy.MAXMIN)
                 if hierarchy is Hierarchy.KISANITI:
-                    self.leximin()
                     self.storage()
-                elif hierarchy is Hierarchy.MAXMIN:
-                    self.leximin(only_first=True)
                 self.net_return()
             if hierarchy is not Hierarchy.WEIGHTED:  # the blended optimum is fractional; not preserved
                 self.tie_break()
@@ -360,7 +429,7 @@ class StagedSolver:
         if self.values is not None and rep.termination in ("COMPLETED", "TIME_LIMIT"):
             rep.plan = self._plan()
             rep.objective = evaluate(self.inp, rep.plan)
-            lost = hasattr(self, "v_star") and rep.objective.fulfilment_sorted != tuple(self.v_star)
+            lost = self.v_star is not None and rep.objective.fulfilment_sorted != tuple(self.v_star)
             if rep.termination == "COMPLETED" and hierarchy is Hierarchy.KISANITI and lost:
                 rep.termination, rep.optimality = "TECHNICAL_FAILURE", "NONE"
                 rep.detail = "final plan lost a preserved leximin value"
@@ -376,6 +445,10 @@ def solve(
     weights: Weights | None = None,
     threads: int | None = None,
     seed: int = 0,
+    leximin_method: str = "auto",
 ) -> SolveReport:
-    """Solve one allocation input with the named back end and objective hierarchy."""
-    return StagedSolver(inp, make_backend(backend, threads, seed), time_limit).run(hierarchy, weights)
+    """Solve one allocation input with the named back end and objective hierarchy.
+
+    ``leximin_method``: "auto" uses the exact flow water-filling when every lot has the same increment
+    (PARTIAL mode) and the staged MILP otherwise; "milp" or "flow" force one method."""
+    return StagedSolver(inp, make_backend(backend, threads, seed), time_limit, leximin_method).run(hierarchy, weights)

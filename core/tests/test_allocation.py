@@ -47,9 +47,10 @@ def _load(name: str) -> dict[str, Any]:
     return doc
 
 
+@pytest.mark.parametrize("method", ["flow", "milp"])
 @pytest.mark.parametrize("backend", BACKENDS)
 @pytest.mark.parametrize("shape", SHAPES, ids=lambda s: f"seed{s[0]}")
-def test_oracle_agreement(shape: tuple[Any, ...], backend: str) -> None:
+def test_oracle_agreement(shape: tuple[Any, ...], backend: str, method: str) -> None:
     seed, f, lots, m, d, dens, mi, mode, strict, ties = shape
     share = 1.6 if mode is AllocationMode.FULL else 0.6
     inp = random_instance(
@@ -60,10 +61,11 @@ def test_oracle_agreement(shape: tuple[Any, ...], backend: str) -> None:
     except TooLarge:
         pytest.skip("enumeration too large")
     except ValueError:  # the oracle proves FULL mode infeasible; the solver must say so too
-        rep = solve(inp, backend=backend, time_limit=60)
+        rep = solve(inp, backend=backend, time_limit=60, leximin_method="auto")
         assert rep.termination == "PROVEN_INFEASIBLE" and rep.plan is None
         return
-    rep = solve(inp, backend=backend, time_limit=60)
+    use = method if mode is AllocationMode.PARTIAL else "auto"  # flow leximin applies to PARTIAL mode
+    rep = solve(inp, backend=backend, time_limit=60, leximin_method=use)
     assert rep.termination == "COMPLETED", rep.detail
     assert rep.optimality == "PROVEN_OPTIMAL"
     assert rep.plan is not None and rep.objective is not None
@@ -93,6 +95,45 @@ def test_leximin_is_discrete_safe() -> None:
     for b in BACKENDS:
         rep = solve(inp, backend=b)
         assert rep.objective is not None and rep.objective.fulfilment_sorted == (Fraction(1, 2), Fraction(1)), b
+
+
+def test_flow_and_milp_leximin_agree_on_larger_cases() -> None:
+    """Beyond oracle size: the combinatorial water-filling and the Ogryczak MILP give the same tuple."""
+    compared = 0
+    for seed in range(8):
+        inp = random_instance(seed, 8, 10, 3, 3, density=0.6, max_increments=6)
+        a = solve(inp, leximin_method="flow")
+        b = solve(inp, leximin_method="milp", time_limit=60)
+        assert a.objective is not None and a.termination == "COMPLETED"
+        if b.termination == "TIME_LIMIT":  # the MILP leximin can be slow even here; that is a result, not a bug
+            continue
+        assert b.objective is not None and a.objective.key() == b.objective.key()
+        compared += 1
+    assert compared >= 5
+
+
+def test_flow_leximin_needs_common_increment() -> None:
+    inp = random_instance(1, 3, 3, 2, 2)
+    lot = inp.lots[0]
+    other = type(lot)(lot.id, lot.farmer_id, lot.quantity, Quantity.parse("50.000"), lot.storage)
+    mixed = type(inp)(
+        inp.fpo_id,
+        inp.commodity_id,
+        inp.mode,
+        inp.origin,
+        inp.allocation_mode,
+        inp.market_load,
+        inp.dates,
+        inp.mandis,
+        inp.farmers,
+        (other, *inp.lots[1:]),
+        inp.choices,
+        inp.capacities,
+    )
+    assert solve(mixed, leximin_method="flow").termination == "NOT_APPLICABLE"
+    auto = solve(mixed)  # falls back to the MILP leximin
+    assert auto.termination == "COMPLETED" and auto.objective is not None
+    assert auto.objective.key() == solve_oracle(mixed).best.key()
 
 
 def test_leximin_improves_on_maxmin_somewhere() -> None:
@@ -186,6 +227,6 @@ def test_time_limit_reports_honestly() -> None:
 
 
 def test_cpsat_reports_not_applicable_for_huge_denominators() -> None:
-    inp = random_instance(3, 30, 30, 2, 2, density=0.8, max_increments=40, increment_kg=7)
+    inp = random_instance(3, 30, 30, 2, 2, density=0.8, max_increments=40)
     rep = solve(inp, backend="cpsat", time_limit=20)
-    assert rep.termination in ("NOT_APPLICABLE", "COMPLETED", "TIME_LIMIT")
+    assert rep.termination == "NOT_APPLICABLE" and rep.plan is None
