@@ -7,7 +7,7 @@ Created 15 October 2026. **Nothing is implemented yet.** This folder contains on
 | Product coding | **OPEN LAYER BY LAYER** (CHAT-28): a layer's code starts after its contracts are frozen; see [master plan](../kisaniti/docs/MASTER_PLAN.md) | [planning blueprint status](../kisaniti/docs/blueprint/00_BLUEPRINT_STATUS.md) |
 | Version control | Git, GitHub `kisaniti_implementation` (private) | [open issues](../kisaniti/docs/OPEN_ISSUES.md) |
 | Market-data access | Not available (OI-05; user must register) | [open issues](../kisaniti/docs/OPEN_ISSUES.md) |
-| Hardware | ESP32 + SHT30 decided (CHAT-29); not purchased yet | [hardware](../kisaniti/docs/HARDWARE_CURRENT.md) |
+| Hardware | ESP32 + SHT30 decided (CHAT-29); not purchased yet. Firmware and Wokwi twin built (22 Oct) | [hardware](../kisaniti/docs/HARDWARE_CURRENT.md), [build guide](firmware/BUILD_GUIDE.md) |
 
 ## Work packages
 
@@ -21,12 +21,12 @@ Definitions: [Layer 1–3 handoff §10](../kisaniti/docs/handoff/2026-10-14/Kisa
 | W03 | Organisation/storage fixtures, inventory core | NOT STARTED | — |
 | W04 | Market adapter + bounded authorised import | BLOCKED on OI-05 | — |
 | W05 | Cleaning, readiness, dataset releases | NOT STARTED | — |
-| W06 | Sensor simulator + ingestion + UNKNOWN path | NOT STARTED | — |
+| W06 | Sensor simulator + ingestion + UNKNOWN path | **DONE for L3b slice (22 Oct)**: contract `W01-L3B` frozen, schemas `contracts/sensor/v1`; `core.storage` STORAGE-DEMO-0.1 (31 tests); `backend/ingestion` validate/de-duplicate/store/ack (17 tests) + live TLS broker check PASS. Not done: PostgreSQL migration in the API, persisted hysteresis state, device/lot screens | [layer guide](docs/layers/L3b_storage_iot.md), [e2e report](docs/reports/2026-10-22_L3b_ingestion_e2e.md) |
 | W07 | Forecast baselines and evaluation | BLOCKED on data | — |
 | W08 | Route/quote adapters, transport math | NOT STARTED | — |
 | W09 | Optimizer oracle, MILP, PlanValidator | NOT STARTED | — |
 | W10 | Planning orchestration, snapshots, proposals | NOT STARTED | — |
-| W11 | Real ESP32 firmware and hardware acceptance | BLOCKED on hardware | — |
+| W11 | Real ESP32 firmware and hardware acceptance | Firmware v1 **builds** (real TLS + Wokwi profiles, 13 host tests); Wokwi twin ran on wokwi.com (sensor read OK; MQTT leg not yet observed). Acceptance (H4–H6) **BLOCKED on hardware purchase** | [firmware/README.md](firmware/README.md), [BUILD_GUIDE](firmware/BUILD_GUIDE.md) |
 | W12 | Layers 4–5 (approval, WhatsApp, sales, reconciliation) and full acceptance | NOT STARTED | — |
 
 ## Experiments
