@@ -129,3 +129,17 @@ def test_store_survives_reopen(tmp_path: Path) -> None:
     s2 = open_store(path)
     assert s2.counts()["sensor_readings"] == 1
     assert send(s2, telemetry()).result == "DUPLICATE"
+
+
+def test_delivery_report_finds_gaps_and_delay() -> None:
+    from kisaniti_ingestion.report_cli import boot_report
+
+    store = open_store(":memory:")
+    for seq in (0, 1, 2, 5, 6):
+        measured = RECEIVED + timedelta(minutes=5 * seq)
+        doc = telemetry(seq=seq, measured_at=measured.strftime("%Y-%m-%dT%H:%M:%S.000Z"))
+        late = timedelta(hours=2) if seq == 6 else timedelta(seconds=1)
+        send(store, doc, at=measured + late)
+    rep = boot_report(store.readings_for("kn-node-001"))
+    assert rep["readings"] == 5 and rep["missing_seq_count"] == 2 and rep["missing_seq_ranges"] == ["3-4"]
+    assert rep["arrived_late_over_15min"] == 1 and rep["delay_s_max"] == pytest.approx(7200, abs=1)
