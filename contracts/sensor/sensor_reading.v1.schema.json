@@ -1,0 +1,178 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kisaniti.example/contracts/sensor/sensor_reading.v1.schema.json",
+  "title": "SensorReadingV1",
+  "description": "A device reading as stored by the ingestion adapter (C04). Contract section 3.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schema": {
+      "const": "kisaniti.sensor_reading.v1"
+    },
+    "device_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]{2,31}$"
+    },
+    "boot_id": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{8}$"
+    },
+    "seq": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "measured_at": {
+      "anyOf": [
+        {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "Z$"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "time_quality": {
+      "enum": [
+        "NTP_SYNCED",
+        "UPTIME_BACKFILLED",
+        "UNSYNCED"
+      ]
+    },
+    "uptime_ms": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "temperature_c": {
+      "anyOf": [
+        {
+          "type": "number",
+          "minimum": -40,
+          "maximum": 125
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "humidity_pct": {
+      "anyOf": [
+        {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "read_status": {
+      "enum": [
+        "OK",
+        "CRC_ERROR",
+        "NO_ACK",
+        "TIMEOUT"
+      ]
+    },
+    "sensor_model": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 32
+    },
+    "firmware_version": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 32
+    },
+    "source_origin": {
+      "enum": [
+        "DEVICE",
+        "WOKWI_TWIN",
+        "SIMULATOR"
+      ]
+    },
+    "sample_interval_s": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "resent": {
+      "type": "boolean"
+    },
+    "dropped_since_boot": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "reading_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]{2,31}:[0-9a-f]{8}:[0-9]+$"
+    },
+    "received_at": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "Z$"
+    },
+    "measured_at_trusted": {
+      "type": "boolean"
+    },
+    "temperature_valid": {
+      "type": "boolean"
+    },
+    "humidity_valid": {
+      "type": "boolean"
+    },
+    "ingest_status": {
+      "enum": [
+        "ACCEPTED",
+        "QUARANTINED"
+      ]
+    },
+    "quarantine_reason": {
+      "anyOf": [
+        {
+          "type": "string",
+          "minLength": 1
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "raw_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "topic": {
+      "type": "string",
+      "minLength": 1
+    }
+  },
+  "required": [
+    "schema",
+    "device_id",
+    "boot_id",
+    "seq",
+    "measured_at",
+    "time_quality",
+    "uptime_ms",
+    "temperature_c",
+    "humidity_pct",
+    "read_status",
+    "sensor_model",
+    "firmware_version",
+    "source_origin",
+    "sample_interval_s",
+    "resent",
+    "dropped_since_boot",
+    "reading_id",
+    "received_at",
+    "measured_at_trusted",
+    "temperature_valid",
+    "humidity_valid",
+    "ingest_status",
+    "quarantine_reason",
+    "raw_sha256",
+    "topic"
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "name": "SHT3x",
+  "author": "KisanNiti team",
+  "pins": ["VCC", "GND", "SDA", "SCL"],
+  "controls": [
+    { "id": "temperature", "label": "Temperature (°C)", "type": "range", "min": -10, "max": 60, "step": 0.1 },
+    { "id": "humidity", "label": "Relative humidity (%)", "type": "range", "min": 0, "max": 100, "step": 0.1 },
+    { "id": "fault", "label": "Fault: 0 none, 1 bad CRC, 2 not answering", "type": "range", "min": 0, "max": 2, "step": 1 }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "schema": "kisaniti.device_telemetry.v1",
+  "device_id": "kn-node-001",
+  "boot_id": "7c01d4aa",
+  "seq": 0,
+  "measured_at": null,
+  "time_quality": "UNSYNCED",
+  "uptime_ms": 2150,
+  "temperature_c": 24.51,
+  "humidity_pct": 61.27,
+  "read_status": "OK",
+  "sensor_model": "SHT30",
+  "firmware_version": "kn-fw-1.0.0",
+  "source_origin": "DEVICE",
+  "sample_interval_s": 300,
+  "resent": false,
+  "dropped_since_boot": 0
+}

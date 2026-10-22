@@ -1,0 +1,7 @@
+{
+  "name": "kn_core",
+  "version": "1.0.0",
+  "description": "Pure (Arduino-independent) parts of the KisanNiti storage-node firmware",
+  "frameworks": "*",
+  "platforms": "*"
+}

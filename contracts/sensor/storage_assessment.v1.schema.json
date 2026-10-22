@@ -1,0 +1,284 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kisaniti.example/contracts/sensor/storage_assessment.v1.schema.json",
+  "title": "StorageAssessmentV1",
+  "description": "Output of the storage rule STORAGE-DEMO-0.1 (C09). Never a moisture value or a spoilage measurement. Contract section 5.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schema": {
+      "const": "kisaniti.storage_assessment.v1"
+    },
+    "policy_version": {
+      "const": "STORAGE-DEMO-0.1"
+    },
+    "device_id": {
+      "anyOf": [
+        {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9-]{2,31}$"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "crop": {
+      "anyOf": [
+        {
+          "enum": [
+            "PADDY",
+            "WHEAT"
+          ]
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "placement": {
+      "anyOf": [
+        {
+          "enum": [
+            "IN_GRAIN",
+            "AMBIENT"
+          ]
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "assessed_at": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "Z$"
+    },
+    "window_start": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "Z$"
+    },
+    "window_end": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "Z$"
+    },
+    "category": {
+      "enum": [
+        "LOW",
+        "MEDIUM",
+        "HIGH",
+        "UNKNOWN"
+      ]
+    },
+    "unknown_reasons": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "NOT_IN_GRAIN",
+          "NO_ASSIGNMENT",
+          "SETTLING",
+          "STALE",
+          "LOW_COVERAGE"
+        ]
+      }
+    },
+    "mould_level": {
+      "anyOf": [
+        {
+          "enum": [
+            "LOW",
+            "MEDIUM",
+            "HIGH"
+          ]
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "adjustments": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "COLD_BELOW_10C_LOWERED",
+          "WARM_25C_RAISED"
+        ]
+      }
+    },
+    "aw_median": {
+      "anyOf": [
+        {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "rh_median_pct": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "temperature_median_c": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "insect_flag": {
+      "anyOf": [
+        {
+          "enum": [
+            "INSECT_FAVOURABLE",
+            "INSECTS_SLOW",
+            "INSECTS_INACTIVE"
+          ]
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "samples_used": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "samples_expected": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "latest_measured_at": {
+      "anyOf": [
+        {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "Z$"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "hysteresis": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "level",
+        "below_since"
+      ],
+      "properties": {
+        "level": {
+          "anyOf": [
+            {
+              "enum": [
+                "LOW",
+                "MEDIUM",
+                "HIGH"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "below_since": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time",
+              "pattern": "Z$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
+    },
+    "label": {
+      "const": "Experimental approximation — not measured spoilage"
+    },
+    "evidence_ref": {
+      "type": "string",
+      "minLength": 1
+    }
+  },
+  "required": [
+    "schema",
+    "policy_version",
+    "device_id",
+    "crop",
+    "placement",
+    "assessed_at",
+    "window_start",
+    "window_end",
+    "category",
+    "unknown_reasons",
+    "mould_level",
+    "adjustments",
+    "aw_median",
+    "rh_median_pct",
+    "temperature_median_c",
+    "insect_flag",
+    "samples_used",
+    "samples_expected",
+    "latest_measured_at",
+    "hysteresis",
+    "label",
+    "evidence_ref"
+  ],
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "category": {
+            "const": "UNKNOWN"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "unknown_reasons": {
+            "minItems": 1
+          },
+          "mould_level": {
+            "type": "null"
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "unknown_reasons": {
+            "maxItems": 0
+          },
+          "mould_level": {
+            "enum": [
+              "LOW",
+              "MEDIUM",
+              "HIGH"
+            ]
+          },
+          "aw_median": {
+            "type": "number"
+          }
+        }
+      }
+    }
+  ]
+}

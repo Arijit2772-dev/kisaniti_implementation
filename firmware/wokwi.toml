@@ -1,0 +1,11 @@
+# Wokwi digital twin (VS Code extension or wokwi-cli). Build first:
+#   pio run -e wokwi            (firmware with the simulation profile)
+#   wokwi/build_chip.sh         (SHT3x custom chip -> wasm, needs Docker)
+[wokwi]
+version = 1
+firmware = '.pio/build/wokwi/firmware.bin'
+elf = '.pio/build/wokwi/firmware.elf'
+
+[[chip]]
+name = 'sht3x'
+binary = 'wokwi/chips/sht3x.chip.wasm'

@@ -1,0 +1,4 @@
+.pio/
+include/secrets.h
+wokwi/chips/*.wasm
+wokwi/web_bundle/

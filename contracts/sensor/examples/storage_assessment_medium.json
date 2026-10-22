@@ -1,0 +1,29 @@
+{
+  "schema": "kisaniti.storage_assessment.v1",
+  "policy_version": "STORAGE-DEMO-0.1",
+  "device_id": "kn-node-001",
+  "crop": "WHEAT",
+  "placement": "IN_GRAIN",
+  "assessed_at": "2026-10-22T10:05:00Z",
+  "window_start": "2026-10-21T10:05:00Z",
+  "window_end": "2026-10-22T10:05:00Z",
+  "category": "MEDIUM",
+  "unknown_reasons": [],
+  "mould_level": "LOW",
+  "adjustments": [
+    "WARM_25C_RAISED"
+  ],
+  "aw_median": 0.62,
+  "rh_median_pct": 62.0,
+  "temperature_median_c": 27.4,
+  "insect_flag": "INSECT_FAVOURABLE",
+  "samples_used": 286,
+  "samples_expected": 288,
+  "latest_measured_at": "2026-10-22T10:05:00Z",
+  "hysteresis": {
+    "level": "LOW",
+    "below_since": null
+  },
+  "label": "Experimental approximation — not measured spoilage",
+  "evidence_ref": "kisaniti/docs/research/2026-10-15_Patiala_Storage_Risk_and_Unknowns.md#part-b"
+}
