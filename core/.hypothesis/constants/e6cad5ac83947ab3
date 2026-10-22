@@ -1,4 +1,0 @@
-# file: /Users/arijitsingh/Documents/kisaniti_implementation/core/src/kisaniti_core/provenance.py
-# hypothesis_version: 6.140.2
-
-['AGMARKNET', 'DEMO', 'DERIVED', 'FIXTURE_GENERATOR', 'LIVE', 'MANUAL_ENTRY', 'MSP_SCHEDULE', 'POLICY', 'REAL', 'RESEARCH', 'ROUTE_PROVIDER', 'SENSOR', 'SIMULATOR', 'SYNTHETIC']

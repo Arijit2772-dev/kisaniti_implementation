@@ -1,4 +1,0 @@
-# file: /Users/arijitsingh/Documents/kisaniti_implementation/core/src/kisaniti_core/errors.py
-# hypothesis_version: 6.140.2
-
-[400, 401, 403, 404, 409, 422, 500, 503, 'CONFLICT', 'FORBIDDEN', 'INTERNAL', 'INVALID_DATE', 'INVALID_DECIMAL', 'INVALID_ID', 'INVALID_INSTANT', 'INVALID_REQUEST', 'NOT_FOUND', 'NOT_READY', 'OUT_OF_RANGE', 'PRECISION_EXCEEDED', 'UNAUTHENTICATED', 'UNIT_MISMATCH', 'VALIDATION_FAILED']

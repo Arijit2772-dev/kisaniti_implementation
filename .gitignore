@@ -30,3 +30,7 @@ experiments/**/artifacts/
 
 # OS
 .DS_Store
+
+# Test caches
+.hypothesis/
+.ruff_cache/

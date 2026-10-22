@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kisaniti.invalid/contracts/allocation/v1/allocation_input.schema.json",
+  "title": "Allocation input v1 (solver-neutral OptimizationInput for one FPO, one commodity)",
+  "description": "Meaning: kisaniti/docs/contracts/CONTRACT_SPEC_V1_L3d_allocation.md. Cross-reference rules (lots, mandis, dates, capacities) are checked by kisaniti_core.allocation.parse_input.",
+  "type": "object", "additionalProperties": false,
+  "required": ["contract", "fpo_id", "commodity_id", "mode", "provenance", "allocation_mode", "market_load_policy",
+               "dates", "mandis", "farmers", "lots", "choices", "capacities", "policy_versions"],
+  "properties": {
+    "contract": {"const": "allocation_input/v1"},
+    "run_id": {"$ref": "../../shared/v1/common.schema.json#/$defs/run_id"},
+    "fpo_id": {"$ref": "../../shared/v1/common.schema.json#/$defs/fpo_id"},
+    "commodity_id": {"$ref": "../../shared/v1/common.schema.json#/$defs/cmd_id"},
+    "mode": {"$ref": "../../shared/v1/common.schema.json#/$defs/mode"},
+    "provenance": {"$ref": "../../shared/v1/common.schema.json#/$defs/provenance"},
+    "allocation_mode": {"enum": ["PARTIAL", "FULL"]},
+    "market_load_policy": {"enum": ["DISABLED", "STRICT"]},
+    "dates": {"type": "array", "minItems": 1, "uniqueItems": true,
+              "items": {"$ref": "../../shared/v1/common.schema.json#/$defs/business_date"}},
+    "mandis": {"type": "array", "minItems": 1, "items": {
+      "type": "object", "additionalProperties": false, "required": ["id"],
+      "properties": {"id": {"$ref": "../../shared/v1/common.schema.json#/$defs/mnd_id"}}}},
+    "farmers": {"type": "array", "items": {
+      "type": "object", "additionalProperties": false, "required": ["id"],
+      "properties": {"id": {"$ref": "../../shared/v1/common.schema.json#/$defs/mbr_id"}}}},
+    "lots": {"type": "array", "items": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "farmer_id", "quantity_kg", "increment_kg", "storage"],
+      "properties": {
+        "id": {"$ref": "../../shared/v1/common.schema.json#/$defs/lot_id"},
+        "farmer_id": {"$ref": "../../shared/v1/common.schema.json#/$defs/mbr_id"},
+        "quantity_kg": {"$ref": "../../shared/v1/common.schema.json#/$defs/quantity_kg", "not": {"const": "0.000"}},
+        "increment_kg": {"$ref": "../../shared/v1/common.schema.json#/$defs/quantity_kg", "not": {"const": "0.000"}},
+        "storage": {"enum": ["HIGH", "MEDIUM", "LOW", "UNKNOWN"]}}}},
+    "choices": {"type": "array", "items": {
+      "type": "object", "additionalProperties": false,
+      "required": ["lot_id", "mandi_id", "date", "price_inr_per_kg", "cost_inr_per_kg"],
+      "properties": {
+        "lot_id": {"$ref": "../../shared/v1/common.schema.json#/$defs/lot_id"},
+        "mandi_id": {"$ref": "../../shared/v1/common.schema.json#/$defs/mnd_id"},
+        "date": {"$ref": "../../shared/v1/common.schema.json#/$defs/business_date"},
+        "price_inr_per_kg": {"$ref": "../../shared/v1/common.schema.json#/$defs/rate_inr_per_kg"},
+        "cost_inr_per_kg": {"$ref": "../../shared/v1/common.schema.json#/$defs/rate_inr_per_kg"}}}},
+    "capacities": {"type": "array", "items": {
+      "type": "object", "additionalProperties": false, "required": ["mandi_id", "date", "capacity_kg"],
+      "properties": {
+        "mandi_id": {"$ref": "../../shared/v1/common.schema.json#/$defs/mnd_id"},
+        "date": {"$ref": "../../shared/v1/common.schema.json#/$defs/business_date"},
+        "capacity_kg": {"$ref": "../../shared/v1/common.schema.json#/$defs/quantity_kg"}}}},
+    "policy_versions": {
+      "type": "object", "additionalProperties": false, "required": ["fairness", "storage", "tie_break", "economic"],
+      "properties": {
+        "fairness": {"const": "LEXIMIN_FULFILMENT_V1"},
+        "storage": {"const": "STORAGE_PRIORITY_V1"},
+        "tie_break": {"const": "TIE_BREAK_V1"},
+        "economic": {"const": "NONE_DEMO_V1"}}}
+  },
+  "allOf": [
+    {"if": {"properties": {"mode": {"const": "LIVE"}}},
+     "then": {"properties": {"provenance": {"properties": {"origin": {"not": {"const": "SYNTHETIC"}}}}}}}
+  ]
+}

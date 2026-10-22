@@ -1,0 +1,15 @@
+{
+  "contract": "plan_validation/v1",
+  "valid": true,
+  "issues": [],
+  "recomputed": {
+    "scheduled_kg": "200.000",
+    "gross_inr": "4778.00",
+    "cost_inr": "60.00",
+    "expected_net_return_inr": "4718.00"
+  },
+  "market_load": {
+    "limit_violations": 0,
+    "excess_kg": "0.000"
+  }
+}

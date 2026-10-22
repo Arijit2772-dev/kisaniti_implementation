@@ -1,0 +1,110 @@
+{
+  "contract": "allocation_result/v1",
+  "fpo_id": "fpo_0000000000CXVSX1PRPME6HFNW",
+  "commodity_id": "cmd_0000000000AEPBXXXRNPZ7ST2J",
+  "input_sha256": "b1a6a62aa9336ff2e95a58f417db8d0f7dc23162c4ecb2615ab046ca4f01305f",
+  "origin": "SYNTHETIC",
+  "mode": "DEMO",
+  "solver": {
+    "name": "highs",
+    "hierarchy": "KISANITI"
+  },
+  "status": {
+    "solution": "FOUND",
+    "allocation_outcome": "PARTIAL",
+    "optimality": "PROVEN_OPTIMAL",
+    "termination": "COMPLETED",
+    "certified_stages": [
+      "ALLOCATION",
+      "LEXIMIN_1",
+      "LEXIMIN_2",
+      "STORAGE_HIGH",
+      "STORAGE_MEDIUM",
+      "NET_RETURN",
+      "TIE_BREAK"
+    ]
+  },
+  "assignments": [
+    {
+      "lot_id": "lot_00000000000QPKBTPW33T1898J",
+      "mandi_id": "mnd_0000000000X0WDM92QKBXB5Q29",
+      "date": "2025-10-20",
+      "quantity_kg": "50.000"
+    },
+    {
+      "lot_id": "lot_0000000000QT4YG77XE58KS2WY",
+      "mandi_id": "mnd_0000000000X0WDM92QKBXB5Q29",
+      "date": "2025-10-20",
+      "quantity_kg": "150.000"
+    }
+  ],
+  "lots": [
+    {
+      "lot_id": "lot_00000000000QPKBTPW33T1898J",
+      "participating_kg": "100.000",
+      "scheduled_kg": "50.000",
+      "unallocated_kg": "50.000"
+    },
+    {
+      "lot_id": "lot_0000000000QT4YG77XE58KS2WY",
+      "participating_kg": "300.000",
+      "scheduled_kg": "150.000",
+      "unallocated_kg": "150.000"
+    }
+  ],
+  "farmers": [
+    {
+      "farmer_id": "mbr_00000000007R0QQ6WH2A4YRNQ4",
+      "fulfilment": {
+        "numerator_kg": "150.000",
+        "denominator_kg": "300.000",
+        "display": "0.500000"
+      }
+    },
+    {
+      "farmer_id": "mbr_0000000000PS29V7DZ2Q0SKTF8",
+      "fulfilment": {
+        "numerator_kg": "50.000",
+        "denominator_kg": "100.000",
+        "display": "0.500000"
+      }
+    }
+  ],
+  "storage": {
+    "HIGH": {
+      "scheduled_kg": "0.000",
+      "by_date_kg": [
+        "0.000"
+      ]
+    },
+    "MEDIUM": {
+      "scheduled_kg": "0.000",
+      "by_date_kg": [
+        "0.000"
+      ]
+    }
+  },
+  "totals": {
+    "participating_kg": "400.000",
+    "scheduled_kg": "200.000",
+    "gross_inr": "4778.00",
+    "cost_inr": "60.00",
+    "expected_net_return_inr": "4718.00"
+  },
+  "tie_break_score": 3,
+  "validation": {
+    "contract": "plan_validation/v1",
+    "valid": true,
+    "issues": [],
+    "recomputed": {
+      "scheduled_kg": "200.000",
+      "gross_inr": "4778.00",
+      "cost_inr": "60.00",
+      "expected_net_return_inr": "4718.00"
+    },
+    "market_load": {
+      "limit_violations": 0,
+      "excess_kg": "0.000"
+    }
+  }
+}

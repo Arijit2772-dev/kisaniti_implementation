@@ -1,0 +1,6 @@
+{
+  "_comment": "Example file-name prefix -> schema.",
+  "input_": "allocation_input.schema.json",
+  "result_": "allocation_result.schema.json",
+  "validation_": "plan_validation.schema.json"
+}

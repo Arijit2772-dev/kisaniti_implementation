@@ -1,0 +1,214 @@
+{
+  "contract": "allocation_input/v1",
+  "fpo_id": "fpo_0000000000CXVSX1PRPME6HFNW",
+  "commodity_id": "cmd_0000000000AEPBXXXRNPZ7ST2J",
+  "mode": "DEMO",
+  "provenance": {
+    "origin": "SYNTHETIC",
+    "source_kind": "FIXTURE_GENERATOR",
+    "source_ref": "contracts/allocation/v1/examples/make_examples.py",
+    "generator": {
+      "script": "make_examples.py",
+      "version": "1",
+      "seed": 0
+    },
+    "acquired_at": "2026-10-22T06:00:00.000Z"
+  },
+  "allocation_mode": "PARTIAL",
+  "market_load_policy": "STRICT",
+  "dates": [
+    "2025-10-20",
+    "2025-10-21"
+  ],
+  "mandis": [
+    {
+      "id": "mnd_0000000000RVYXBPA2N4Y8B6PY"
+    },
+    {
+      "id": "mnd_0000000000AB5T4Y3QRF0EB7JG"
+    }
+  ],
+  "farmers": [
+    {
+      "id": "mbr_0000000000CANFA56R4Z58R19X"
+    },
+    {
+      "id": "mbr_0000000000RDWC2X8EDHGDFJH9"
+    },
+    {
+      "id": "mbr_00000000004AXDSAS7FGFY496C"
+    }
+  ],
+  "lots": [
+    {
+      "id": "lot_0000000000F28PMYXK2HRQXS5G",
+      "farmer_id": "mbr_0000000000CANFA56R4Z58R19X",
+      "quantity_kg": 1000.0,
+      "increment_kg": "100.000",
+      "storage": "HIGH"
+    },
+    {
+      "id": "lot_00000000006XRVZBMXPGN7YNFZ",
+      "farmer_id": "mbr_0000000000CANFA56R4Z58R19X",
+      "quantity_kg": "500.000",
+      "increment_kg": "100.000",
+      "storage": "LOW"
+    },
+    {
+      "id": "lot_0000000000BAKM96XHVPC7TNKY",
+      "farmer_id": "mbr_0000000000RDWC2X8EDHGDFJH9",
+      "quantity_kg": "2000.000",
+      "increment_kg": "100.000",
+      "storage": "MEDIUM"
+    },
+    {
+      "id": "lot_0000000000X4C4HN7C3KWXS8FZ",
+      "farmer_id": "mbr_00000000004AXDSAS7FGFY496C",
+      "quantity_kg": "800.000",
+      "increment_kg": "100.000",
+      "storage": "UNKNOWN"
+    }
+  ],
+  "choices": [
+    {
+      "lot_id": "lot_0000000000F28PMYXK2HRQXS5G",
+      "mandi_id": "mnd_0000000000RVYXBPA2N4Y8B6PY",
+      "date": "2025-10-20",
+      "price_inr_per_kg": "23.8900",
+      "cost_inr_per_kg": "0.4000"
+    },
+    {
+      "lot_id": "lot_0000000000F28PMYXK2HRQXS5G",
+      "mandi_id": "mnd_0000000000RVYXBPA2N4Y8B6PY",
+      "date": "2025-10-21",
+      "price_inr_per_kg": "23.8900",
+      "cost_inr_per_kg": "0.4200"
+    },
+    {
+      "lot_id": "lot_0000000000F28PMYXK2HRQXS5G",
+      "mandi_id": "mnd_0000000000AB5T4Y3QRF0EB7JG",
+      "date": "2025-10-20",
+      "price_inr_per_kg": "23.8900",
+      "cost_inr_per_kg": "0.6000"
+    },
+    {
+      "lot_id": "lot_0000000000F28PMYXK2HRQXS5G",
+      "mandi_id": "mnd_0000000000AB5T4Y3QRF0EB7JG",
+      "date": "2025-10-21",
+      "price_inr_per_kg": "23.8900",
+      "cost_inr_per_kg": "0.6200"
+    },
+    {
+      "lot_id": "lot_00000000006XRVZBMXPGN7YNFZ",
+      "mandi_id": "mnd_0000000000RVYXBPA2N4Y8B6PY",
+      "date": "2025-10-20",
+      "price_inr_per_kg": "23.8900",
+      "cost_inr_per_kg": "0.4000"
+    },
+    {
+      "lot_id": "lot_00000000006XRVZBMXPGN7YNFZ",
+      "mandi_id": "mnd_0000000000RVYXBPA2N4Y8B6PY",
+      "date": "2025-10-21",
+      "price_inr_per_kg": "23.8900",
+      "cost_inr_per_kg": "0.4200"
+    },
+    {
+      "lot_id": "lot_00000000006XRVZBMXPGN7YNFZ",
+      "mandi_id": "mnd_0000000000AB5T4Y3QRF0EB7JG",
+      "date": "2025-10-20",
+      "price_inr_per_kg": "23.8900",
+      "cost_inr_per_kg": "0.6000"
+    },
+    {
+      "lot_id": "lot_00000000006XRVZBMXPGN7YNFZ",
+      "mandi_id": "mnd_0000000000AB5T4Y3QRF0EB7JG",
+      "date": "2025-10-21",
+      "price_inr_per_kg": "23.8900",
+      "cost_inr_per_kg": "0.6200"
+    },
+    {
+      "lot_id": "lot_0000000000BAKM96XHVPC7TNKY",
+      "mandi_id": "mnd_0000000000RVYXBPA2N4Y8B6PY",
+      "date": "2025-10-20",
+      "price_inr_per_kg": "23.8900",
+      "cost_inr_per_kg": "0.7000"
+    },
+    {
+      "lot_id": "lot_0000000000BAKM96XHVPC7TNKY",
+      "mandi_id": "mnd_0000000000RVYXBPA2N4Y8B6PY",
+      "date": "2025-10-21",
+      "price_inr_per_kg": "23.8900",
+      "cost_inr_per_kg": "0.7200"
+    },
+    {
+      "lot_id": "lot_0000000000BAKM96XHVPC7TNKY",
+      "mandi_id": "mnd_0000000000AB5T4Y3QRF0EB7JG",
+      "date": "2025-10-20",
+      "price_inr_per_kg": "23.8900",
+      "cost_inr_per_kg": "0.3000"
+    },
+    {
+      "lot_id": "lot_0000000000BAKM96XHVPC7TNKY",
+      "mandi_id": "mnd_0000000000AB5T4Y3QRF0EB7JG",
+      "date": "2025-10-21",
+      "price_inr_per_kg": "23.8900",
+      "cost_inr_per_kg": "0.3200"
+    },
+    {
+      "lot_id": "lot_0000000000X4C4HN7C3KWXS8FZ",
+      "mandi_id": "mnd_0000000000RVYXBPA2N4Y8B6PY",
+      "date": "2025-10-20",
+      "price_inr_per_kg": "23.8900",
+      "cost_inr_per_kg": "0.2000"
+    },
+    {
+      "lot_id": "lot_0000000000X4C4HN7C3KWXS8FZ",
+      "mandi_id": "mnd_0000000000RVYXBPA2N4Y8B6PY",
+      "date": "2025-10-21",
+      "price_inr_per_kg": "23.8900",
+      "cost_inr_per_kg": "0.2200"
+    },
+    {
+      "lot_id": "lot_0000000000X4C4HN7C3KWXS8FZ",
+      "mandi_id": "mnd_0000000000AB5T4Y3QRF0EB7JG",
+      "date": "2025-10-20",
+      "price_inr_per_kg": "23.8900",
+      "cost_inr_per_kg": "0.9000"
+    },
+    {
+      "lot_id": "lot_0000000000X4C4HN7C3KWXS8FZ",
+      "mandi_id": "mnd_0000000000AB5T4Y3QRF0EB7JG",
+      "date": "2025-10-21",
+      "price_inr_per_kg": "23.8900",
+      "cost_inr_per_kg": "0.9200"
+    }
+  ],
+  "capacities": [
+    {
+      "mandi_id": "mnd_0000000000RVYXBPA2N4Y8B6PY",
+      "date": "2025-10-20",
+      "capacity_kg": "800.000"
+    },
+    {
+      "mandi_id": "mnd_0000000000RVYXBPA2N4Y8B6PY",
+      "date": "2025-10-21",
+      "capacity_kg": "800.000"
+    },
+    {
+      "mandi_id": "mnd_0000000000AB5T4Y3QRF0EB7JG",
+      "date": "2025-10-20",
+      "capacity_kg": "800.000"
+    },
+    {
+      "mandi_id": "mnd_0000000000AB5T4Y3QRF0EB7JG",
+      "date": "2025-10-21",
+      "capacity_kg": "800.000"
+    }
+  ],
+  "policy_versions": {
+    "fairness": "LEXIMIN_FULFILMENT_V1",
+    "storage": "STORAGE_PRIORITY_V1",
+    "tie_break": "TIE_BREAK_V1",
+    "economic": "NONE_DEMO_V1"
+  }
+}

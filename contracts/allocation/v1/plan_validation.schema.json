@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kisaniti.invalid/contracts/allocation/v1/plan_validation.schema.json",
+  "title": "PlanValidator report v1 (hard validity and recomputed money; says nothing about optimality)",
+  "type": "object", "additionalProperties": false,
+  "required": ["contract", "valid", "issues", "recomputed", "market_load"],
+  "properties": {
+    "contract": {"const": "plan_validation/v1"},
+    "valid": {"type": "boolean"},
+    "issues": {"type": "array", "items": {"$ref": "../../shared/v1/common.schema.json#/$defs/issue"}},
+    "recomputed": {"type": "object", "additionalProperties": false,
+                   "required": ["scheduled_kg", "gross_inr", "cost_inr", "expected_net_return_inr"],
+                   "properties": {"scheduled_kg": {"$ref": "../../shared/v1/common.schema.json#/$defs/quantity_kg"},
+                                  "gross_inr": {"$ref": "../../shared/v1/common.schema.json#/$defs/money_inr"},
+                                  "cost_inr": {"$ref": "../../shared/v1/common.schema.json#/$defs/money_inr"},
+                                  "expected_net_return_inr": {"$ref": "../../shared/v1/common.schema.json#/$defs/money_inr"}}},
+    "market_load": {"type": "object", "additionalProperties": false, "required": ["limit_violations", "excess_kg"],
+                    "properties": {"limit_violations": {"type": "integer", "minimum": 0},
+                                   "excess_kg": {"$ref": "../../shared/v1/common.schema.json#/$defs/quantity_kg"}}}
+  },
+  "allOf": [{"if": {"properties": {"valid": {"const": false}}}, "then": {"properties": {"issues": {"minItems": 1}}}},
+            {"if": {"properties": {"valid": {"const": true}}}, "then": {"properties": {"issues": {"maxItems": 0}}}}]
+}

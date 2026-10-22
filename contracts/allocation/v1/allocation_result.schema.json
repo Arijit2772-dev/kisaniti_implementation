@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kisaniti.invalid/contracts/allocation/v1/allocation_result.schema.json",
+  "title": "Allocation result v1 (OptimizationResult: not a proposal, approval, reservation or sale)",
+  "type": "object", "additionalProperties": false,
+  "required": ["contract", "fpo_id", "commodity_id", "input_sha256", "origin", "mode", "solver", "status",
+               "assignments", "lots", "farmers", "storage", "totals", "tie_break_score", "validation"],
+  "$defs": {
+    "kg": {"$ref": "../../shared/v1/common.schema.json#/$defs/quantity_kg"},
+    "inr": {"$ref": "../../shared/v1/common.schema.json#/$defs/money_inr"},
+    "storage_cat": {"type": "object", "additionalProperties": false, "required": ["scheduled_kg", "by_date_kg"],
+                    "properties": {"scheduled_kg": {"$ref": "#/$defs/kg"}, "by_date_kg": {"type": "array", "items": {"$ref": "#/$defs/kg"}}}}
+  },
+  "properties": {
+    "contract": {"const": "allocation_result/v1"},
+    "fpo_id": {"$ref": "../../shared/v1/common.schema.json#/$defs/fpo_id"},
+    "commodity_id": {"$ref": "../../shared/v1/common.schema.json#/$defs/cmd_id"},
+    "input_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "origin": {"enum": ["REAL", "SYNTHETIC"]},
+    "mode": {"$ref": "../../shared/v1/common.schema.json#/$defs/mode"},
+    "solver": {"type": "object", "additionalProperties": false, "required": ["name", "hierarchy"],
+               "properties": {"name": {"type": "string", "minLength": 1},
+                              "hierarchy": {"enum": ["KISANITI", "MAXMIN", "UTILITARIAN", "WEIGHTED", "HEURISTIC"]}}},
+    "status": {"type": "object", "additionalProperties": false,
+               "required": ["solution", "allocation_outcome", "optimality", "termination", "certified_stages"],
+               "properties": {
+                 "solution": {"enum": ["FOUND", "NONE"]},
+                 "allocation_outcome": {"enum": ["FULL", "PARTIAL", "NONE"]},
+                 "optimality": {"enum": ["PROVEN_OPTIMAL", "FEASIBLE_NOT_PROVEN", "NONE", "NOT_APPLICABLE_HEURISTIC"]},
+                 "termination": {"enum": ["COMPLETED", "PROVEN_INFEASIBLE", "TIME_LIMIT", "NOT_APPLICABLE", "TECHNICAL_FAILURE"]},
+                 "certified_stages": {"type": "array", "items": {"type": "string"}}}},
+    "assignments": {"type": "array", "items": {
+      "type": "object", "additionalProperties": false, "required": ["lot_id", "mandi_id", "date", "quantity_kg"],
+      "properties": {"lot_id": {"$ref": "../../shared/v1/common.schema.json#/$defs/lot_id"},
+                     "mandi_id": {"$ref": "../../shared/v1/common.schema.json#/$defs/mnd_id"},
+                     "date": {"$ref": "../../shared/v1/common.schema.json#/$defs/business_date"},
+                     "quantity_kg": {"$ref": "#/$defs/kg", "not": {"const": "0.000"}}}}},
+    "lots": {"type": "array", "items": {
+      "type": "object", "additionalProperties": false,
+      "required": ["lot_id", "participating_kg", "scheduled_kg", "unallocated_kg"],
+      "properties": {"lot_id": {"$ref": "../../shared/v1/common.schema.json#/$defs/lot_id"},
+                     "participating_kg": {"$ref": "#/$defs/kg"}, "scheduled_kg": {"$ref": "#/$defs/kg"},
+                     "unallocated_kg": {"$ref": "#/$defs/kg"}}}},
+    "farmers": {"type": "array", "items": {
+      "type": "object", "additionalProperties": false, "required": ["farmer_id", "fulfilment"],
+      "properties": {"farmer_id": {"$ref": "../../shared/v1/common.schema.json#/$defs/mbr_id"},
+                     "fulfilment": {"$ref": "../../shared/v1/common.schema.json#/$defs/exact_ratio"}}}},
+    "storage": {"type": "object", "additionalProperties": false, "required": ["HIGH", "MEDIUM"],
+                "properties": {"HIGH": {"$ref": "#/$defs/storage_cat"}, "MEDIUM": {"$ref": "#/$defs/storage_cat"}}},
+    "totals": {"type": "object", "additionalProperties": false,
+               "required": ["participating_kg", "scheduled_kg", "gross_inr", "cost_inr", "expected_net_return_inr"],
+               "properties": {"participating_kg": {"$ref": "#/$defs/kg"}, "scheduled_kg": {"$ref": "#/$defs/kg"},
+                              "gross_inr": {"$ref": "#/$defs/inr"}, "cost_inr": {"$ref": "#/$defs/inr"},
+                              "expected_net_return_inr": {"$ref": "#/$defs/inr"}}},
+    "tie_break_score": {"type": "integer", "minimum": 0},
+    "validation": {"$ref": "plan_validation.schema.json"}
+  }
+}

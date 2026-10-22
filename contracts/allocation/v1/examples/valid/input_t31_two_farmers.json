@@ -1,0 +1,80 @@
+{
+  "contract": "allocation_input/v1",
+  "fpo_id": "fpo_0000000000CXVSX1PRPME6HFNW",
+  "commodity_id": "cmd_0000000000AEPBXXXRNPZ7ST2J",
+  "mode": "DEMO",
+  "provenance": {
+    "origin": "SYNTHETIC",
+    "source_kind": "FIXTURE_GENERATOR",
+    "source_ref": "contracts/allocation/v1/examples/make_examples.py",
+    "generator": {
+      "script": "make_examples.py",
+      "version": "1",
+      "seed": 0
+    },
+    "acquired_at": "2026-10-22T06:00:00.000Z"
+  },
+  "allocation_mode": "PARTIAL",
+  "market_load_policy": "STRICT",
+  "dates": [
+    "2025-10-20"
+  ],
+  "mandis": [
+    {
+      "id": "mnd_0000000000X0WDM92QKBXB5Q29"
+    }
+  ],
+  "farmers": [
+    {
+      "id": "mbr_0000000000PS29V7DZ2Q0SKTF8"
+    },
+    {
+      "id": "mbr_00000000007R0QQ6WH2A4YRNQ4"
+    }
+  ],
+  "lots": [
+    {
+      "id": "lot_00000000000QPKBTPW33T1898J",
+      "farmer_id": "mbr_0000000000PS29V7DZ2Q0SKTF8",
+      "quantity_kg": "100.000",
+      "increment_kg": "50.000",
+      "storage": "LOW"
+    },
+    {
+      "id": "lot_0000000000QT4YG77XE58KS2WY",
+      "farmer_id": "mbr_00000000007R0QQ6WH2A4YRNQ4",
+      "quantity_kg": "300.000",
+      "increment_kg": "50.000",
+      "storage": "LOW"
+    }
+  ],
+  "choices": [
+    {
+      "lot_id": "lot_00000000000QPKBTPW33T1898J",
+      "mandi_id": "mnd_0000000000X0WDM92QKBXB5Q29",
+      "date": "2025-10-20",
+      "price_inr_per_kg": "23.8900",
+      "cost_inr_per_kg": "0.3000"
+    },
+    {
+      "lot_id": "lot_0000000000QT4YG77XE58KS2WY",
+      "mandi_id": "mnd_0000000000X0WDM92QKBXB5Q29",
+      "date": "2025-10-20",
+      "price_inr_per_kg": "23.8900",
+      "cost_inr_per_kg": "0.3000"
+    }
+  ],
+  "capacities": [
+    {
+      "mandi_id": "mnd_0000000000X0WDM92QKBXB5Q29",
+      "date": "2025-10-20",
+      "capacity_kg": "200.000"
+    }
+  ],
+  "policy_versions": {
+    "fairness": "LEXIMIN_FULFILMENT_V1",
+    "storage": "STORAGE_PRIORITY_V1",
+    "tie_break": "TIE_BREAK_V1",
+    "economic": "NONE_DEMO_V1"
+  }
+}

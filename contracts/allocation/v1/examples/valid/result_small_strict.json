@@ -1,0 +1,167 @@
+{
+  "contract": "allocation_result/v1",
+  "fpo_id": "fpo_0000000000CXVSX1PRPME6HFNW",
+  "commodity_id": "cmd_0000000000AEPBXXXRNPZ7ST2J",
+  "input_sha256": "1e079e4645d2f8e11d6721002ba70f11538dadbb78e4cfa4005a4cb9220c609e",
+  "origin": "SYNTHETIC",
+  "mode": "DEMO",
+  "solver": {
+    "name": "highs",
+    "hierarchy": "KISANITI"
+  },
+  "status": {
+    "solution": "FOUND",
+    "allocation_outcome": "PARTIAL",
+    "optimality": "PROVEN_OPTIMAL",
+    "termination": "COMPLETED",
+    "certified_stages": [
+      "ALLOCATION",
+      "LEXIMIN_1",
+      "LEXIMIN_2",
+      "LEXIMIN_3",
+      "STORAGE_HIGH_TOTAL",
+      "STORAGE_HIGH_2025-10-20",
+      "STORAGE_HIGH_2025-10-21",
+      "STORAGE_MEDIUM_TOTAL",
+      "STORAGE_MEDIUM_2025-10-20",
+      "STORAGE_MEDIUM_2025-10-21",
+      "NET_RETURN",
+      "TIE_BREAK"
+    ]
+  },
+  "assignments": [
+    {
+      "lot_id": "lot_00000000006XRVZBMXPGN7YNFZ",
+      "mandi_id": "mnd_0000000000RVYXBPA2N4Y8B6PY",
+      "date": "2025-10-21",
+      "quantity_kg": "100.000"
+    },
+    {
+      "lot_id": "lot_0000000000BAKM96XHVPC7TNKY",
+      "mandi_id": "mnd_0000000000AB5T4Y3QRF0EB7JG",
+      "date": "2025-10-20",
+      "quantity_kg": "600.000"
+    },
+    {
+      "lot_id": "lot_0000000000BAKM96XHVPC7TNKY",
+      "mandi_id": "mnd_0000000000AB5T4Y3QRF0EB7JG",
+      "date": "2025-10-21",
+      "quantity_kg": "800.000"
+    },
+    {
+      "lot_id": "lot_0000000000BAKM96XHVPC7TNKY",
+      "mandi_id": "mnd_0000000000RVYXBPA2N4Y8B6PY",
+      "date": "2025-10-21",
+      "quantity_kg": "100.000"
+    },
+    {
+      "lot_id": "lot_0000000000F28PMYXK2HRQXS5G",
+      "mandi_id": "mnd_0000000000AB5T4Y3QRF0EB7JG",
+      "date": "2025-10-20",
+      "quantity_kg": "200.000"
+    },
+    {
+      "lot_id": "lot_0000000000F28PMYXK2HRQXS5G",
+      "mandi_id": "mnd_0000000000RVYXBPA2N4Y8B6PY",
+      "date": "2025-10-20",
+      "quantity_kg": "800.000"
+    },
+    {
+      "lot_id": "lot_0000000000X4C4HN7C3KWXS8FZ",
+      "mandi_id": "mnd_0000000000RVYXBPA2N4Y8B6PY",
+      "date": "2025-10-21",
+      "quantity_kg": "600.000"
+    }
+  ],
+  "lots": [
+    {
+      "lot_id": "lot_0000000000F28PMYXK2HRQXS5G",
+      "participating_kg": "1000.000",
+      "scheduled_kg": "1000.000",
+      "unallocated_kg": "0.000"
+    },
+    {
+      "lot_id": "lot_00000000006XRVZBMXPGN7YNFZ",
+      "participating_kg": "500.000",
+      "scheduled_kg": "100.000",
+      "unallocated_kg": "400.000"
+    },
+    {
+      "lot_id": "lot_0000000000BAKM96XHVPC7TNKY",
+      "participating_kg": "2000.000",
+      "scheduled_kg": "1500.000",
+      "unallocated_kg": "500.000"
+    },
+    {
+      "lot_id": "lot_0000000000X4C4HN7C3KWXS8FZ",
+      "participating_kg": "800.000",
+      "scheduled_kg": "600.000",
+      "unallocated_kg": "200.000"
+    }
+  ],
+  "farmers": [
+    {
+      "farmer_id": "mbr_00000000004AXDSAS7FGFY496C",
+      "fulfilment": {
+        "numerator_kg": "600.000",
+        "denominator_kg": "800.000",
+        "display": "0.750000"
+      }
+    },
+    {
+      "farmer_id": "mbr_0000000000CANFA56R4Z58R19X",
+      "fulfilment": {
+        "numerator_kg": "1100.000",
+        "denominator_kg": "1500.000",
+        "display": "0.733333"
+      }
+    },
+    {
+      "farmer_id": "mbr_0000000000RDWC2X8EDHGDFJH9",
+      "fulfilment": {
+        "numerator_kg": "1500.000",
+        "denominator_kg": "2000.000",
+        "display": "0.750000"
+      }
+    }
+  ],
+  "storage": {
+    "HIGH": {
+      "scheduled_kg": "1000.000",
+      "by_date_kg": [
+        "1000.000",
+        "0.000"
+      ]
+    },
+    "MEDIUM": {
+      "scheduled_kg": "1500.000",
+      "by_date_kg": [
+        "600.000",
+        "900.000"
+      ]
+    }
+  },
+  "totals": {
+    "participating_kg": "4300.000",
+    "scheduled_kg": "3200.000",
+    "gross_inr": "76448.00",
+    "cost_inr": "1122.00",
+    "expected_net_return_inr": "75326.00"
+  },
+  "tie_break_score": 260,
+  "validation": {
+    "contract": "plan_validation/v1",
+    "valid": true,
+    "issues": [],
+    "recomputed": {
+      "scheduled_kg": "3200.000",
+      "gross_inr": "76448.00",
+      "cost_inr": "1122.00",
+      "expected_net_return_inr": "75326.00"
+    },
+    "market_load": {
+      "limit_violations": 0,
+      "excess_kg": "0.000"
+    }
+  }
+}

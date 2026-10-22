@@ -1,0 +1,9 @@
+{
+  "input_missing_capacity_strict.json": "VALIDATION_FAILED",
+  "input_lot_owner_not_in_input.json": "TENANT_SCOPE_VIOLATION",
+  "input_choice_for_unknown_lot.json": "TENANT_SCOPE_VIOLATION",
+  "input_choice_date_outside_horizon.json": "INVALID_DATE",
+  "input_duplicate_choice.json": "VALIDATION_FAILED",
+  "input_full_mode_partial_increment.json": "VALIDATION_FAILED",
+  "input_impossible_date.json": "INVALID_DATE"
+}

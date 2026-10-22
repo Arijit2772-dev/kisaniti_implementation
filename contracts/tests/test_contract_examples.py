@@ -67,6 +67,23 @@ def test_example(slice_dir: Path, path: Path, ref: str, should_pass: bool) -> No
         assert any(e for e in errors), f"{path.name} unexpectedly valid"
 
 
+def _semantic_cases() -> list[tuple[Path, Path, str]]:
+    out = []
+    for s in SLICES:
+        index = json.loads((s / "examples" / "index.json").read_text())
+        for f in sorted((s / "examples" / "invalid_semantic").glob("input_*.json")):
+            refs = [r for p, r in index.items() if not p.startswith("_") and f.name.startswith(p)]
+            out.append((s, f, refs[0]))
+    return out
+
+
+@pytest.mark.parametrize(("slice_dir", "path", "ref"), _semantic_cases(), ids=lambda x: getattr(x, "name", str(x)))
+def test_semantic_invalid_passes_schema(slice_dir: Path, path: Path, ref: str) -> None:
+    """These break cross-reference rules only the core can check; the schema alone must accept them."""
+    errors = list(_validator(slice_dir, ref).iter_errors(json.loads(path.read_text())))
+    assert not errors, [e.message for e in errors]
+
+
 def _primitive_cases() -> list[tuple[str, Any, str]]:
     prim = json.loads((ROOT / "shared" / "v1" / "examples" / "primitives.json").read_text())
     return [(name, value, kind) for name, groups in prim.items() if not name.startswith("_")
