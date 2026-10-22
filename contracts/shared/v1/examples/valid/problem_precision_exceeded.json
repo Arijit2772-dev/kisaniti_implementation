@@ -1,0 +1,10 @@
+{
+  "type": "https://kisaniti.invalid/errors/PRECISION_EXCEEDED",
+  "title": "Precision exceeded",
+  "status": 422,
+  "code": "PRECISION_EXCEEDED",
+  "detail": "'1250.0005' has 4 fractional digits; at most 3",
+  "instance": "/api/v1/lots",
+  "request_id": "req-0001",
+  "issues": [{"code": "PRECISION_EXCEEDED", "path": "/quantity_kg", "message": "at most 3 fractional digits", "severity": "ERROR"}]
+}

@@ -1,0 +1,4 @@
+# file: /Users/arijitsingh/Documents/kisaniti_implementation/core/src/kisaniti_core/ids.py
+# hypothesis_version: 6.140.2
+
+[1000, '0000000000', '_', 'cmd', 'dev', 'dsv', 'fpo', 'lot', 'mbr', 'mnd', 'pln', 'pol', 'rev', 'run', 'src', 'stl', 'usr']

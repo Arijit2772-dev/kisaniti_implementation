@@ -1,0 +1,24 @@
+"""FastAPI application. Run: uvicorn kisaniti_api.main:app"""
+
+from __future__ import annotations
+
+from fastapi import FastAPI
+from kisaniti_core import __version__ as core_version
+
+from . import __version__, health, problems
+from .config import load_settings
+
+app = FastAPI(title="KisanNiti API", version=__version__)
+problems.install(app)
+app.include_router(health.router)
+
+
+@app.get("/api/v1/meta")
+def meta() -> dict[str, object]:
+    """Versions and mode, so the UI can show the DEMO banner and the paper can cite exact versions."""
+    return {
+        "api_version": __version__,
+        "core_version": core_version,
+        "contracts": ["shared/v1"],
+        "mode": load_settings().mode.value,
+    }

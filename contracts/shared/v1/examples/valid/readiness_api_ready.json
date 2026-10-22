@@ -1,0 +1,9 @@
+{
+  "contract": "readiness/v1",
+  "purpose": "API_SERVE",
+  "status": "READY",
+  "components": {"database": "READY", "migrations": "READY"},
+  "issues": [],
+  "policy_version": "health/v1",
+  "evaluated_at": "2026-10-22T06:00:00.000Z"
+}

@@ -1,0 +1,8 @@
+{
+  "contract": "fpo/v1",
+  "id": "fpo_0000000000951YC3CSVS81Y403",
+  "name": "Demo FPO",
+  "timezone": "Europe/London",
+  "provenance": {"origin": "REAL", "source_kind": "MANUAL_ENTRY", "source_ref": "x", "acquired_at": "2026-10-22T11:30:00.000+05:30"},
+  "created_at": "2026-10-22T06:00:00.000Z"
+}

@@ -1,0 +1,32 @@
+:root {
+  --ink: #1f2328;
+  --muted: #5a6270;
+  --bg: #ffffff;
+  --ok: #167170;
+  --bad: #b3261e;
+  --demo: #ecd781;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --ink: #e6e8eb;
+    --muted: #a3aab4;
+    --bg: #14171a;
+    --ok: #5fc1bf;
+    --bad: #ff8a80;
+  }
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans Gurmukhi", "Noto Sans Devanagari", sans-serif;
+}
+main { max-width: 40rem; margin: 0 auto; padding: 1.5rem 1rem; }
+h1 { margin: 0 0 0.25rem; }
+.muted { color: var(--muted); font-size: 0.9rem; }
+.banner { background: var(--demo); color: #1f2328; padding: 0.5rem 0.75rem; border-radius: 6px; font-weight: 600; }
+.card { border: 2px solid var(--ok); border-radius: 10px; padding: 1rem; margin-top: 1rem; }
+.card.blocked { border-color: var(--bad); }
+.card h2 { margin-top: 0; font-size: 1.15rem; }
+.issue { color: var(--bad); }

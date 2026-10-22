@@ -1,0 +1,9 @@
+{
+  "contract": "readiness/v1",
+  "purpose": "API_SERVE",
+  "status": "BLOCKED",
+  "components": {"database": "BLOCKED", "migrations": "BLOCKED"},
+  "issues": [{"code": "DEPENDENCY_UNAVAILABLE", "path": "/components/database", "message": "database did not answer", "severity": "ERROR"}],
+  "policy_version": "health/v1",
+  "evaluated_at": "2026-10-22T06:00:00.000Z"
+}

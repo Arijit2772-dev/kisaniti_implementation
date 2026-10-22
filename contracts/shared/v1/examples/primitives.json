@@ -1,0 +1,48 @@
+{
+  "_comment": "Per $def of common.schema.json: 'valid' must pass schema and core; 'invalid' must fail both; 'invalid_semantic' passes the regex-level schema but core must reject (range or calendar checks).",
+  "quantity_kg": {
+    "valid": ["0.000", "1250.000", "0.001", "1000000000.000"],
+    "invalid": ["1250", "1250.0", "1250.0000", "-5.000", "01250.000", "1.25e3", "+1.000", 1250.0, "", "NaN"],
+    "invalid_semantic": ["1000000000.001", "9999999999.999"]
+  },
+  "quantity_delta_kg": {
+    "valid": ["-12.500", "0.000", "12.500"],
+    "invalid": ["-0.000", "12.5", "-12.5000"],
+    "invalid_semantic": ["-1000000000.001"]
+  },
+  "money_inr": {
+    "valid": ["29862.50", "-15.00", "0.00"],
+    "invalid": ["29862.5", "29862.505", "-0.00", "29,862.50", 29862.5],
+    "invalid_semantic": []
+  },
+  "rate_inr_per_kg": {
+    "valid": ["23.8900", "-0.5000", "0.0000"],
+    "invalid": ["23.89", "23.89000", "-0.0000"],
+    "invalid_semantic": ["10000000.0001"]
+  },
+  "rate_inr_per_quintal": {
+    "valid": ["2389.00", "2320.00"],
+    "invalid": ["2389", "2389.0", "2389.001"],
+    "invalid_semantic": []
+  },
+  "distance_km": {
+    "valid": ["15.165", "0.000"],
+    "invalid": ["15.16", "-1.000"],
+    "invalid_semantic": ["100000.001"]
+  },
+  "instant_utc": {
+    "valid": ["2026-10-22T06:00:00.000Z", "2024-02-29T23:59:59.999Z"],
+    "invalid": ["2026-10-22T06:00:00Z", "2026-10-22T11:30:00.000+05:30", "2026-10-22 06:00:00.000Z", "2026-10-22T06:00:00.000", "2026-10-22T24:00:00.000Z"],
+    "invalid_semantic": ["2026-02-30T06:00:00.000Z", "2025-02-29T00:00:00.000Z"]
+  },
+  "business_date": {
+    "valid": ["2026-10-22", "2024-02-29"],
+    "invalid": ["22-10-2026", "2026-10-22T00:00:00.000Z", "2026-13-01", "20261022"],
+    "invalid_semantic": ["2026-02-30", "2025-02-29"]
+  },
+  "id_any": {
+    "valid": ["fpo_0000000000951YC3CSVS81Y403", "lot_01JAZ8F6Q2X7ZK3M9W5T4R2B1C"],
+    "invalid": ["FPO_0000000000951YC3CSVS81Y403", "fpo_0000000000951YC3CSVS81Y40", "abc_0000000000951YC3CSVS81Y403", "fpo_0000000000951YC3CSVS81Y4OI", "fpo-0000000000951YC3CSVS81Y403", 42],
+    "invalid_semantic": []
+  }
+}

@@ -1,0 +1,46 @@
+# One command: docker compose up --build   then open http://localhost:3000
+# Local development values only; copy .env.example to .env to change them. Never use these in a real deployment.
+name: kisaniti
+services:
+  db:
+    image: postgres:17.6
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-kisaniti}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-kisaniti-local-only}
+      POSTGRES_DB: ${POSTGRES_DB:-kisaniti}
+    ports:
+      - "5433:5432"   # 5433 on the host so it does not clash with another local PostgreSQL
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    environment:
+      DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-kisaniti}:${POSTGRES_PASSWORD:-kisaniti-local-only}@db:5432/${POSTGRES_DB:-kisaniti}
+      KISANITI_MODE: ${KISANITI_MODE:-DEMO}
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8000:8000"
+
+  frontend:
+    build:
+      context: frontend
+    environment:
+      KISANITI_API_URL: http://backend:8000
+    depends_on:
+      backend:
+        condition: service_healthy
+    ports:
+      - "3000:3000"
+
+volumes:
+  pgdata:

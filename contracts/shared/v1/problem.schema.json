@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kisaniti.invalid/contracts/shared/v1/problem.schema.json",
+  "title": "Error response (RFC 9457 problem details) v1",
+  "type": "object", "additionalProperties": false,
+  "required": ["type", "title", "status", "code"],
+  "properties": {
+    "type": {"type": "string", "pattern": "^https://kisaniti\\.invalid/errors/[A-Z][A-Z0-9_]+$"},
+    "title": {"type": "string", "minLength": 1},
+    "status": {"type": "integer", "minimum": 400, "maximum": 599},
+    "code": {"enum": ["INVALID_REQUEST", "VALIDATION_FAILED", "INVALID_DECIMAL", "PRECISION_EXCEEDED", "OUT_OF_RANGE",
+                      "UNIT_MISMATCH", "INVALID_ID", "INVALID_INSTANT", "INVALID_DATE", "TENANT_SCOPE_VIOLATION",
+                      "SYNTHETIC_INPUT_IN_LIVE", "UNAUTHENTICATED", "FORBIDDEN", "NOT_FOUND", "CONFLICT",
+                      "IDEMPOTENCY_KEY_REUSED", "NOT_READY", "DEPENDENCY_UNAVAILABLE", "INTERNAL"]},
+    "detail": {"type": "string"},
+    "instance": {"type": "string"},
+    "request_id": {"type": "string"},
+    "issues": {"type": "array", "items": {"$ref": "common.schema.json#/$defs/issue"}}
+  }
+}

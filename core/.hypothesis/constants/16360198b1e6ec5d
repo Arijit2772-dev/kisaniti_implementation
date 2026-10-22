@@ -1,0 +1,4 @@
+# file: /Users/arijitsingh/Documents/kisaniti_implementation/core/src/kisaniti_core/quantity.py
+# hypothesis_version: 6.140.2
+
+[-1000000000, 100, 100000, 1000000000, '-', '0', '0.000001', 'INR', 'INR/kg', 'INR/quintal', 'kg', 'km', 'units']

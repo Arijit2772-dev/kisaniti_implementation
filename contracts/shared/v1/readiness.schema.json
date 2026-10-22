@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kisaniti.invalid/contracts/shared/v1/readiness.schema.json",
+  "title": "Readiness for a named purpose v1 (also the /health/ready body)",
+  "type": "object", "additionalProperties": false,
+  "required": ["contract", "purpose", "status", "issues", "policy_version", "evaluated_at"],
+  "properties": {
+    "contract": {"const": "readiness/v1"},
+    "purpose": {"type": "string", "pattern": "^[A-Z][A-Z0-9_]{1,63}$"},
+    "status": {"$ref": "common.schema.json#/$defs/readiness_status"},
+    "components": {
+      "type": "object",
+      "additionalProperties": {"$ref": "common.schema.json#/$defs/readiness_status"}
+    },
+    "issues": {"type": "array", "items": {"$ref": "common.schema.json#/$defs/issue"}},
+    "policy_version": {"type": "string", "minLength": 1},
+    "evaluated_at": {"$ref": "common.schema.json#/$defs/instant_utc"}
+  },
+  "allOf": [
+    {"if": {"properties": {"status": {"const": "BLOCKED"}}}, "then": {"properties": {"issues": {"minItems": 1}}}}
+  ]
+}

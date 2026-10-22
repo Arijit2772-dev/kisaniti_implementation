@@ -1,0 +1,75 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json",
+  "title": "KisanNiti shared basics v1 (definitions only)",
+  "description": "Frozen W01 shared slice. Meaning: kisaniti/docs/contracts/CONTRACT_SPEC_V1_shared.md",
+  "$defs": {
+    "id_any": {"type": "string", "pattern": "^(fpo|mbr|lot|mnd|cmd|stl|usr|dev|pln|rev|run|src|dsv|pol)_[0-9A-HJKMNP-TV-Z]{26}$"},
+    "fpo_id": {"type": "string", "pattern": "^fpo_[0-9A-HJKMNP-TV-Z]{26}$"},
+    "mbr_id": {"type": "string", "pattern": "^mbr_[0-9A-HJKMNP-TV-Z]{26}$"},
+    "lot_id": {"type": "string", "pattern": "^lot_[0-9A-HJKMNP-TV-Z]{26}$"},
+    "mnd_id": {"type": "string", "pattern": "^mnd_[0-9A-HJKMNP-TV-Z]{26}$"},
+    "cmd_id": {"type": "string", "pattern": "^cmd_[0-9A-HJKMNP-TV-Z]{26}$"},
+    "run_id": {"type": "string", "pattern": "^run_[0-9A-HJKMNP-TV-Z]{26}$"},
+    "pol_id": {"type": "string", "pattern": "^pol_[0-9A-HJKMNP-TV-Z]{26}$"},
+    "quantity_kg": {"type": "string", "pattern": "^(0|[1-9][0-9]{0,9})\\.[0-9]{3}$", "description": "kg, scale 3, 0..1e9 (range upper bound checked by core)"},
+    "quantity_delta_kg": {"type": "string", "pattern": "^-?(0|[1-9][0-9]{0,9})\\.[0-9]{3}$", "not": {"pattern": "^-0\\.0+$"}},
+    "money_inr": {"type": "string", "pattern": "^-?(0|[1-9][0-9]{0,12})\\.[0-9]{2}$", "not": {"pattern": "^-0\\.0+$"}},
+    "rate_inr_per_kg": {"type": "string", "pattern": "^-?(0|[1-9][0-9]{0,7})\\.[0-9]{4}$", "not": {"pattern": "^-0\\.0+$"}},
+    "rate_inr_per_quintal": {"type": "string", "pattern": "^-?(0|[1-9][0-9]{0,9})\\.[0-9]{2}$", "not": {"pattern": "^-0\\.0+$"}},
+    "distance_km": {"type": "string", "pattern": "^(0|[1-9][0-9]{0,5})\\.[0-9]{3}$"},
+    "instant_utc": {"type": "string", "pattern": "^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])T([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]\\.[0-9]{3}Z$"},
+    "business_date": {"type": "string", "pattern": "^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$"},
+    "date_range": {
+      "type": "object", "additionalProperties": false, "required": ["from", "to"],
+      "properties": {"from": {"$ref": "#/$defs/business_date"}, "to": {"$ref": "#/$defs/business_date"}}
+    },
+    "timezone": {"enum": ["Asia/Kolkata"]},
+    "origin": {"enum": ["REAL", "POLICY", "SYNTHETIC"]},
+    "mode": {"enum": ["RESEARCH", "DEMO", "LIVE"]},
+    "code": {"type": "string", "pattern": "^[A-Z][A-Z0-9_]{1,63}$"},
+    "provenance": {
+      "type": "object", "additionalProperties": false,
+      "required": ["origin", "source_kind", "source_ref", "acquired_at"],
+      "properties": {
+        "origin": {"$ref": "#/$defs/origin"},
+        "source_kind": {"enum": ["AGMARKNET", "MSP_SCHEDULE", "FIXTURE_GENERATOR", "SIMULATOR", "SENSOR", "MANUAL_ENTRY", "ROUTE_PROVIDER", "DERIVED"]},
+        "source_ref": {"type": "string", "minLength": 1, "maxLength": 1000},
+        "source_version": {"type": "string", "maxLength": 200},
+        "generator": {
+          "type": "object", "additionalProperties": false, "required": ["script", "version", "seed"],
+          "properties": {"script": {"type": "string", "minLength": 1}, "version": {"type": "string", "minLength": 1}, "seed": {"type": "integer"}}
+        },
+        "acquired_at": {"$ref": "#/$defs/instant_utc"}
+      },
+      "if": {"properties": {"origin": {"const": "SYNTHETIC"}}},
+      "then": {"required": ["generator"]}
+    },
+    "availability": {
+      "oneOf": [
+        {"type": "object", "additionalProperties": false, "required": ["status", "value"],
+         "properties": {"status": {"const": "AVAILABLE"}, "value": true}},
+        {"type": "object", "additionalProperties": false, "required": ["status", "reason"],
+         "properties": {"status": {"enum": ["UNKNOWN", "UNAVAILABLE"]}, "reason": {"$ref": "#/$defs/code"}}}
+      ]
+    },
+    "readiness_status": {"enum": ["READY", "READY_WITH_WARNINGS", "BLOCKED"]},
+    "issue": {
+      "type": "object", "additionalProperties": false, "required": ["code", "message"],
+      "properties": {
+        "code": {"$ref": "#/$defs/code"},
+        "path": {"type": "string", "description": "JSON Pointer (RFC 6901) to the offending value"},
+        "message": {"type": "string", "minLength": 1, "maxLength": 2000},
+        "severity": {"enum": ["ERROR", "WARNING"]}
+      }
+    },
+    "exact_ratio": {
+      "type": "object", "additionalProperties": false, "required": ["numerator_kg", "denominator_kg"],
+      "properties": {
+        "numerator_kg": {"$ref": "#/$defs/quantity_kg"},
+        "denominator_kg": {"$ref": "#/$defs/quantity_kg", "not": {"const": "0.000"}},
+        "display": {"type": "string", "pattern": "^(0|[1-9][0-9]*)\\.[0-9]{6}$", "description": "display only, never compared"}
+      }
+    }
+  }
+}

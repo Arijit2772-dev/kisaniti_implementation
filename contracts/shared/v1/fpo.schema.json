@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kisaniti.invalid/contracts/shared/v1/fpo.schema.json",
+  "title": "FPO (tenant) reference record v1",
+  "type": "object", "additionalProperties": false,
+  "required": ["contract", "id", "name", "timezone", "provenance", "created_at"],
+  "properties": {
+    "contract": {"const": "fpo/v1"},
+    "id": {"$ref": "common.schema.json#/$defs/fpo_id"},
+    "name": {"type": "string", "minLength": 1, "maxLength": 200},
+    "timezone": {"$ref": "common.schema.json#/$defs/timezone"},
+    "provenance": {"$ref": "common.schema.json#/$defs/provenance"},
+    "created_at": {"$ref": "common.schema.json#/$defs/instant_utc"}
+  }
+}

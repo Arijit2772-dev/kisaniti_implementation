@@ -1,0 +1,7 @@
+{
+  "_comment": "Maps an example file-name prefix to the schema it must be checked against. Files whose content is a JSON array are checked item by item.",
+  "fpo_": "fpo.schema.json",
+  "problem_": "problem.schema.json",
+  "readiness_": "readiness.schema.json",
+  "availability_": "common.schema.json#/$defs/availability"
+}

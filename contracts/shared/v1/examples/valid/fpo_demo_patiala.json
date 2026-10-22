@@ -1,0 +1,14 @@
+{
+  "contract": "fpo/v1",
+  "id": "fpo_0000000000951YC3CSVS81Y403",
+  "name": "Demo Patiala Kisan Producer Company (DEMO, fictional)",
+  "timezone": "Asia/Kolkata",
+  "provenance": {
+    "origin": "SYNTHETIC",
+    "source_kind": "FIXTURE_GENERATOR",
+    "source_ref": "kisaniti_core fixture persona PATIALA_FPO_PROFILE_APPROX (CHAT-25)",
+    "generator": {"script": "kisaniti_core.allocation.persona", "version": "0.1.0", "seed": 0},
+    "acquired_at": "2026-10-22T06:00:00.000Z"
+  },
+  "created_at": "2026-10-22T06:00:00.000Z"
+}
