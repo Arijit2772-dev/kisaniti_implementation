@@ -1,0 +1,8 @@
+{
+  "_comment": "Maps an example file-name prefix to the schema it must be checked against.",
+  "telemetry_": "device_telemetry.schema.json",
+  "ack_": "device_ack.schema.json",
+  "reading_": "sensor_reading.schema.json",
+  "assignment_": "device_assignment.schema.json",
+  "assessment_": "storage_assessment.schema.json"
+}

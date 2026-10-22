@@ -110,10 +110,16 @@ static void test_payload_ok() {
   char out[640];
   size_t n = build_telemetry(s, dev(), 0, out, sizeof out);
   TEST_ASSERT_TRUE(n > 0);
-  TEST_ASSERT_NOT_NULL(strstr(out, "\"measured_at\":\"2026-10-22T10:05:00Z\""));
+  TEST_ASSERT_NOT_NULL(strstr(out, "\"measured_at\":\"2026-10-22T10:05:00.000Z\""));
   TEST_ASSERT_NOT_NULL(strstr(out, "\"temperature_c\":24.50"));
   TEST_ASSERT_NOT_NULL(strstr(out, "\"humidity_pct\":61.27"));
   TEST_ASSERT_NOT_NULL(strstr(out, "\"resent\":false"));
+}
+
+static void test_instant_has_milliseconds() {
+  char out[INSTANT_LEN];
+  format_utc(1792663500123LL, out);
+  TEST_ASSERT_EQUAL_STRING("2026-10-22T10:05:00.123Z", out);
 }
 
 static void test_payload_failed_read_is_null_not_zero() {
@@ -156,6 +162,7 @@ int main() {
   RUN_TEST(test_backfill_from_uptime);
   RUN_TEST(test_ack_timeout_returns_to_pending);
   RUN_TEST(test_payload_ok);
+  RUN_TEST(test_instant_has_milliseconds);
   RUN_TEST(test_payload_failed_read_is_null_not_zero);
   RUN_TEST(test_payload_too_small_buffer);
   RUN_TEST(test_parse_ack);

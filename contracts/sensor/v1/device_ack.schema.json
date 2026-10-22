@@ -1,8 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://kisaniti.example/contracts/sensor/device_ack.v1.schema.json",
+  "$id": "https://kisaniti.invalid/contracts/sensor/v1/device_ack.schema.json",
   "title": "DeviceAckV1",
-  "description": "Backend acknowledgement on kisaniti/v1/devices/{device_id}/ack, sent only after the reading is durably stored or quarantined.",
+  "description": "Backend acknowledgement on kisaniti/v1/devices/{device_id}/ack, sent only after the reading is durably stored or quarantined (§2).",
   "type": "object",
   "additionalProperties": false,
   "properties": {

@@ -1,8 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://kisaniti.example/contracts/sensor/storage_assessment.v1.schema.json",
+  "$id": "https://kisaniti.invalid/contracts/sensor/v1/storage_assessment.schema.json",
   "title": "StorageAssessmentV1",
-  "description": "Output of the storage rule STORAGE-DEMO-0.1 (C09). Never a moisture value or a spoilage measurement. Contract section 5.",
+  "description": "Output of STORAGE-DEMO-0.1 (C09, §5). Never a moisture value or a spoilage measurement. provenance.source_kind is DERIVED; origin follows the taint rule.",
   "type": "object",
   "additionalProperties": false,
   "properties": {
@@ -50,19 +50,13 @@
       ]
     },
     "assessed_at": {
-      "type": "string",
-      "format": "date-time",
-      "pattern": "Z$"
+      "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/instant_utc"
     },
     "window_start": {
-      "type": "string",
-      "format": "date-time",
-      "pattern": "Z$"
+      "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/instant_utc"
     },
     "window_end": {
-      "type": "string",
-      "format": "date-time",
-      "pattern": "Z$"
+      "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/instant_utc"
     },
     "category": {
       "enum": [
@@ -166,9 +160,7 @@
     "latest_measured_at": {
       "anyOf": [
         {
-          "type": "string",
-          "format": "date-time",
-          "pattern": "Z$"
+          "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/instant_utc"
         },
         {
           "type": "null"
@@ -200,9 +192,7 @@
         "below_since": {
           "anyOf": [
             {
-              "type": "string",
-              "format": "date-time",
-              "pattern": "Z$"
+              "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/instant_utc"
             },
             {
               "type": "null"
@@ -217,6 +207,9 @@
     "evidence_ref": {
       "type": "string",
       "minLength": 1
+    },
+    "provenance": {
+      "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/provenance"
     }
   },
   "required": [
@@ -241,7 +234,8 @@
     "latest_measured_at",
     "hysteresis",
     "label",
-    "evidence_ref"
+    "evidence_ref",
+    "provenance"
   ],
   "allOf": [
     {

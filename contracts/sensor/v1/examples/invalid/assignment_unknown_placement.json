@@ -1,0 +1,7 @@
+{
+  "device_id": "kn-node-001",
+  "placement": "SHED_WALL",
+  "crop": "PADDY",
+  "assigned_at": "2026-10-20T06:00:00.000Z",
+  "sample_interval_s": 300
+}

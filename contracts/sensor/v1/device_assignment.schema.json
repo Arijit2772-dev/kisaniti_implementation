@@ -1,8 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://kisaniti.example/contracts/sensor/device_assignment.v1.schema.json",
+  "$id": "https://kisaniti.invalid/contracts/sensor/v1/device_assignment.schema.json",
   "title": "DeviceAssignmentV1",
-  "description": "Where a device's probe is placed; input to STORAGE-DEMO-0.1. Contract section 4.",
+  "description": "Where a device's probe is placed; input to STORAGE-DEMO-0.1 (§4).",
   "type": "object",
   "additionalProperties": false,
   "properties": {
@@ -23,9 +23,7 @@
       ]
     },
     "assigned_at": {
-      "type": "string",
-      "format": "date-time",
-      "pattern": "Z$"
+      "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/instant_utc"
     },
     "sample_interval_s": {
       "type": "integer",

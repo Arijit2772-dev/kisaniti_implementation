@@ -124,7 +124,7 @@ static void on_message(String &topic, String &payload) {
 }
 
 static void publish_status(bool online) {
-  char payload[128], at[21];
+  char payload[128], at[kn::INSTANT_LEN];
   if (clock_synced) {
     kn::format_utc(epoch_ms_now(), at);
     snprintf(payload, sizeof payload, "{\"state\":\"%s\",\"boot_id\":\"%s\",\"at\":\"%s\"}",
@@ -154,7 +154,7 @@ static void maintain_clock() {
   if (clock_synced || !clock_is_valid()) return;
   clock_synced = true;
   size_t n = buffer.backfill_time(epoch_ms_now(), uptime_ms());
-  char at[21];
+  char at[kn::INSTANT_LEN];
   kn::format_utc(epoch_ms_now(), at);
   Serial.printf("[kn] clock synced %s; back-filled %u earlier samples\n", at, (unsigned)n);
 }

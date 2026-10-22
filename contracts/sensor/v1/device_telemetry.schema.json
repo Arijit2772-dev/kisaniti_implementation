@@ -1,13 +1,13 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://kisaniti.example/contracts/sensor/sensor_reading.v1.schema.json",
-  "title": "SensorReadingV1",
-  "description": "A device reading as stored by the ingestion adapter (C04). Contract section 3.",
+  "$id": "https://kisaniti.invalid/contracts/sensor/v1/device_telemetry.schema.json",
+  "title": "DeviceTelemetryV1",
+  "description": "Payload a KisanNiti storage node publishes on kisaniti/v1/devices/{device_id}/telemetry (QoS 1). Contract: kisaniti/docs/contracts/L3b_SENSOR_STORAGE_CONTRACT_v1.md §2.",
   "type": "object",
   "additionalProperties": false,
   "properties": {
     "schema": {
-      "const": "kisaniti.sensor_reading.v1"
+      "const": "kisaniti.device_telemetry.v1"
     },
     "device_id": {
       "type": "string",
@@ -24,9 +24,7 @@
     "measured_at": {
       "anyOf": [
         {
-          "type": "string",
-          "format": "date-time",
-          "pattern": "Z$"
+          "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/instant_utc"
         },
         {
           "type": "null"
@@ -103,49 +101,6 @@
     "dropped_since_boot": {
       "type": "integer",
       "minimum": 0
-    },
-    "reading_id": {
-      "type": "string",
-      "pattern": "^[a-z0-9][a-z0-9-]{2,31}:[0-9a-f]{8}:[0-9]+$"
-    },
-    "received_at": {
-      "type": "string",
-      "format": "date-time",
-      "pattern": "Z$"
-    },
-    "measured_at_trusted": {
-      "type": "boolean"
-    },
-    "temperature_valid": {
-      "type": "boolean"
-    },
-    "humidity_valid": {
-      "type": "boolean"
-    },
-    "ingest_status": {
-      "enum": [
-        "ACCEPTED",
-        "QUARANTINED"
-      ]
-    },
-    "quarantine_reason": {
-      "anyOf": [
-        {
-          "type": "string",
-          "minLength": 1
-        },
-        {
-          "type": "null"
-        }
-      ]
-    },
-    "raw_sha256": {
-      "type": "string",
-      "pattern": "^[0-9a-f]{64}$"
-    },
-    "topic": {
-      "type": "string",
-      "minLength": 1
     }
   },
   "required": [
@@ -164,15 +119,60 @@
     "source_origin",
     "sample_interval_s",
     "resent",
-    "dropped_since_boot",
-    "reading_id",
-    "received_at",
-    "measured_at_trusted",
-    "temperature_valid",
-    "humidity_valid",
-    "ingest_status",
-    "quarantine_reason",
-    "raw_sha256",
-    "topic"
+    "dropped_since_boot"
+  ],
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "read_status": {
+            "const": "OK"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "temperature_c": {
+            "type": "number"
+          },
+          "humidity_pct": {
+            "type": "number"
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "temperature_c": {
+            "type": "null"
+          },
+          "humidity_pct": {
+            "type": "null"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "time_quality": {
+            "const": "UNSYNCED"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "measured_at": {
+            "type": "null"
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "measured_at": {
+            "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/instant_utc"
+          }
+        }
+      }
+    }
   ]
 }

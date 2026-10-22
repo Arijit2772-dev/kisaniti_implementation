@@ -2,11 +2,11 @@
   "schema": "kisaniti.storage_assessment.v1",
   "policy_version": "STORAGE-DEMO-0.1",
   "device_id": "kn-node-001",
-  "crop": "WHEAT",
+  "crop": "PADDY",
   "placement": "IN_GRAIN",
-  "assessed_at": "2026-10-22T10:05:00Z",
-  "window_start": "2026-10-21T10:05:00Z",
-  "window_end": "2026-10-22T10:05:00Z",
+  "assessed_at": "2026-10-22T10:05:00.000Z",
+  "window_start": "2026-10-21T10:05:00.000Z",
+  "window_end": "2026-10-22T10:05:00.000Z",
   "category": "UNKNOWN",
   "unknown_reasons": [
     "STALE",
@@ -20,11 +20,17 @@
   "insect_flag": null,
   "samples_used": 0,
   "samples_expected": 288,
-  "latest_measured_at": "2026-10-21T02:00:00Z",
+  "latest_measured_at": "2026-10-21T02:00:00.000Z",
   "hysteresis": {
     "level": "LOW",
     "below_since": null
   },
   "label": "Experimental approximation — not measured spoilage",
-  "evidence_ref": "kisaniti/docs/research/2026-10-15_Patiala_Storage_Risk_and_Unknowns.md#part-b"
+  "evidence_ref": "kisaniti/docs/research/2026-10-15_Patiala_Storage_Risk_and_Unknowns.md#part-b",
+  "provenance": {
+    "origin": "REAL",
+    "source_kind": "DERIVED",
+    "source_ref": "STORAGE-DEMO-0.1 over 286 readings of kn-node-001",
+    "acquired_at": "2026-10-22T10:05:00.000Z"
+  }
 }

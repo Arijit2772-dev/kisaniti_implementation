@@ -18,19 +18,23 @@ struct DeviceInfo {
   uint32_t sample_interval_s;
 };
 
-// RFC 3339 UTC with second resolution, e.g. 2026-10-22T10:05:00Z.
-inline void format_utc(int64_t epoch_ms, char out[21]) {
+// Shared-contract instant (CONTRACT_SPEC_V1_shared §4): UTC, exactly milliseconds,
+// e.g. 2026-10-22T10:05:00.000Z (24 characters + NUL).
+constexpr size_t INSTANT_LEN = 25;
+
+inline void format_utc(int64_t epoch_ms, char out[INSTANT_LEN]) {
   time_t secs = (time_t)(epoch_ms / 1000);
   struct tm tm_utc;
   gmtime_r(&secs, &tm_utc);
-  strftime(out, 21, "%Y-%m-%dT%H:%M:%SZ", &tm_utc);
+  size_t n = strftime(out, INSTANT_LEN, "%Y-%m-%dT%H:%M:%S", &tm_utc);
+  snprintf(out + n, INSTANT_LEN - n, ".%03dZ", (int)(epoch_ms % 1000));
 }
 
 // Writes the JSON payload into out. Returns its length, or 0 if it did not fit.
 inline size_t build_telemetry(const Sample &s, const DeviceInfo &dev, uint32_t dropped_since_boot,
                               char *out, size_t cap) {
   JsonDocument doc;
-  char measured[21], t_buf[12], rh_buf[12];
+  char measured[INSTANT_LEN], t_buf[12], rh_buf[12];
   doc["schema"] = "kisaniti.device_telemetry.v1";
   doc["device_id"] = dev.device_id;
   doc["boot_id"] = dev.boot_id;

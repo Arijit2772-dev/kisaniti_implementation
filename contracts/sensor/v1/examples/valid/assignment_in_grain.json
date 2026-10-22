@@ -1,7 +1,7 @@
 {
   "device_id": "kn-node-001",
   "placement": "IN_GRAIN",
-  "crop": "WHEAT",
-  "assigned_at": "2026-10-20T06:00:00Z",
+  "crop": "PADDY",
+  "assigned_at": "2026-10-20T06:00:00.000Z",
   "sample_interval_s": 300
 }
