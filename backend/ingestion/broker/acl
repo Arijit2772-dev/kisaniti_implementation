@@ -1,0 +1,11 @@
+# Devices: each username equals its device_id; it may publish only its own telemetry/status
+# and read only its own acks (%u = username).
+pattern write kisaniti/v1/devices/%u/telemetry
+pattern write kisaniti/v1/devices/%u/status
+pattern read kisaniti/v1/devices/%u/ack
+
+# The ingestion service reads all telemetry/status and writes acks.
+user ingestion
+topic read kisaniti/v1/devices/+/telemetry
+topic read kisaniti/v1/devices/+/status
+topic write kisaniti/v1/devices/+/ack

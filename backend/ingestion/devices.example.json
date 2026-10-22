@@ -1,0 +1,4 @@
+[
+  { "device_id": "kn-node-001", "source_origin": "DEVICE" },
+  { "device_id": "kn-twin-001", "source_origin": "WOKWI_TWIN" }
+]
