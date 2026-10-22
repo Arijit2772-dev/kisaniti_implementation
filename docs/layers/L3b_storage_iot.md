@@ -22,11 +22,11 @@ SHT30 probe in a basmati bag ─I²C─► ESP32 (firmware/) ─MQTT over TLS─
 ## Why these choices (alternatives)
 
 - **Probe inside the grain, not in shed air:** inter-granular RH tracks grain water activity, which is what the FAO
-  mould limits are written in; shed air swings daily and agreed with the in-grain condition on only 11–60 % of hours
+  mould limits are written in; shed air swings daily and agreed with the in-grain condition on only 19–61 % of hours
   in the simulation.
-- **24 h median + hysteresis instead of the latest reading:** ≤ 0.2 category changes per week instead of up to 19
-  (latest in-grain reading) or 20–28 (shed air). Cost: about 12 h delay and a cautious hold near a limit.
-- **SHT30 over DHT22:** digital I²C with CRC and ±2 %RH / ±0.2 °C typical (Sensirion v7); protected probe.
+- **24 h median + hysteresis instead of the latest reading:** ≤ 0.7 category changes per week instead of up to 19
+  (latest in-grain reading) or 14–27 (shed air). Cost: about 12 h delay and a cautious hold near a limit.
+- **SHT30 over DHT22:** digital I²C with CRC and typical ±2 %RH in the 20–80 %RH mid range (±3–4 near the ends) and ±0.2 °C (Sensirion v7); protected probe.
 - **MQTT QoS 1 + application ack after the database write:** a broker PUBACK does not prove storage; duplicates are
   expected and handled by the `(device, boot, seq)` key.
 - **RAM buffer (288 samples):** simplest firmware; loses unsent samples on power cut (stated limit; flash queue later).

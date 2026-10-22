@@ -106,7 +106,7 @@ at 25 °C and 75.09 ± 0.11 at 30 °C** (Greenspan 1977, *J. Res. NBS* 81A(1), 8
 4. Offset = reference RH at that temperature − median reading. Example: reading 73.9 % at 25 °C → offset +1.4.
 
 **Record** in `records/calibration_log.csv`: date, start/end time, median T, median RH, reference RH, offset,
-photo. If |offset| > 2 %RH (beyond the SHT30's typical tolerance), repeat once; if it stays, tell the team.
+photo. If |offset| > 2 %RH (beyond the SHT30's typical tolerance at mid-range humidity, which includes 75 %RH), repeat once; if it stays, tell the team.
 
 Why it matters: the simulation showed that a +2 %RH error can hold the category one level too high for weeks and a
 −2 %RH error can miss a fifth of the HIGH hours (`kisaniti_research_paper/layers/L3b_storage_iot/README.md`).
