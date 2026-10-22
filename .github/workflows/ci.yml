@@ -1,0 +1,97 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  core:
+    name: core + contracts (lint, types, tests)
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        working-directory: core
+    steps:
+      - uses: actions/checkout@v5
+      - uses: astral-sh/setup-uv@v6
+        with:
+          version: "0.9.5"
+      - run: uv python install 3.13.9
+      - run: uv sync --frozen --all-extras --python 3.13.9
+      - run: uv run --frozen ruff check .
+      - run: uv run --frozen ruff format --check .
+      - run: uv run --frozen mypy src tests
+      - run: uv run --frozen pytest
+      - name: Contract examples (valid pass, invalid fail)
+        run: uv run --frozen pytest ../contracts/tests
+
+  backend:
+    name: backend (lint, types, tests on real PostgreSQL)
+    runs-on: ubuntu-24.04
+    services:
+      postgres:
+        image: postgres:17.6
+        env:
+          POSTGRES_USER: kisaniti
+          POSTGRES_PASSWORD: ci-only
+          POSTGRES_DB: kisaniti_test
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U kisaniti -d kisaniti_test"
+          --health-interval 5s --health-timeout 3s --health-retries 20
+    env:
+      DATABASE_URL: postgresql+psycopg://kisaniti:ci-only@localhost:5432/kisaniti_test
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v5
+      - uses: astral-sh/setup-uv@v6
+        with:
+          version: "0.9.5"
+      - run: uv python install 3.13.9
+      - run: uv sync --frozen --python 3.13.9
+      - run: uv run --frozen ruff check .
+      - run: uv run --frozen ruff format --check .
+      - run: uv run --frozen mypy src tests
+      - run: uv run --frozen pytest
+
+  frontend:
+    name: frontend (lint, types, build)
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: "22.22.2"
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm run build
+
+  stack:
+    name: one-command stack (docker compose up, health page)
+    runs-on: ubuntu-24.04
+    needs: [core, backend, frontend]
+    steps:
+      - uses: actions/checkout@v5
+      - run: docker compose up --build -d --wait --wait-timeout 300
+      - run: curl -fsS http://localhost:8000/health/ready | tee ready.json && grep -q '"status":"READY"' ready.json
+      - run: curl -fsS http://localhost:3000 | grep -q "System status"
+      - if: failure()
+        run: docker compose logs
+      - if: always()
+        run: docker compose down -v

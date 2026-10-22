@@ -87,7 +87,8 @@ def test_fpo_table_enforces_contract(engine: Engine) -> None:
         with pytest.raises(IntegrityError), engine.begin() as conn:
             conn.execute(
                 text(
-                    "INSERT INTO fpo (id, name, timezone, origin, provenance) VALUES (:i, 'x', :tz, :o, CAST(:p AS jsonb))"
+                    "INSERT INTO fpo (id, name, timezone, origin, provenance) "
+                    "VALUES (:i, 'x', :tz, :o, CAST(:p AS jsonb))"
                 ),
                 {"i": i, "tz": tz, "o": origin, "p": prov},
             )
