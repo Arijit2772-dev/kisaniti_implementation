@@ -1,6 +1,6 @@
 # Implementation status
 
-Created 15 October 2026. **Nothing is implemented yet.** This folder contains only its structure and entry documents.
+Updated 24 October 2026. Built so far: shared `core/` (exact values, storage rule, allocation core with oracle and validator), contract schemas, MQTT ingestion, firmware, API/DB/Next.js skeleton with CI (green). No manager screens, forecasting, WhatsApp or approval yet. Overall checklist: `../kisaniti/docs/PROJECT_TRACKER.md`.
 
 | Gate | State | Source |
 |---|---|---|
@@ -16,7 +16,7 @@ Definitions: [Layer 1–3 handoff §10](../kisaniti/docs/handoff/2026-10-14/Kisa
 | ID | Work package | Status | Report |
 |---|---|---|---|
 | W00 | Promote amendments/status; reconcile supersessions | Done in planning folder (15 Oct) | Planning registers |
-| W01 | Freeze contracts, numeric/date semantics, DEMO policy bundle (incl. MSP_SCHEDULE, STORAGE-DEMO-0.1, privacy contract, hold/sell advisory spec) | NOT STARTED | — |
+| W01 | Freeze contracts, numeric/date semantics, DEMO policy bundle (incl. MSP_SCHEDULE, STORAGE-DEMO-0.1, privacy contract, hold/sell advisory spec) | **PARTIAL (22 Oct):** shared basics (`shared/v1`), L3b sensor and L3d allocation slices frozen; L1, L2, L3a, L3c, L4, L5 slices and the DEMO policy bundle still to freeze | planning decision register |
 | W02 | Foundation: tenancy, exact values, migrations, audit, jobs/idempotency | NOT STARTED (needs gate) | — |
 | W03 | Organisation/storage fixtures, inventory core | NOT STARTED | — |
 | W04 | Market adapter + bounded authorised import | BLOCKED on OI-05 | — |
