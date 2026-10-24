@@ -34,3 +34,6 @@ experiments/**/artifacts/
 # Test caches
 .hypothesis/
 .ruff_cache/
+
+# Legacy copy of the v2 experiments (canonical home: kisaniti_research_paper/legacy/v2_from_rp_kisan)
+experiments/EXP-03_paper_v1/
