@@ -236,6 +236,37 @@ def device_readings(
     return [reading_view(r.doc) for r in rows]
 
 
+@router.get("/devices/{device_id}/assessment")
+def latest_assessment(device_id: str, request: Request, p: ReadData) -> dict[str, Any]:
+    """The latest stored StorageAssessmentV1 (rule STORAGE-DEMO-0.1) of the FPO's own device."""
+    with tenant_scope(request, p) as conn:
+        found = _own_device(conn, p, device_id) is not None
+        row = conn.execute(
+            text("SELECT doc FROM storage_assessments WHERE device_id = :d ORDER BY assessed_at DESC LIMIT 1"),
+            {"d": device_id},
+        ).first()
+    if not found:
+        raise _missing_device(request, p, device_id)
+    if row is None:
+        raise AccessError(ErrorCode.NOT_FOUND, "no assessment yet")
+    return dict(row.doc)
+
+
+@router.get("/devices/{device_id}/assessments")
+def assessments(
+    device_id: str, request: Request, p: ReadData, limit: Annotated[int, Query(ge=1, le=1000)] = 48
+) -> list[dict[str, Any]]:
+    with tenant_scope(request, p) as conn:
+        found = _own_device(conn, p, device_id) is not None
+        rows = conn.execute(
+            text("SELECT doc FROM storage_assessments WHERE device_id = :d ORDER BY assessed_at DESC LIMIT :n"),
+            {"d": device_id, "n": limit},
+        ).all()
+    if not found:
+        raise _missing_device(request, p, device_id)
+    return [dict(r.doc) for r in rows]
+
+
 @router.post("/devices/{device_id}/deactivate", status_code=204)
 def deactivate_device(device_id: str, request: Request, p: ManageDevices) -> Response:
     with tenant_scope(request, p) as conn:

@@ -35,6 +35,21 @@ services:
     ports:
       - "8000:8000"
 
+  assessor:
+    # Storage assessment job (devices/v1 amendment A1): assesses every active device once an hour and stores the result.
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    command: ["python", "-m", "kisaniti_api.devices.assess_job", "--every", "3600"]
+    environment:
+      DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-kisaniti}:${POSTGRES_PASSWORD:-kisaniti-local-only}@db:5432/${POSTGRES_DB:-kisaniti}
+      KISANITI_MODE: ${KISANITI_MODE:-DEMO}
+    healthcheck:
+      disable: true
+    depends_on:
+      backend:
+        condition: service_healthy
+
   frontend:
     build:
       context: frontend

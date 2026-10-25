@@ -118,6 +118,10 @@ jobs:
           curl -fsSL http://localhost:3000 | grep -q "Sign in"   # real redirect: / -> /en -> /en/sign-in
           curl -fsSL http://localhost:3000/pa/sign-in | grep -q "ਸਾਈਨ ਇਨ"
           curl -fsSL -H "Accept-Language: pa-IN,pa;q=0.9" http://localhost:3000 | grep -q 'lang="pa"'
+      - name: The scheduled assessment service has run and nothing failed
+        run: |
+          for i in $(seq 1 20); do docker compose logs assessor | grep -q '"failed": 0' && break; sleep 3; done
+          docker compose logs assessor | grep -q '"failed": 0'
       - name: Login and two-FPO isolation against the running stack
         run: |
           scripts/smoke_access.sh
