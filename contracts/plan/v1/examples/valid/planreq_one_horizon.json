@@ -1,0 +1,13 @@
+{
+  "variety": "Basmati 1509",
+  "horizons_days": [
+    7
+  ],
+  "mandis": [
+    {
+      "mandi_id": "mnd_0000000000RVYXBPA2N4Y8B6PY",
+      "transport_inr_per_quintal": "0.00"
+    }
+  ],
+  "increment_kg": "50.000"
+}

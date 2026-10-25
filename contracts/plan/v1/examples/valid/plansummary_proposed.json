@@ -1,0 +1,17 @@
+{
+  "contract": "plan.summary/v1",
+  "id": "pln_0000000000CXVSX1PRPME6HFNW",
+  "created_at": "2026-10-26T12:00:00.000Z",
+  "created_by": "usr_0000000000AB5T4Y3QRF0EB7JG",
+  "variety": "1121",
+  "status": "PROPOSED",
+  "origin": "SYNTHETIC",
+  "lots": 4,
+  "farmers": 3,
+  "allocated_kg": "3300.000",
+  "net_return_inr": "139590.00",
+  "warnings": [
+    "PRICE_DATASET_UNCHECKED",
+    "SYNTHETIC_DEMO_DATA"
+  ]
+}

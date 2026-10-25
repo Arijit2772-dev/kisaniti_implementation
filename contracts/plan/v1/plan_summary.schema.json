@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kisaniti.invalid/contracts/plan/v1/plan_summary.schema.json",
+  "title": "PlanSummaryV1: a list entry",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract",
+    "id",
+    "created_at",
+    "created_by",
+    "variety",
+    "status",
+    "origin",
+    "lots",
+    "farmers",
+    "allocated_kg",
+    "net_return_inr",
+    "warnings"
+  ],
+  "properties": {
+    "contract": {
+      "const": "plan.summary/v1"
+    },
+    "id": {
+      "$ref": "https://kisaniti.invalid/contracts/plan/v1/common.schema.json#/$defs/pln_id"
+    },
+    "created_at": {
+      "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/instant_utc"
+    },
+    "created_by": {
+      "$ref": "https://kisaniti.invalid/contracts/plan/v1/common.schema.json#/$defs/usr_id"
+    },
+    "variety": {
+      "$ref": "https://kisaniti.invalid/contracts/plan/v1/common.schema.json#/$defs/variety"
+    },
+    "status": {
+      "enum": [
+        "PROPOSED",
+        "NOT_PROPOSED"
+      ]
+    },
+    "origin": {
+      "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/origin"
+    },
+    "lots": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "farmers": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "allocated_kg": {
+      "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/quantity_kg"
+    },
+    "net_return_inr": {
+      "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/money_inr"
+    },
+    "warnings": {
+      "type": "array",
+      "items": {
+        "$ref": "https://kisaniti.invalid/contracts/plan/v1/common.schema.json#/$defs/warning_code"
+      }
+    }
+  }
+}

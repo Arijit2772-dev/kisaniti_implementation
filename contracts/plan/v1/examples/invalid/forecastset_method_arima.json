@@ -1,0 +1,140 @@
+{
+  "contract": "plan.forecast_set/v1",
+  "variety": "1121",
+  "index_variant": "dated_only",
+  "dataset": {
+    "id": "dsv_0000000000BC4M0D7WTE3XZEZ2",
+    "name": "example release (invented numbers)",
+    "validation_status": "PENDING_HAND_CHECK",
+    "manifest_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "origin_date": "2026-10-19",
+  "season": "2026-27",
+  "index_days_in_season": 21,
+  "label": "Baseline forecast, not validated on held-out data",
+  "signal_verdict": "NOT_ASSESSED",
+  "calibration": "NOT_VERIFIED",
+  "methods": [
+    {
+      "method": "ARIMA",
+      "horizons": [
+        {
+          "h": 1,
+          "target_date": "2026-10-20",
+          "point_inr_per_quintal": "4355.00",
+          "range80": {
+            "low_inr_per_quintal": "4280.00",
+            "high_inr_per_quintal": "4430.00"
+          },
+          "range95": {
+            "low_inr_per_quintal": "4150.00",
+            "high_inr_per_quintal": "4560.00"
+          },
+          "residual_pairs": 212,
+          "status": "RANGE_AVAILABLE"
+        },
+        {
+          "h": 7,
+          "target_date": "2026-10-26",
+          "point_inr_per_quintal": "4355.00",
+          "range80": {
+            "low_inr_per_quintal": "4100.00",
+            "high_inr_per_quintal": "4610.00"
+          },
+          "range95": {
+            "low_inr_per_quintal": "3850.00",
+            "high_inr_per_quintal": "4860.00"
+          },
+          "residual_pairs": 198,
+          "status": "RANGE_AVAILABLE"
+        },
+        {
+          "h": 14,
+          "target_date": "2026-11-02",
+          "point_inr_per_quintal": "4355.00",
+          "range80": null,
+          "range95": null,
+          "residual_pairs": 31,
+          "status": "TOO_FEW_PAIRS"
+        }
+      ]
+    },
+    {
+      "method": "MOVING_AVERAGE_5",
+      "horizons": [
+        {
+          "h": 1,
+          "target_date": "2026-10-20",
+          "point_inr_per_quintal": "4321.40",
+          "range80": {
+            "low_inr_per_quintal": "4230.00",
+            "high_inr_per_quintal": "4412.80"
+          },
+          "range95": {
+            "low_inr_per_quintal": "4100.00",
+            "high_inr_per_quintal": "4542.80"
+          },
+          "residual_pairs": 212,
+          "status": "RANGE_AVAILABLE"
+        },
+        {
+          "h": 7,
+          "target_date": "2026-10-26",
+          "point_inr_per_quintal": "4321.40",
+          "range80": {
+            "low_inr_per_quintal": "4090.00",
+            "high_inr_per_quintal": "4552.80"
+          },
+          "range95": {
+            "low_inr_per_quintal": "3800.00",
+            "high_inr_per_quintal": "4842.80"
+          },
+          "residual_pairs": 198,
+          "status": "RANGE_AVAILABLE"
+        },
+        {
+          "h": 14,
+          "target_date": "2026-11-02",
+          "point_inr_per_quintal": "4321.40",
+          "range80": null,
+          "range95": null,
+          "residual_pairs": 31,
+          "status": "TOO_FEW_PAIRS"
+        }
+      ]
+    }
+  ],
+  "candidate_mandis": [
+    {
+      "mandi_id": "mnd_0000000000RVYXBPA2N4Y8B6PY",
+      "name": "Alpha APMC",
+      "basis_inr_per_quintal": "-25.00",
+      "days_used": 11,
+      "status": "ELIGIBLE"
+    },
+    {
+      "mandi_id": "mnd_0000000000AB5T4Y3QRF0EB7JG",
+      "name": "Beta APMC",
+      "basis_inr_per_quintal": null,
+      "days_used": 2,
+      "status": "BASIS_TOO_FEW_DAYS"
+    }
+  ],
+  "series_tail": [
+    {
+      "date": "2026-10-17",
+      "index_inr_per_quintal": "4300.000",
+      "n_mandis": 3
+    },
+    {
+      "date": "2026-10-19",
+      "index_inr_per_quintal": "4355.000",
+      "n_mandis": 3
+    }
+  ],
+  "policy_versions": {
+    "index": "INDEX_DATED_ONLY_DEMO_V1",
+    "forecast": "BASELINE_FORECAST_V1",
+    "range": "RANGE_ABS_ERROR_CONFORMAL_V1"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "_comment": "prefix -> schema",
+  "forecastset_": "forecast_set.schema.json",
+  "sensorlink_": "sensor_link.schema.json",
+  "sensorlinkreq_": "sensor_link_request.schema.json",
+  "planreq_": "plan_request.schema.json",
+  "planproposal_": "plan_proposal.schema.json",
+  "plansummary_": "plan_summary.schema.json"
+}

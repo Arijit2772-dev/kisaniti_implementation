@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kisaniti.invalid/contracts/plan/v1/sensor_link.schema.json",
+  "title": "SensorLinkV1: which sensor watches a lot, from a time on; device_id null means unlinked",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract",
+    "lot_id",
+    "device_id",
+    "linked_at",
+    "created_by"
+  ],
+  "properties": {
+    "contract": {
+      "const": "plan.sensor_link/v1"
+    },
+    "lot_id": {
+      "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/lot_id"
+    },
+    "device_id": {
+      "anyOf": [
+        {
+          "$ref": "https://kisaniti.invalid/contracts/plan/v1/common.schema.json#/$defs/dev_id"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "linked_at": {
+      "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/instant_utc"
+    },
+    "created_by": {
+      "$ref": "https://kisaniti.invalid/contracts/plan/v1/common.schema.json#/$defs/usr_id"
+    }
+  }
+}

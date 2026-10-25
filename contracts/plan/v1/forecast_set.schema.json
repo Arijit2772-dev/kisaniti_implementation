@@ -1,0 +1,171 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kisaniti.invalid/contracts/plan/v1/forecast_set.schema.json",
+  "title": "ForecastSetV1: baseline forecasts with ranges for one variety. Derived, never an actual price; not validated",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract",
+    "variety",
+    "index_variant",
+    "dataset",
+    "origin_date",
+    "season",
+    "index_days_in_season",
+    "label",
+    "signal_verdict",
+    "calibration",
+    "methods",
+    "candidate_mandis",
+    "series_tail",
+    "policy_versions"
+  ],
+  "properties": {
+    "contract": {
+      "const": "plan.forecast_set/v1"
+    },
+    "variety": {
+      "$ref": "https://kisaniti.invalid/contracts/plan/v1/common.schema.json#/$defs/variety"
+    },
+    "index_variant": {
+      "const": "dated_only"
+    },
+    "dataset": {
+      "$ref": "https://kisaniti.invalid/contracts/plan/v1/common.schema.json#/$defs/dataset_ref"
+    },
+    "origin_date": {
+      "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/business_date"
+    },
+    "season": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}$"
+    },
+    "index_days_in_season": {
+      "type": "integer",
+      "minimum": 10
+    },
+    "label": {
+      "const": "Baseline forecast, not validated on held-out data"
+    },
+    "signal_verdict": {
+      "const": "NOT_ASSESSED"
+    },
+    "calibration": {
+      "const": "NOT_VERIFIED"
+    },
+    "methods": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 2,
+      "items": {
+        "title": "one method",
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "method",
+          "horizons"
+        ],
+        "properties": {
+          "method": {
+            "$ref": "https://kisaniti.invalid/contracts/plan/v1/common.schema.json#/$defs/method"
+          },
+          "horizons": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 3,
+            "items": {
+              "title": "one horizon of one method",
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "h",
+                "target_date",
+                "point_inr_per_quintal",
+                "range80",
+                "range95",
+                "residual_pairs",
+                "status"
+              ],
+              "properties": {
+                "h": {
+                  "$ref": "https://kisaniti.invalid/contracts/plan/v1/common.schema.json#/$defs/horizon_days"
+                },
+                "target_date": {
+                  "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/business_date"
+                },
+                "point_inr_per_quintal": {
+                  "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/rate_inr_per_quintal"
+                },
+                "range80": {
+                  "anyOf": [
+                    {
+                      "$ref": "https://kisaniti.invalid/contracts/plan/v1/common.schema.json#/$defs/range"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "range95": {
+                  "anyOf": [
+                    {
+                      "$ref": "https://kisaniti.invalid/contracts/plan/v1/common.schema.json#/$defs/range"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "residual_pairs": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "status": {
+                  "enum": [
+                    "RANGE_AVAILABLE",
+                    "TOO_FEW_PAIRS"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "candidate_mandis": {
+      "type": "array",
+      "items": {
+        "$ref": "https://kisaniti.invalid/contracts/plan/v1/common.schema.json#/$defs/mandi_basis"
+      }
+    },
+    "series_tail": {
+      "type": "array",
+      "maxItems": 30,
+      "items": {
+        "title": "index point",
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "date",
+          "index_inr_per_quintal",
+          "n_mandis"
+        ],
+        "properties": {
+          "date": {
+            "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/business_date"
+          },
+          "index_inr_per_quintal": {
+            "$ref": "https://kisaniti.invalid/contracts/plan/v1/common.schema.json#/$defs/index_value"
+          },
+          "n_mandis": {
+            "type": "integer",
+            "minimum": 3
+          }
+        }
+      }
+    },
+    "policy_versions": {
+      "$ref": "https://kisaniti.invalid/contracts/plan/v1/common.schema.json#/$defs/policy_versions"
+    }
+  }
+}

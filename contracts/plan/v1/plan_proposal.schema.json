@@ -1,0 +1,341 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kisaniti.invalid/contracts/plan/v1/plan_proposal.schema.json",
+  "title": "PlanProposalV1: an immutable proposal by the planner. Not an approval, not a reservation; stock is not reduced",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract",
+    "id",
+    "fpo_id",
+    "commodity_id",
+    "variety",
+    "created_at",
+    "created_by",
+    "status",
+    "not_proposed_reasons",
+    "request",
+    "dataset",
+    "origin_date",
+    "forecast",
+    "mandis",
+    "lots",
+    "allocation_input",
+    "allocation_input_sha256",
+    "allocation_result",
+    "validation",
+    "warnings",
+    "explanation",
+    "policy_versions",
+    "origin",
+    "provenance"
+  ],
+  "properties": {
+    "contract": {
+      "const": "plan.proposal/v1"
+    },
+    "id": {
+      "$ref": "https://kisaniti.invalid/contracts/plan/v1/common.schema.json#/$defs/pln_id"
+    },
+    "fpo_id": {
+      "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/fpo_id"
+    },
+    "commodity_id": {
+      "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/cmd_id"
+    },
+    "variety": {
+      "$ref": "https://kisaniti.invalid/contracts/plan/v1/common.schema.json#/$defs/variety"
+    },
+    "created_at": {
+      "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/instant_utc"
+    },
+    "created_by": {
+      "$ref": "https://kisaniti.invalid/contracts/plan/v1/common.schema.json#/$defs/usr_id"
+    },
+    "status": {
+      "enum": [
+        "PROPOSED",
+        "NOT_PROPOSED"
+      ]
+    },
+    "not_proposed_reasons": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "NO_SOLUTION",
+          "NOTHING_ALLOCATED",
+          "OPTIMALITY_NOT_PROVEN",
+          "TECHNICAL_FAILURE"
+        ]
+      }
+    },
+    "request": {
+      "$ref": "https://kisaniti.invalid/contracts/plan/v1/plan_request.schema.json"
+    },
+    "dataset": {
+      "$ref": "https://kisaniti.invalid/contracts/plan/v1/common.schema.json#/$defs/dataset_ref"
+    },
+    "origin_date": {
+      "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/business_date"
+    },
+    "forecast": {
+      "$ref": "https://kisaniti.invalid/contracts/plan/v1/forecast_set.schema.json"
+    },
+    "mandis": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "title": "mandi in a plan",
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "mandi_id",
+          "name",
+          "basis_inr_per_quintal",
+          "days_used",
+          "transport_inr_per_quintal",
+          "eligible",
+          "excluded_reason"
+        ],
+        "properties": {
+          "mandi_id": {
+            "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/mnd_id"
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "basis_inr_per_quintal": {
+            "anyOf": [
+              {
+                "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/rate_inr_per_quintal"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "days_used": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 31
+          },
+          "transport_inr_per_quintal": {
+            "type": "string",
+            "pattern": "^(0|[1-9][0-9]{0,5})\\.[0-9]{2}$"
+          },
+          "eligible": {
+            "type": "boolean"
+          },
+          "excluded_reason": {
+            "anyOf": [
+              {
+                "enum": [
+                  "BASIS_TOO_FEW_DAYS"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "lots": {
+      "type": "array",
+      "items": {
+        "title": "lot in a plan",
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "lot_id",
+          "member_id",
+          "available_kg",
+          "planned_kg",
+          "excluded_reason",
+          "storage",
+          "storage_reason",
+          "device_id",
+          "assessed_at"
+        ],
+        "properties": {
+          "lot_id": {
+            "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/lot_id"
+          },
+          "member_id": {
+            "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/mbr_id"
+          },
+          "available_kg": {
+            "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/quantity_kg"
+          },
+          "planned_kg": {
+            "anyOf": [
+              {
+                "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/quantity_kg"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "excluded_reason": {
+            "anyOf": [
+              {
+                "enum": [
+                  "VARIETY_NOT_MATCHING",
+                  "LESS_THAN_ONE_INCREMENT",
+                  "NO_STOCK"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "storage": {
+            "enum": [
+              "HIGH",
+              "MEDIUM",
+              "LOW",
+              "UNKNOWN"
+            ]
+          },
+          "storage_reason": {
+            "anyOf": [
+              {
+                "enum": [
+                  "NO_SENSOR_LINK",
+                  "ASSESSMENT_OLD",
+                  "NO_ASSESSMENT",
+                  "NO_ASSIGNMENT",
+                  "NOT_IN_GRAIN",
+                  "SETTLING",
+                  "STALE",
+                  "LOW_COVERAGE"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "device_id": {
+            "anyOf": [
+              {
+                "$ref": "https://kisaniti.invalid/contracts/plan/v1/common.schema.json#/$defs/dev_id"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "assessed_at": {
+            "anyOf": [
+              {
+                "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/instant_utc"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "allocation_input": {
+      "type": "object",
+      "required": [
+        "contract"
+      ],
+      "properties": {
+        "contract": {
+          "const": "allocation_input/v1"
+        }
+      }
+    },
+    "allocation_input_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "allocation_result": {
+      "type": "object",
+      "required": [
+        "contract"
+      ],
+      "properties": {
+        "contract": {
+          "const": "allocation_result/v1"
+        }
+      }
+    },
+    "validation": {
+      "type": "object",
+      "required": [
+        "contract"
+      ],
+      "properties": {
+        "contract": {
+          "const": "plan_validation/v1"
+        }
+      }
+    },
+    "warnings": {
+      "type": "array",
+      "items": {
+        "$ref": "https://kisaniti.invalid/contracts/plan/v1/common.schema.json#/$defs/warning_item"
+      }
+    },
+    "explanation": {
+      "type": "array",
+      "items": {
+        "$ref": "https://kisaniti.invalid/contracts/plan/v1/common.schema.json#/$defs/explanation_item"
+      }
+    },
+    "policy_versions": {
+      "$ref": "https://kisaniti.invalid/contracts/plan/v1/common.schema.json#/$defs/policy_versions"
+    },
+    "origin": {
+      "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/origin"
+    },
+    "provenance": {
+      "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/provenance"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "PROPOSED"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "not_proposed_reasons": {
+            "maxItems": 0
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "NOT_PROPOSED"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "not_proposed_reasons": {
+            "minItems": 1
+          }
+        }
+      }
+    }
+  ]
+}

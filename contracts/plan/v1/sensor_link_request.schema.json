@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kisaniti.invalid/contracts/plan/v1/sensor_link_request.schema.json",
+  "title": "Request to link a lot to a sensor of the same FPO, or to unlink it",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "device_id"
+  ],
+  "properties": {
+    "device_id": {
+      "anyOf": [
+        {
+          "$ref": "https://kisaniti.invalid/contracts/plan/v1/common.schema.json#/$defs/dev_id"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    }
+  }
+}

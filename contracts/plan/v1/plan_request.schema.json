@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kisaniti.invalid/contracts/plan/v1/plan_request.schema.json",
+  "title": "PlanRequestV1: what the manager asks the planner for. The FPO is never in the body",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "variety",
+    "horizons_days",
+    "mandis",
+    "increment_kg"
+  ],
+  "properties": {
+    "variety": {
+      "$ref": "https://kisaniti.invalid/contracts/plan/v1/common.schema.json#/$defs/variety"
+    },
+    "horizons_days": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 3,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "https://kisaniti.invalid/contracts/plan/v1/common.schema.json#/$defs/horizon_days"
+      }
+    },
+    "mandis": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 10,
+      "items": {
+        "title": "selected mandi",
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "mandi_id",
+          "transport_inr_per_quintal"
+        ],
+        "properties": {
+          "mandi_id": {
+            "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/mnd_id"
+          },
+          "transport_inr_per_quintal": {
+            "type": "string",
+            "pattern": "^(0|[1-9][0-9]{0,5})\\.[0-9]{2}$",
+            "description": "entered by the manager; never negative"
+          }
+        }
+      }
+    },
+    "increment_kg": {
+      "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/quantity_kg"
+    }
+  }
+}
