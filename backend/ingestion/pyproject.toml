@@ -17,6 +17,8 @@ postgres = ["psycopg[binary]==3.2.10"]
 kn-ingest = "kisaniti_ingestion.worker:main"
 kn-assess = "kisaniti_ingestion.assess_cli:main"
 kn-report = "kisaniti_ingestion.report_cli:main"
+kn-sim = "kisaniti_ingestion.simulator:main"
+kn-conformance = "kisaniti_ingestion.conformance:main"
 
 [dependency-groups]
 dev = [

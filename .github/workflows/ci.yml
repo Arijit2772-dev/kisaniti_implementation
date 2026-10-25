@@ -64,6 +64,26 @@ jobs:
       - run: uv run --frozen mypy src tests
       - run: uv run --frozen pytest
 
+  ingestion:
+    name: ingestion + simulator + conformance (lint, types, tests, self-test)
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        working-directory: backend/ingestion
+    steps:
+      - uses: actions/checkout@v5
+      - uses: astral-sh/setup-uv@v6
+        with:
+          version: "0.9.5"
+      - run: uv python install 3.13.9
+      - run: uv sync --frozen --python 3.13.9
+      - run: uv run --frozen ruff check .
+      - run: uv run --frozen ruff format --check .
+      - run: uv run --frozen mypy src tests
+      - run: uv run --frozen pytest
+      - name: Simulator and in-process backend check each other against contract L3B v1
+        run: uv run --frozen kn-conformance selftest
+
   frontend:
     name: frontend (lint, types, build)
     runs-on: ubuntu-24.04
@@ -85,7 +105,7 @@ jobs:
   stack:
     name: one-command stack (docker compose up, health page)
     runs-on: ubuntu-24.04
-    needs: [core, backend, frontend]
+    needs: [core, backend, ingestion, frontend]
     steps:
       - uses: actions/checkout@v5
       - run: docker compose up --build -d --wait --wait-timeout 300

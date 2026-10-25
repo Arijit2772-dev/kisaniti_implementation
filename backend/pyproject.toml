@@ -43,6 +43,7 @@ select = ["E", "F", "W", "I", "B", "UP", "SIM", "RUF"]
 strict = true
 python_version = "3.13"
 plugins = []
+mypy_path = "src:ingestion/src"
 
 [[tool.mypy.overrides]]
 module = ["alembic.*", "jsonschema.*", "referencing.*"]
@@ -51,4 +52,5 @@ ignore_missing_imports = true
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "-q"
-pythonpath = ["src"]
+# ingestion/src: the sensor-table tests drive the ingestion service against this migrated database
+pythonpath = ["src", "ingestion/src"]

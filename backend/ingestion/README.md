@@ -17,7 +17,7 @@ acknowledgement the firmware waits for. Contract: `kisaniti/docs/contracts/L3b_S
 ```bash
 cd backend/ingestion
 uv sync
-uv run pytest                      # 16 tests
+uv run pytest                      # 45 tests
 ./e2e/run_local_e2e.sh             # live: Mosquitto (TLS + ACL) in Docker -> worker -> SQLite -> ack
 ```
 
@@ -39,7 +39,26 @@ Wokwi twin (public test broker, no TLS, no personal data): register `kn-twin-001
 therefore sets explicit `pythonpath`/`mypy_path`; for other commands export
 `PYTHONPATH=src:../../core/src`.
 
-**Not done yet (product integration):** a PostgreSQL migration in the main API, persisting the hysteresis state
-between scheduled assessments, and device/lot screens.
+## Software node, conformance harness and PostgreSQL (H-1 to H-3, 26 Oct 2026)
+
+| Command | What it does |
+|---|---|
+| `kn-sim --scenario humid_rise --steps 48 --host … --user … --password …` | Software storage node: publishes synthetic `DeviceTelemetryV1` (`source_origin=SIMULATOR`) with the firmware's buffer, ack and resend behaviour. `kn-sim --list` shows the scenarios (`stable_dry`, `humid_rise`, `sensor_fault`, `late_ntp`, `never_synced`) |
+| `kn-conformance selftest` | No broker: the simulator and the in-process backend check each other (13 receiver cases, every scenario as a publisher). Runs in CI |
+| `kn-conformance receiver --device-id … --origin …` | Acts as a device against a live broker and backend; checks acks against contract L3B v1 |
+| `kn-conformance publisher --device-id … --origin … --seconds 120 --withhold 2` | Acts as the backend for a device under test (real node, Wokwi twin, simulator): records what it publishes, withholds the first acks, checks the messages against the contract |
+| `./e2e/run_sim_conformance_e2e.sh` | Live: Mosquitto (TLS + ACL) in Docker, `kn-ingest` on PostgreSQL, all of the above |
+
+Any new device or simulator is "compatible" when `kn-conformance publisher` reports no FAIL for it. Only rules written in
+the contract are checked (send order is not specified there, so it is not enforced).
+
+**PostgreSQL.** The tables are created by the API's Alembic migration `0002_sensor_readings` (`backend/`); `kn-ingest`
+only writes to them and refuses to start on an unmigrated database. Use
+`KN_STORE=postgresql://user:pass@host:5432/db` (psycopg: `uv sync --extra postgres`). Tests: `backend/tests/test_sensor_tables.py`.
+
+**Not done yet:** device registry and assignment with per-device broker credentials (H-4), scheduled assessments with
+stored hysteresis (H-5), device and lot screens (H-6), tenant-scoped HTTP read endpoints (they need H-4; the tables have
+no `fpo_id` by design), reconnect handling in `kn-ingest` when PostgreSQL goes away (a failed write sends no ack, so the
+device resends, but the worker does not retry its own connection), real-node acceptance (needs the kit).
 
 Evidence: `docs/reports/2026-10-22_L3b_ingestion_e2e.md`.

@@ -1,4 +1,6 @@
-"""Durable store for readings (SQLite for local runs and tests; the same SQL runs on PostgreSQL).
+"""Durable store for readings (SQLite for local runs and tests; PostgreSQL in the product).
+
+On PostgreSQL the tables belong to the API's Alembic migration 0002; this module never creates them there.
 
 De-duplication key: reading_id = device_id:boot_id:seq (contract §2). The first copy wins; a later copy with
 different measurement content is recorded in reading_conflicts, never silently merged.
@@ -52,10 +54,6 @@ CREATE TABLE IF NOT EXISTS sensor_rejected_messages (
 );
 """
 
-POSTGRES_DDL = SQLITE_DDL.replace(
-    "INTEGER PRIMARY KEY AUTOINCREMENT", "BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY"
-).replace("BLOB", "BYTEA")
-
 
 class StoreResult(StrEnum):
     NEW = "NEW"
@@ -66,6 +64,7 @@ class StoreResult(StrEnum):
 class Connection(Protocol):
     def execute(self, sql: str, params: Any = ...) -> Any: ...
     def commit(self) -> None: ...
+    def close(self) -> None: ...
 
 
 def content_sha256(doc: dict[str, Any]) -> str:
@@ -133,13 +132,13 @@ class ReadingStore:
         row = self.conn.execute(
             self._q("SELECT doc FROM sensor_readings WHERE reading_id = ?"), (reading_id,)
         ).fetchone()
-        return None if row is None else dict(json.loads(row[0]))
+        return None if row is None else _doc(row[0])
 
     def readings_for(self, device_id: str) -> list[dict[str, Any]]:
         rows = self.conn.execute(
             self._q("SELECT doc FROM sensor_readings WHERE device_id = ? ORDER BY measured_at"), (device_id,)
         ).fetchall()
-        return [dict(json.loads(r[0])) for r in rows]
+        return [_doc(r[0]) for r in rows]
 
     def counts(self) -> dict[str, int]:
         out: dict[str, int] = {}
@@ -148,14 +147,27 @@ class ReadingStore:
         return out
 
 
+def _doc(value: Any) -> dict[str, Any]:
+    """jsonb columns come back as dicts (PostgreSQL), TEXT columns as strings (SQLite)."""
+    return dict(value) if isinstance(value, dict) else dict(json.loads(value))
+
+
+class SchemaMissingError(RuntimeError):
+    pass
+
+
 def open_store(target: str) -> ReadingStore:
-    """`target` is a SQLite file path, ':memory:', or a postgresql:// DSN."""
-    if target.startswith(("postgresql://", "postgres://")):
+    """`target` is a SQLite file path, ':memory:', or a PostgreSQL DSN (postgresql:// or postgresql+psycopg://).
+
+    A PostgreSQL target must already be migrated (`alembic upgrade head` in backend/)."""
+    if target.startswith(("postgresql://", "postgres://", "postgresql+psycopg://")):
         import psycopg  # optional dependency: kisaniti-ingestion[postgres]
 
-        pg = psycopg.connect(target)
-        pg.execute(POSTGRES_DDL)
-        pg.commit()
+        pg = psycopg.connect(target.replace("postgresql+psycopg://", "postgresql://", 1))
+        present = pg.execute("SELECT to_regclass('public.sensor_readings') IS NOT NULL").fetchone()
+        if present is None or not present[0]:
+            pg.close()
+            raise SchemaMissingError("table sensor_readings is missing: run `alembic upgrade head` in backend/ first")
         return ReadingStore(pg, "%s")
     conn = sqlite3.connect(target)
     conn.executescript(SQLITE_DDL)

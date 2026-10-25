@@ -21,7 +21,7 @@ Definitions: [Layer 1–3 handoff §10](../kisaniti/docs/handoff/2026-10-14/Kisa
 | W03 | Organisation/storage fixtures, inventory core | NOT STARTED | — |
 | W04 | Market adapter + bounded authorised import | BLOCKED on OI-05 | — |
 | W05 | Cleaning, readiness, dataset releases | NOT STARTED | — |
-| W06 | Sensor simulator + ingestion + UNKNOWN path | **DONE for L3b slice (22 Oct)**: contract `W01-L3B` frozen, schemas `contracts/sensor/v1`; `core.storage` STORAGE-DEMO-0.1 (31 tests); `backend/ingestion` validate/de-duplicate/store/ack (17 tests) + live TLS broker check PASS. Not done: PostgreSQL migration in the API, persisted hysteresis state, device/lot screens | [layer guide](docs/layers/L3b_storage_iot.md), [e2e report](docs/reports/2026-10-22_L3b_ingestion_e2e.md) |
+| W06 | Sensor simulator + ingestion + UNKNOWN path | **DONE for L3b slice (22 Oct)**: contract `W01-L3B` frozen, schemas `contracts/sensor/v1`; `core.storage` STORAGE-DEMO-0.1 (31 tests); `backend/ingestion` validate/de-duplicate/store/ack (17 tests) + live TLS broker check PASS. **26 Oct (H-1..H-3):** software node `kn-sim`, conformance harness `kn-conformance`, PostgreSQL migration 0002 with 25 backend tests on real PostgreSQL, live broker + PostgreSQL run PASS ([report](docs/reports/2026-10-26_H1-H3_simulator_conformance_postgres.md)). Not done: device registry/assignment, persisted hysteresis state, device/lot screens | [layer guide](docs/layers/L3b_storage_iot.md), [e2e report](docs/reports/2026-10-22_L3b_ingestion_e2e.md) |
 | W07 | Forecast baselines and evaluation | BLOCKED on data | — |
 | W08 | Route/quote adapters, transport math | NOT STARTED | — |
 | W09 | Optimizer oracle, MILP, PlanValidator | NOT STARTED | — |

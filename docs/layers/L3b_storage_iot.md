@@ -16,7 +16,9 @@ SHT30 probe in a basmati bag ─I²C─► ESP32 (firmware/) ─MQTT over TLS─
 | SHT3x custom chip for Wokwi | `firmware/wokwi/chips/` | `wokwi/chips/test/run_test.sh` (chip vs firmware decoder) |
 | JSON Schemas + examples | `contracts/sensor/v1/` | `contracts/tests` (valid and invalid examples) |
 | Storage rule | `core/src/kisaniti_core/storage/` | `core/tests/storage/` (31: bands, boundaries, hysteresis, properties, schema) |
-| Ingestion | `backend/ingestion/` | 17 tests; `e2e/run_local_e2e.sh` live broker check |
+| Ingestion | `backend/ingestion/` | 45 tests; `e2e/run_local_e2e.sh` live broker check |
+| Software node + conformance harness | `backend/ingestion/src/kisaniti_ingestion/{simulator,conformance}.py` | `tests/test_simulator_conformance.py`; `e2e/run_sim_conformance_e2e.sh` |
+| PostgreSQL tables | `backend/migrations/versions/0002_sensor_readings.py` | `backend/tests/test_sensor_tables.py` (25 backend tests on real PostgreSQL) |
 | Research comparison | `kisaniti_research_paper/layers/L3b_storage_iot/` | simulated scenarios, `results/L3b_storage/` |
 
 ## Why these choices (alternatives)
@@ -40,5 +42,6 @@ See [`firmware/README.md`](../../firmware/README.md), [`firmware/BUILD_GUIDE.md`
 
 The category estimates conditions favouring mould and insects at one probe; it is not moisture %, spoilage or shelf
 life. Thresholds and the 6 h settling time are desk-research values until the bench tests (BUILD_GUIDE H4–H7) are
-done. Sensor bias of ±2 %RH changes results noticeably, so calibration comes first. Product integration (PostgreSQL
-table in the API, scheduled assessments with stored hysteresis, device and lot screens) is still to do.
+done. Sensor bias of ±2 %RH changes results noticeably, so calibration comes first. Product integration is partly done (26 Oct): PostgreSQL tables owned by migration 0002, a software node
+(`kn-sim`) and a conformance harness (`kn-conformance`), see `backend/ingestion/README.md`. Still to do: device registry
+and assignment, scheduled assessments with stored hysteresis, device and lot screens, and the real-node bench tests.
