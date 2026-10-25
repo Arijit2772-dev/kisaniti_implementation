@@ -1,0 +1,14 @@
+{
+  "contract": "access.user/v1",
+  "id": "usr_00000000000000000000000003",
+  "fpo_id": null,
+  "username": "platform.ops",
+  "display_name": "Platform operator",
+  "role": "PLATFORM_OPERATOR",
+  "extra_capabilities": [],
+  "language": "pa",
+  "active": true,
+  "must_change_password": false,
+  "origin": "SYNTHETIC",
+  "created_at": "2026-10-26T09:00:00.000Z"
+}

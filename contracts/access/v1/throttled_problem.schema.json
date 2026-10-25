@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kisaniti.invalid/contracts/access/v1/throttled_problem.schema.json",
+  "title": "The only error code this slice adds: TOO_MANY_ATTEMPTS, HTTP 429, with Retry-After",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "type",
+    "title",
+    "status",
+    "code",
+    "retry_after_s"
+  ],
+  "properties": {
+    "type": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "status": {
+      "const": 429
+    },
+    "code": {
+      "const": "TOO_MANY_ATTEMPTS"
+    },
+    "detail": {
+      "type": "string"
+    },
+    "instance": {
+      "type": "string"
+    },
+    "request_id": {
+      "type": "string"
+    },
+    "retry_after_s": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 86400
+    }
+  }
+}

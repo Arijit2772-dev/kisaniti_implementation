@@ -1,0 +1,12 @@
+{
+  "_comment": "Maps an example file-name prefix to the schema it must be checked against.",
+  "user_create_request_": "user_create_request.schema.json",
+  "principal_": "principal.schema.json",
+  "login_request_": "login_request.schema.json",
+  "change_password_request_": "change_password_request.schema.json",
+  "temporary_password_response_": "temporary_password_response.schema.json",
+  "language_request_": "language_request.schema.json",
+  "audit_event_": "audit_event.schema.json",
+  "throttled_problem_": "throttled_problem.schema.json",
+  "userrecord_": "user.schema.json"
+}

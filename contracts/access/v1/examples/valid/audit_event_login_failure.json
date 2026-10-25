@@ -1,0 +1,10 @@
+{
+  "contract": "access.audit_event/v1",
+  "id": 1,
+  "occurred_at": "2026-10-26T09:00:00.000Z",
+  "request_id": "req-0123456789ab",
+  "event": "LOGIN_FAILURE",
+  "actor_user_id": null,
+  "fpo_id": null,
+  "subject_user_id": null
+}

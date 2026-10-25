@@ -1,0 +1,9 @@
+{
+  "username": "staff.demo2",
+  "display_name": "Demo Staff (fictional)",
+  "role": "STAFF",
+  "extra_capabilities": [
+    "messages.send"
+  ],
+  "language": "pa"
+}

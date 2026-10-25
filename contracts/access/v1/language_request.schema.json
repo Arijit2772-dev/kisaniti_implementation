@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kisaniti.invalid/contracts/access/v1/language_request.schema.json",
+  "title": "LanguageRequestV1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "language"
+  ],
+  "properties": {
+    "language": {
+      "$ref": "https://kisaniti.invalid/contracts/access/v1/common.schema.json#/$defs/language"
+    }
+  }
+}

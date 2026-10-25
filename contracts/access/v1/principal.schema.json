@@ -1,0 +1,85 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kisaniti.invalid/contracts/access/v1/principal.schema.json",
+  "title": "PrincipalV1: who is acting, derived from the session, never from the request",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract",
+    "user_id",
+    "fpo_id",
+    "role",
+    "capabilities",
+    "language",
+    "must_change_password",
+    "csrf_token",
+    "session_expires_at"
+  ],
+  "properties": {
+    "contract": {
+      "const": "access.principal/v1"
+    },
+    "user_id": {
+      "$ref": "https://kisaniti.invalid/contracts/access/v1/common.schema.json#/$defs/usr_id"
+    },
+    "fpo_id": {
+      "anyOf": [
+        {
+          "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/fpo_id"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "role": {
+      "$ref": "https://kisaniti.invalid/contracts/access/v1/common.schema.json#/$defs/role"
+    },
+    "capabilities": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "$ref": "https://kisaniti.invalid/contracts/access/v1/common.schema.json#/$defs/capability"
+      }
+    },
+    "language": {
+      "$ref": "https://kisaniti.invalid/contracts/access/v1/common.schema.json#/$defs/language"
+    },
+    "must_change_password": {
+      "type": "boolean"
+    },
+    "csrf_token": {
+      "type": "string",
+      "minLength": 32,
+      "maxLength": 128
+    },
+    "session_expires_at": {
+      "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/instant_utc"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "role": {
+            "const": "PLATFORM_OPERATOR"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "fpo_id": {
+            "type": "null"
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "fpo_id": {
+            "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/fpo_id"
+          }
+        }
+      }
+    }
+  ]
+}

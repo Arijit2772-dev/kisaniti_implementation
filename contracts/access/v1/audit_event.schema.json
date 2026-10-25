@@ -1,0 +1,80 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kisaniti.invalid/contracts/access/v1/audit_event.schema.json",
+  "title": "AuditEventV1 (no secrets, no phone numbers, no free text from users)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract",
+    "id",
+    "occurred_at",
+    "request_id",
+    "event",
+    "actor_user_id",
+    "fpo_id",
+    "subject_user_id"
+  ],
+  "properties": {
+    "contract": {
+      "const": "access.audit_event/v1"
+    },
+    "id": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "occurred_at": {
+      "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/instant_utc"
+    },
+    "request_id": {
+      "type": "string",
+      "minLength": 8,
+      "maxLength": 64
+    },
+    "event": {
+      "enum": [
+        "LOGIN_SUCCESS",
+        "LOGIN_FAILURE",
+        "LOGIN_THROTTLED",
+        "LOGOUT",
+        "SESSION_EXPIRED",
+        "PASSWORD_CHANGED",
+        "PASSWORD_RESET",
+        "USER_CREATED",
+        "USER_DEACTIVATED",
+        "LANGUAGE_CHANGED",
+        "ACCESS_DENIED",
+        "CROSS_TENANT_REFERENCE"
+      ]
+    },
+    "actor_user_id": {
+      "anyOf": [
+        {
+          "$ref": "https://kisaniti.invalid/contracts/access/v1/common.schema.json#/$defs/usr_id"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "fpo_id": {
+      "anyOf": [
+        {
+          "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/fpo_id"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "subject_user_id": {
+      "anyOf": [
+        {
+          "$ref": "https://kisaniti.invalid/contracts/access/v1/common.schema.json#/$defs/usr_id"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    }
+  }
+}

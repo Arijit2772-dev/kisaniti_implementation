@@ -1,0 +1,7 @@
+{
+  "type": "t",
+  "title": "t",
+  "status": 401,
+  "code": "TOO_MANY_ATTEMPTS",
+  "retry_after_s": 900
+}

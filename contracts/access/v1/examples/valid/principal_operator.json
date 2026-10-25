@@ -1,0 +1,13 @@
+{
+  "contract": "access.principal/v1",
+  "user_id": "usr_00000000000000000000000001",
+  "fpo_id": null,
+  "role": "PLATFORM_OPERATOR",
+  "capabilities": [
+    "platform.admin"
+  ],
+  "language": "pa",
+  "must_change_password": false,
+  "csrf_token": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+  "session_expires_at": "2026-10-26T21:00:00.000Z"
+}

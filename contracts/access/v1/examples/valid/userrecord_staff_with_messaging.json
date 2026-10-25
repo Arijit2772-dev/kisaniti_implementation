@@ -1,0 +1,17 @@
+{
+  "contract": "access.user/v1",
+  "id": "usr_00000000000000000000000002",
+  "fpo_id": "fpo_00000000000000000000000001",
+  "username": "operator.demo1",
+  "display_name": "Demo Manager (fictional)",
+  "role": "STAFF",
+  "extra_capabilities": [
+    "messages.send",
+    "contacts.view_phone"
+  ],
+  "language": "en",
+  "active": true,
+  "must_change_password": false,
+  "origin": "SYNTHETIC",
+  "created_at": "2026-10-26T09:00:00.000Z"
+}

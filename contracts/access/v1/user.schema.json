@@ -1,0 +1,122 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kisaniti.invalid/contracts/access/v1/user.schema.json",
+  "title": "UserV1 (never contains a password or hash)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract",
+    "id",
+    "fpo_id",
+    "username",
+    "display_name",
+    "role",
+    "extra_capabilities",
+    "language",
+    "active",
+    "must_change_password",
+    "origin",
+    "created_at"
+  ],
+  "properties": {
+    "contract": {
+      "const": "access.user/v1"
+    },
+    "id": {
+      "$ref": "https://kisaniti.invalid/contracts/access/v1/common.schema.json#/$defs/usr_id"
+    },
+    "fpo_id": {
+      "anyOf": [
+        {
+          "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/fpo_id"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "username": {
+      "$ref": "https://kisaniti.invalid/contracts/access/v1/common.schema.json#/$defs/username"
+    },
+    "display_name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 120
+    },
+    "role": {
+      "$ref": "https://kisaniti.invalid/contracts/access/v1/common.schema.json#/$defs/role"
+    },
+    "extra_capabilities": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "contacts.view_phone",
+          "messages.send"
+        ]
+      }
+    },
+    "language": {
+      "$ref": "https://kisaniti.invalid/contracts/access/v1/common.schema.json#/$defs/language"
+    },
+    "active": {
+      "type": "boolean"
+    },
+    "must_change_password": {
+      "type": "boolean"
+    },
+    "origin": {
+      "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/origin"
+    },
+    "created_at": {
+      "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/instant_utc"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "role": {
+            "const": "PLATFORM_OPERATOR"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "fpo_id": {
+            "type": "null"
+          },
+          "extra_capabilities": {
+            "maxItems": 0
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "fpo_id": {
+            "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/fpo_id"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "role": {
+            "enum": [
+              "FPO_ADMIN",
+              "VIEWER"
+            ]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "extra_capabilities": {
+            "maxItems": 0
+          }
+        }
+      }
+    }
+  ]
+}

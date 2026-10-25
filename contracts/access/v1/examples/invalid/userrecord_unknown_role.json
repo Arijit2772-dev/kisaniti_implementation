@@ -1,0 +1,14 @@
+{
+  "contract": "access.user/v1",
+  "id": "usr_00000000000000000000000001",
+  "fpo_id": "fpo_00000000000000000000000001",
+  "username": "manager.demo1",
+  "display_name": "Demo Manager (fictional)",
+  "role": "SUPERUSER",
+  "extra_capabilities": [],
+  "language": "pa",
+  "active": true,
+  "must_change_password": false,
+  "origin": "SYNTHETIC",
+  "created_at": "2026-10-26T09:00:00.000Z"
+}

@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kisaniti.invalid/contracts/access/v1/common.schema.json",
+  "title": "Access slice definitions v1",
+  "$defs": {
+    "usr_id": {
+      "type": "string",
+      "pattern": "^usr_[0-9A-HJKMNP-TV-Z]{26}$"
+    },
+    "role": {
+      "enum": [
+        "FPO_ADMIN",
+        "STAFF",
+        "VIEWER",
+        "PLATFORM_OPERATOR"
+      ]
+    },
+    "capability": {
+      "enum": [
+        "users.manage",
+        "plans.approve",
+        "data.read",
+        "data.write",
+        "contacts.view_phone",
+        "messages.send",
+        "platform.admin"
+      ]
+    },
+    "language": {
+      "enum": [
+        "pa",
+        "en"
+      ]
+    },
+    "username": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9._-]{2,63}$"
+    }
+  }
+}
