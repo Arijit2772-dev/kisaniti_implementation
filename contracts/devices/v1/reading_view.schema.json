@@ -1,0 +1,72 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kisaniti.invalid/contracts/devices/v1/reading_view.schema.json",
+  "title": "DeviceReadingV1: what a tenant may see of a stored reading",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract",
+    "reading_id",
+    "measured_at",
+    "measured_at_trusted",
+    "received_at",
+    "temperature_c",
+    "humidity_pct",
+    "read_status",
+    "ingest_status",
+    "origin"
+  ],
+  "properties": {
+    "contract": {
+      "const": "devices.reading/v1"
+    },
+    "reading_id": {
+      "type": "string"
+    },
+    "measured_at": {
+      "anyOf": [
+        {
+          "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/instant_utc"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "measured_at_trusted": {
+      "type": "boolean"
+    },
+    "received_at": {
+      "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/instant_utc"
+    },
+    "temperature_c": {
+      "type": [
+        "number",
+        "null"
+      ]
+    },
+    "humidity_pct": {
+      "type": [
+        "number",
+        "null"
+      ]
+    },
+    "read_status": {
+      "enum": [
+        "OK",
+        "CRC_ERROR",
+        "NO_ACK",
+        "TIMEOUT"
+      ]
+    },
+    "ingest_status": {
+      "enum": [
+        "ACCEPTED",
+        "QUARANTINED"
+      ]
+    },
+    "origin": {
+      "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/origin"
+    }
+  }
+}

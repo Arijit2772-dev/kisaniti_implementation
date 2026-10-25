@@ -1,0 +1,8 @@
+{
+  "_comment": "Maps an example file-name prefix to the schema it must be checked against.",
+  "assignment_": "assignment.schema.json",
+  "devicerecord_": "device.schema.json",
+  "registerreq_": "register_request.schema.json",
+  "assignreq_": "assignment_request.schema.json",
+  "readingview_": "reading_view.schema.json"
+}

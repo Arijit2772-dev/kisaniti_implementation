@@ -1,0 +1,12 @@
+{
+  "contract": "devices.reading/v1",
+  "reading_id": "kn-sim-001:a1b2c3d4:7",
+  "measured_at": "2026-10-26T09:00:00.000Z",
+  "measured_at_trusted": true,
+  "received_at": "2026-10-26T09:00:02.000Z",
+  "temperature_c": 25.4,
+  "humidity_pct": 57.2,
+  "read_status": "OK",
+  "ingest_status": "MAYBE",
+  "origin": "SYNTHETIC"
+}

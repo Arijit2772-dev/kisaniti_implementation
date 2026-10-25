@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kisaniti.invalid/contracts/devices/v1/device.schema.json",
+  "title": "DeviceV1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract",
+    "device_id",
+    "fpo_id",
+    "source_origin",
+    "active",
+    "registered_at",
+    "current_assignment",
+    "last_reading_at"
+  ],
+  "properties": {
+    "contract": {
+      "const": "devices.device/v1"
+    },
+    "device_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]{2,31}$"
+    },
+    "fpo_id": {
+      "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/fpo_id"
+    },
+    "source_origin": {
+      "enum": [
+        "DEVICE",
+        "WOKWI_TWIN",
+        "SIMULATOR"
+      ]
+    },
+    "active": {
+      "type": "boolean"
+    },
+    "registered_at": {
+      "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/instant_utc"
+    },
+    "current_assignment": {
+      "anyOf": [
+        {
+          "$ref": "https://kisaniti.invalid/contracts/devices/v1/assignment.schema.json"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "last_reading_at": {
+      "anyOf": [
+        {
+          "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/instant_utc"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    }
+  }
+}

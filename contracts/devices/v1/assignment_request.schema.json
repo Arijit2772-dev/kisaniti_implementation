@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kisaniti.invalid/contracts/devices/v1/assignment_request.schema.json",
+  "title": "AssignmentRequestV1 (the FPO comes from the device, never from the request)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "placement",
+    "crop"
+  ],
+  "properties": {
+    "placement": {
+      "enum": [
+        "IN_GRAIN",
+        "AMBIENT"
+      ]
+    },
+    "crop": {
+      "enum": [
+        "PADDY",
+        "WHEAT"
+      ]
+    },
+    "assigned_at": {
+      "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/instant_utc"
+    },
+    "sample_interval_s": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 86400
+    }
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "contract": "devices.device/v1",
+  "device_id": "kn-sim-001",
+  "fpo_id": "fpo_00000000000000000000000001",
+  "source_origin": "SIMULATOR",
+  "active": true,
+  "registered_at": "2026-10-26T07:59:00.000Z",
+  "current_assignment": null,
+  "last_reading_at": null
+}
