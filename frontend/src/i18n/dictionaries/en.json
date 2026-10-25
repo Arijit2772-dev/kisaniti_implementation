@@ -1,0 +1,29 @@
+{
+  "app": {
+    "name": "KisanNiti",
+    "tagline": "Fair selling plans for Farmer Producer Organizations",
+    "description": "Decision support for FPO post-harvest selling"
+  },
+  "lang": { "label": "Language" },
+  "status": {
+    "title": "System status",
+    "checking": "Checking system status…",
+    "unreachable": "System status: API unreachable",
+    "checkedAt": "Checked (UTC)",
+    "demoBanner": "{mode} — fictional FPO data; not real farmers",
+    "versions": "API {api} · core {core} · contracts {contracts}",
+    "state": {
+      "READY": "Ready",
+      "READY_WITH_WARNINGS": "Ready with warnings",
+      "BLOCKED": "Blocked"
+    },
+    "components": {
+      "database": "database",
+      "migrations": "migrations"
+    },
+    "issues": {
+      "NOT_READY": "the database structure does not match the latest code",
+      "DEPENDENCY_UNAVAILABLE": "the database did not answer"
+    }
+  }
+}

@@ -30,3 +30,11 @@ h1 { margin: 0 0 0.25rem; }
 .card.blocked { border-color: var(--bad); }
 .card h2 { margin-top: 0; font-size: 1.15rem; }
 .issue { color: var(--bad); }
+/* Gurmukhi glyphs are taller and carry marks above and below the line: more line height, system Gurmukhi fonts first. */
+:lang(pa) body, body:lang(pa) {
+  line-height: 1.75;
+  font-family: "Noto Sans Gurmukhi", "Gurmukhi MN", "Gurmukhi Sangam MN", "Raavi", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+.lang-switch { display: flex; gap: 1rem; justify-content: flex-end; font-size: 1rem; }
+.lang-switch a, .lang-switch strong { min-height: 44px; min-width: 44px; display: inline-flex; align-items: center; padding: 0 0.5rem; }
+.lang-switch a { color: var(--ok); }

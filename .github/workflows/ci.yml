@@ -100,6 +100,7 @@ jobs:
       - run: npm ci
       - run: npm run lint
       - run: npm run typecheck
+      - run: npm run i18n:check
       - run: npm run build
 
   stack:
@@ -110,7 +111,12 @@ jobs:
       - uses: actions/checkout@v5
       - run: docker compose up --build -d --wait --wait-timeout 300
       - run: curl -fsS http://localhost:8000/health/ready | tee ready.json && grep -q '"status":"READY"' ready.json
-      - run: curl -fsS http://localhost:3000 | grep -q "System status"
+      - name: Website opens in English and in Punjabi (/ redirects to a language path)
+        run: |
+          curl -fsSL http://localhost:3000 | grep -q "System status"
+          curl -fsSL http://localhost:3000/en | grep -q "System status"
+          curl -fsSL http://localhost:3000/pa | grep -q "ਸਿਸਟਮ ਦੀ ਸਥਿਤੀ"
+          curl -fsSL -H "Accept-Language: pa-IN,pa;q=0.9" http://localhost:3000 | grep -q 'lang="pa"'
       - if: failure()
         run: docker compose logs
       - if: always()

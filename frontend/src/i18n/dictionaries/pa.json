@@ -1,0 +1,29 @@
+{
+  "app": {
+    "name": "KisanNiti",
+    "tagline": "ਕਿਸਾਨ ਉਤਪਾਦਕ ਸੰਗਠਨਾਂ ਲਈ ਨਿਰਪੱਖ ਵੇਚ ਯੋਜਨਾਵਾਂ",
+    "description": "ਫ਼ਸਲ ਦੀ ਕਟਾਈ ਤੋਂ ਬਾਅਦ ਵੇਚਣ ਲਈ FPO ਫ਼ੈਸਲਾ-ਸਹਾਇਤਾ"
+  },
+  "lang": { "label": "ਭਾਸ਼ਾ" },
+  "status": {
+    "title": "ਸਿਸਟਮ ਦੀ ਸਥਿਤੀ",
+    "checking": "ਸਿਸਟਮ ਦੀ ਸਥਿਤੀ ਜਾਂਚੀ ਜਾ ਰਹੀ ਹੈ…",
+    "unreachable": "ਸਿਸਟਮ ਦੀ ਸਥਿਤੀ: API ਤੱਕ ਪਹੁੰਚ ਨਹੀਂ ਹੋ ਰਹੀ",
+    "checkedAt": "ਜਾਂਚ ਦਾ ਸਮਾਂ (UTC)",
+    "demoBanner": "{mode} — ਕਾਲਪਨਿਕ FPO ਡਾਟਾ; ਅਸਲੀ ਕਿਸਾਨ ਨਹੀਂ",
+    "versions": "API {api} · core {core} · ਕੰਟਰੈਕਟ {contracts}",
+    "state": {
+      "READY": "ਤਿਆਰ",
+      "READY_WITH_WARNINGS": "ਚੇਤਾਵਨੀਆਂ ਨਾਲ ਤਿਆਰ",
+      "BLOCKED": "ਰੁਕਿਆ ਹੋਇਆ"
+    },
+    "components": {
+      "database": "ਡਾਟਾਬੇਸ",
+      "migrations": "ਮਾਈਗ੍ਰੇਸ਼ਨ"
+    },
+    "issues": {
+      "NOT_READY": "ਡਾਟਾਬੇਸ ਦੀ ਬਣਤਰ ਕੋਡ ਦੇ ਨਵੀਨਤਮ ਸੰਸਕਰਣ ਨਾਲ ਮੇਲ ਨਹੀਂ ਖਾਂਦੀ",
+      "DEPENDENCY_UNAVAILABLE": "ਡਾਟਾਬੇਸ ਨੇ ਜਵਾਬ ਨਹੀਂ ਦਿੱਤਾ"
+    }
+  }
+}

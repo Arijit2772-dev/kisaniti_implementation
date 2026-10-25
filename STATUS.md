@@ -29,6 +29,8 @@ Definitions: [Layer 1–3 handoff §10](../kisaniti/docs/handoff/2026-10-14/Kisa
 | W11 | Real ESP32 firmware and hardware acceptance | Firmware v1 **builds** (real TLS + Wokwi profiles, 13 host tests); Wokwi twin ran on wokwi.com (sensor read OK; MQTT leg not yet observed). Acceptance (H4–H6) **BLOCKED on hardware purchase** | [firmware/README.md](firmware/README.md), [BUILD_GUIDE](firmware/BUILD_GUIDE.md) |
 | W12 | Layers 4–5 (approval, WhatsApp, sales, reconciliation) and full acceptance | NOT STARTED | — |
 
+**26 Oct:** interface language foundation (Punjabi and English, CHAT-36): [report](docs/reports/2026-10-26_language_foundation_punjabi.md).
+
 ## Experiments
 
 All EXP-00…14 are **NOT_RUN**. Definitions: [research plan](../kisaniti/docs/research/RESEARCH_AND_EXPERIMENT_PLAN.md). Results go in `experiments/EXP-xx/<run-id>/report.md`.
