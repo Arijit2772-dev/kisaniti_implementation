@@ -356,3 +356,13 @@ def test_database_walls_around_stored_assessments(engine: Engine, two: tuple[Fpo
             ),
             {"d": da, "f": b.fpo_id},
         )
+
+
+def test_a_pass_of_the_job_leaves_a_heartbeat_for_the_container_health_check(
+    engine: Engine, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    beat = tmp_path / "beat"
+    monkeypatch.setenv("KN_HEARTBEAT", str(beat))
+    assert not beat.exists()
+    assert assess_job.main(["--once"]) == 0
+    assert beat.exists()

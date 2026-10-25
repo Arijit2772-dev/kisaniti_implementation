@@ -45,7 +45,12 @@ services:
       DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-kisaniti}:${POSTGRES_PASSWORD:-kisaniti-local-only}@db:5432/${POSTGRES_DB:-kisaniti}
       KISANITI_MODE: ${KISANITI_MODE:-DEMO}
     healthcheck:
-      disable: true
+      # healthy while a pass finished in the last 130 minutes (the loop touches the file after every pass)
+      test: ["CMD-SHELL", "find /tmp/assessor.heartbeat -mmin -130 | grep -q ."]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 40s
     depends_on:
       backend:
         condition: service_healthy

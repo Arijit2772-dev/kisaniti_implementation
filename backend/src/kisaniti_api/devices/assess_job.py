@@ -12,9 +12,11 @@ from __future__ import annotations
 import argparse
 import json
 import logging
+import os
 import sys
 import time
 from datetime import UTC, datetime, timedelta
+from pathlib import Path
 from typing import Any
 
 from kisaniti_core.provenance import Origin
@@ -171,8 +173,10 @@ def main(argv: list[str] | None = None) -> int:
     a = ap.parse_args(argv)
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s %(message)s", stream=sys.stdout)
     engine = get_engine(load_settings().database_url)
+    heartbeat = Path(os.environ.get("KN_HEARTBEAT", "/tmp/assessor.heartbeat"))
     while True:
         summary = run_all(engine)
+        heartbeat.touch()  # "a pass completed": the container health check looks at this file's age
         print(json.dumps({"at": format_instant(datetime.now(UTC)), **summary}), flush=True)
         if a.once:
             return 1 if summary["failed"] else 0
