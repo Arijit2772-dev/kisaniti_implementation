@@ -46,7 +46,7 @@ plugins = []
 mypy_path = "src:ingestion/src"
 
 [[tool.mypy.overrides]]
-module = ["alembic.*", "jsonschema.*", "referencing.*"]
+module = ["alembic.*", "jsonschema.*", "referencing.*", "paho.*"]  # paho: only the ingestion modules the tests import use it
 ignore_missing_imports = true
 
 [tool.pytest.ini_options]
