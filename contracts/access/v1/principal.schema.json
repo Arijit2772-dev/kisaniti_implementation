@@ -7,7 +7,9 @@
   "required": [
     "contract",
     "user_id",
+    "display_name",
     "fpo_id",
+    "fpo_name",
     "role",
     "capabilities",
     "language",
@@ -55,6 +57,23 @@
     },
     "session_expires_at": {
       "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/instant_utc"
+    },
+    "display_name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 120
+    },
+    "fpo_name": {
+      "anyOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        {
+          "type": "null"
+        }
+      ]
     }
   },
   "allOf": [
@@ -70,6 +89,9 @@
         "properties": {
           "fpo_id": {
             "type": "null"
+          },
+          "fpo_name": {
+            "type": "null"
           }
         }
       },
@@ -77,6 +99,9 @@
         "properties": {
           "fpo_id": {
             "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/fpo_id"
+          },
+          "fpo_name": {
+            "type": "string"
           }
         }
       }

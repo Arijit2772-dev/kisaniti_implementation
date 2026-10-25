@@ -4,7 +4,9 @@
     "tagline": "Fair selling plans for Farmer Producer Organizations",
     "description": "Decision support for FPO post-harvest selling"
   },
-  "lang": { "label": "Language" },
+  "lang": {
+    "label": "Language"
+  },
   "status": {
     "title": "System status",
     "checking": "Checking system status…",
@@ -25,5 +27,112 @@
       "NOT_READY": "the database structure does not match the latest code",
       "DEPENDENCY_UNAVAILABLE": "the database did not answer"
     }
+  },
+  "common": {
+    "loading": "Loading…",
+    "cancel": "Cancel",
+    "copy": "Copy",
+    "copied": "Copied",
+    "yes": "Yes",
+    "no": "No"
+  },
+  "errors": {
+    "reference": "Reference",
+    "unauthenticated": "Please sign in again.",
+    "forbidden": "You do not have permission for this.",
+    "notFound": "Not found.",
+    "conflict": "This conflicts with existing data.",
+    "validation": "Please check what you entered.",
+    "internal": "Something went wrong on our side. Quote the reference when you report it.",
+    "network": "The server could not be reached. Try again.",
+    "csrf": "The page is out of date. Reload it and try again."
+  },
+  "signIn": {
+    "title": "Sign in",
+    "intro": "Use the account your FPO administrator gave you.",
+    "username": "Username",
+    "password": "Password",
+    "submit": "Sign in",
+    "submitting": "Signing in…",
+    "failed": "Wrong username or password.",
+    "throttled": "Too many attempts. Try again in {minutes} minutes.",
+    "demoNote": "This is a demonstration with fictional accounts."
+  },
+  "changePassword": {
+    "title": "Change your password",
+    "intro": "You must set a new password before you continue.",
+    "current": "Current password",
+    "new": "New password",
+    "confirm": "Repeat the new password",
+    "submit": "Save new password",
+    "saving": "Saving…",
+    "mismatch": "The two new passwords are not the same.",
+    "tooShort": "Use at least 10 characters.",
+    "wrongCurrent": "The current password is wrong.",
+    "weak": "This password is not acceptable. Avoid common passwords and your username, and use at least 10 characters.",
+    "hint": "At least 10 characters. Several ordinary words together work well."
+  },
+  "shell": {
+    "home": "Home",
+    "users": "Users",
+    "status": "System status",
+    "signOut": "Sign out",
+    "signedInAs": "Signed in as",
+    "noFpo": "Platform account",
+    "menu": "Menu",
+    "roles": {
+      "FPO_ADMIN": "FPO admin",
+      "STAFF": "Staff",
+      "VIEWER": "Viewer",
+      "PLATFORM_OPERATOR": "Platform operator"
+    }
+  },
+  "home": {
+    "welcome": "Welcome, {name}",
+    "fpo": "FPO",
+    "role": "Role",
+    "canDo": "What you can do",
+    "soon": "Prices, storage, plans and messages will appear here as they are built.",
+    "capabilities": {
+      "users.manage": "Manage users of your FPO",
+      "plans.approve": "Approve selling plans",
+      "data.read": "View data",
+      "data.write": "Enter and correct data",
+      "contacts.view_phone": "See farmers' phone numbers",
+      "messages.send": "Send messages to farmers",
+      "platform.admin": "Manage the platform"
+    }
+  },
+  "users": {
+    "title": "Users",
+    "intro": "People who can sign in for your FPO. Passwords are never shown, except a temporary one, once.",
+    "username": "Username",
+    "name": "Name",
+    "role": "Role",
+    "status": "Status",
+    "active": "Active",
+    "inactive": "Inactive",
+    "mustChange": "Must change password",
+    "empty": "No users yet.",
+    "add": "Add a user",
+    "displayName": "Name",
+    "extra": "Extra permissions",
+    "extraMessages": "Send messages to farmers",
+    "extraPhones": "See farmers' phone numbers",
+    "submit": "Create user",
+    "creating": "Creating…",
+    "created": "User created. Give this temporary password to them now; it will not be shown again.",
+    "temporary": "Temporary password",
+    "reset": "Reset password",
+    "deactivate": "Deactivate",
+    "confirmReset": "Reset the password of {name}? They will be signed out.",
+    "confirmDeactivate": "Deactivate {name}? They will be signed out and cannot sign in.",
+    "taken": "That username is already taken.",
+    "usernameHint": "Letters, digits, dot, dash or underscore; 3 to 64 characters.",
+    "noPermission": "You do not have permission to manage users.",
+    "actions": "Actions"
+  },
+  "language": {
+    "switchTo": "Switch language"
   }
 }

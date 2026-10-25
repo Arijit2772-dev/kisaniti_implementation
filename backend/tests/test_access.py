@@ -209,6 +209,14 @@ def test_sign_in_returns_a_principal_that_matches_the_contract(two: tuple[Fpo, F
     assert p["fpo_id"] == a.fpo_id and p["role"] == "FPO_ADMIN" and "users.manage" in p["capabilities"]
 
 
+def test_principal_carries_the_users_own_names_and_never_another_fpos(two: tuple[Fpo, Fpo]) -> None:
+    a, b = two
+    with a.admin.client:  # same session, read again through /auth/me
+        me_a, me_b = a.admin.get("/auth/me").json(), b.admin.get("/auth/me").json()
+    assert me_a["display_name"] == "Admin (fictional)" and me_a["fpo_name"].startswith("Fictional FPO a ")
+    assert me_b["fpo_name"].startswith("Fictional FPO b ") and me_a["fpo_name"] != me_b["fpo_name"]
+
+
 def test_wrong_password_and_unknown_user_are_indistinguishable(two: tuple[Fpo, Fpo]) -> None:
     a, _ = two
     c = TestClient(app, raise_server_exceptions=False)

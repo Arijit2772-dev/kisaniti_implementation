@@ -31,7 +31,7 @@ Definitions: [Layer 1–3 handoff §10](../kisaniti/docs/handoff/2026-10-14/Kisa
 
 **26 Oct:** interface language foundation (Punjabi and English, CHAT-36): [report](docs/reports/2026-10-26_language_foundation_punjabi.md).
 
-**26 Oct:** access slice (login, sessions, roles, two-FPO isolation, contract `access/v1`): [report](docs/reports/2026-10-26_access_login_two_fpo.md). No sign-in page yet.
+**26 Oct:** access slice (login, sessions, roles, two-FPO isolation, contract `access/v1`): [report](docs/reports/2026-10-26_access_login_two_fpo.md). Sign-in page, app shell, users page in Punjabi and English: [report](docs/reports/2026-10-26_signin_shell_punjabi.md).
 
 ## Experiments
 

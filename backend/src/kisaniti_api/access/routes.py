@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from dataclasses import replace
 from typing import Annotated, Any, Literal
 
 from fastapi import APIRouter, Depends, FastAPI, Request, Response
@@ -93,7 +94,11 @@ def login(body: LoginBody, request: Request, response: Response) -> dict[str, An
             outcome = "throttled"
         else:
             row = conn.execute(
-                text(f"SELECT {USER_COLUMNS}, password_hash FROM users WHERE username = :u"), {"u": username}
+                text(
+                    f"SELECT {USER_COLUMNS}, password_hash, "
+                    "(SELECT name FROM fpo WHERE id = users.fpo_id) AS fpo_name FROM users WHERE username = :u"
+                ),
+                {"u": username},
             ).first()
             ok = False
             if row is None:
@@ -111,7 +116,9 @@ def login(body: LoginBody, request: Request, response: Response) -> dict[str, An
                 audit(conn, rid, "LOGIN_SUCCESS", actor=row.id, fpo_id=row.fpo_id, subject=row.id)
                 principal = Principal(
                     user_id=row.id,
+                    display_name=row.display_name,
                     fpo_id=row.fpo_id,
+                    fpo_name=row.fpo_name,
                     role=row.role,
                     capabilities=capabilities_for(row.role, row.extra_capabilities),
                     language=row.language,
@@ -181,18 +188,7 @@ def set_language(body: LanguageBody, request: Request, p: CurrentPrincipal) -> d
 
 
 def _with_language(p: Principal, language: str) -> Principal:
-    return Principal(
-        user_id=p.user_id,
-        fpo_id=p.fpo_id,
-        role=p.role,
-        capabilities=p.capabilities,
-        language=language,
-        must_change_password=p.must_change_password,
-        csrf_token=p.csrf_token,
-        session_expires_at=p.session_expires_at,
-        session_hash=p.session_hash,
-        request_id=p.request_id,
-    )
+    return replace(p, language=language)
 
 
 # ---- users of the caller's own FPO ------------------------------------------------------------------------------

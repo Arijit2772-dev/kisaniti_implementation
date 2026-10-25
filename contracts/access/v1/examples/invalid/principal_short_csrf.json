@@ -14,5 +14,7 @@
   "language": "pa",
   "must_change_password": false,
   "csrf_token": "abc",
-  "session_expires_at": "2026-10-26T21:00:00.000Z"
+  "session_expires_at": "2026-10-26T21:00:00.000Z",
+  "display_name": "Demo Manager (fictional)",
+  "fpo_name": "Demo FPO"
 }

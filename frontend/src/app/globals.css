@@ -38,3 +38,40 @@ h1 { margin: 0 0 0.25rem; }
 .lang-switch { display: flex; gap: 1rem; justify-content: flex-end; font-size: 1rem; }
 .lang-switch a, .lang-switch strong { min-height: 44px; min-width: 44px; display: inline-flex; align-items: center; padding: 0 0.5rem; }
 .lang-switch a { color: var(--ok); }
+
+/* Application shell, forms, tables (touch targets of at least 44 px; no meaning by colour alone) */
+button.link { background: none; border: 0; color: var(--ok); text-decoration: underline; font: inherit; cursor: pointer; min-height: 44px; min-width: 44px; padding: 0 0.5rem; }
+.shell main { max-width: 56rem; margin: 0 auto; padding: 1rem; }
+.shell-bar { display: flex; flex-wrap: wrap; gap: 0.5rem 1rem; align-items: center; justify-content: space-between; padding: 0.5rem 1rem; border-bottom: 1px solid var(--muted); }
+.shell-id { display: flex; flex-direction: column; }
+.shell-actions { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+.brand { font-weight: 700; font-size: 1.2rem; color: var(--ink); text-decoration: none; }
+.who { font-size: 0.9rem; }
+.shell-nav { display: flex; flex-wrap: wrap; gap: 0.25rem 1rem; padding: 0 1rem; border-bottom: 1px solid var(--muted); }
+.shell-nav a { min-height: 44px; display: inline-flex; align-items: center; color: var(--ok); }
+.form { display: grid; gap: 1rem; max-width: 28rem; }
+.form label { display: grid; gap: 0.25rem; font-weight: 600; }
+.form input, .form select { min-height: 44px; padding: 0.4rem 0.6rem; font: inherit; border: 2px solid var(--muted); border-radius: 6px; background: var(--bg); color: var(--ink); }
+.form input:focus-visible, .form select:focus-visible, .btn:focus-visible, button.link:focus-visible, a:focus-visible { outline: 3px solid var(--ok); outline-offset: 2px; }
+.form .check { display: flex; gap: 0.5rem; align-items: center; font-weight: 400; min-height: 44px; }
+.form .check input { min-height: 24px; min-width: 24px; }
+fieldset { border: 1px solid var(--muted); border-radius: 6px; }
+.btn { min-height: 44px; padding: 0.4rem 1rem; font: inherit; font-weight: 600; border: 2px solid var(--ok); background: var(--ok); color: var(--bg); border-radius: 6px; cursor: pointer; }
+.btn.secondary { background: transparent; color: var(--ok); }
+.btn.danger { background: transparent; color: var(--bad); border-color: var(--bad); }
+.btn:disabled { opacity: 0.55; cursor: not-allowed; }
+.table-wrap { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: start; padding: 0.5rem; border-bottom: 1px solid var(--muted); vertical-align: middle; }
+.row-actions { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+code.temp { font-size: 1.1rem; user-select: all; padding: 0.2rem 0.4rem; border: 1px dashed var(--muted); border-radius: 4px; }
+
+/* Narrow screens: a table row becomes a card, every value keeps its label (no sideways scrolling to find an action) */
+@media (max-width: 40rem) {
+  table, thead, tbody, tr, th, td { display: block; }
+  thead { position: absolute; left: -9999px; }
+  tr { border: 1px solid var(--muted); border-radius: 8px; margin-bottom: 0.75rem; padding: 0.25rem 0.5rem; }
+  td { border-bottom: 0; display: flex; gap: 0.75rem; justify-content: space-between; align-items: baseline; }
+  td::before { content: attr(data-label); font-weight: 600; color: var(--muted); flex: 0 0 40%; }
+  .row-actions { flex-wrap: wrap; }
+}

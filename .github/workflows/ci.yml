@@ -111,14 +111,17 @@ jobs:
       - uses: actions/checkout@v5
       - run: docker compose up --build -d --wait --wait-timeout 300
       - run: curl -fsS http://localhost:8000/health/ready | tee ready.json && grep -q '"status":"READY"' ready.json
-      - name: Website opens in English and in Punjabi (/ redirects to a language path)
+      - name: Website pages in English and Punjabi (/ goes to sign-in; status is public)
         run: |
-          curl -fsSL http://localhost:3000 | grep -q "System status"
-          curl -fsSL http://localhost:3000/en | grep -q "System status"
-          curl -fsSL http://localhost:3000/pa | grep -q "ਸਿਸਟਮ ਦੀ ਸਥਿਤੀ"
+          curl -fsSL http://localhost:3000/en/status | grep -q "System status"
+          curl -fsSL http://localhost:3000/pa/status | grep -q "ਸਿਸਟਮ ਦੀ ਸਥਿਤੀ"
+          curl -fsSL http://localhost:3000 | grep -q "Sign in"   # real redirect: / -> /en -> /en/sign-in
+          curl -fsSL http://localhost:3000/pa/sign-in | grep -q "ਸਾਈਨ ਇਨ"
           curl -fsSL -H "Accept-Language: pa-IN,pa;q=0.9" http://localhost:3000 | grep -q 'lang="pa"'
       - name: Login and two-FPO isolation against the running stack
-        run: scripts/smoke_access.sh
+        run: |
+          scripts/smoke_access.sh
+          scripts/smoke_access.sh http://localhost:3000   # the same checks through the website's API proxy
       - if: failure()
         run: docker compose logs
       - if: always()

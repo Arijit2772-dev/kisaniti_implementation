@@ -9,7 +9,7 @@ const files = readdirSync(dir).filter((f) => f.endsWith(".json"));
 const flat = (obj, prefix = "") =>
   Object.entries(obj).flatMap(([k, v]) => (typeof v === "object" ? flat(v, `${prefix}${k}.`) : [[`${prefix}${k}`, v]]));
 const catalogs = Object.fromEntries(files.map((f) => [f.replace(".json", ""), new Map(flat(JSON.parse(readFileSync(join(dir, f), "utf8"))))]));
-const LITERAL = new Set(["app.name"]); // brand name stays in Latin script
+const LITERAL = new Set(["app.name", "home.fpo"]); // brand name and the acronym FPO stay in Latin script
 const placeholders = (s) => [...s.matchAll(/\{(\w+)\}/g)].map((m) => m[1]).sort().join(",");
 const problems = [];
 const base = catalogs.en;

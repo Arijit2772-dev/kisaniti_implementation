@@ -38,7 +38,9 @@ USER_COLUMNS = (
 @dataclass(frozen=True, slots=True)
 class Principal:
     user_id: str
+    display_name: str
     fpo_id: str | None
+    fpo_name: str | None
     role: str
     capabilities: frozenset[str]
     language: str
@@ -94,7 +96,9 @@ def principal_json(p: Principal) -> dict[str, Any]:
     return {
         "contract": "access.principal/v1",
         "user_id": p.user_id,
+        "display_name": p.display_name,
         "fpo_id": p.fpo_id,
+        "fpo_name": p.fpo_name,
         "role": p.role,
         "capabilities": sorted(p.capabilities),
         "language": p.language,
@@ -166,8 +170,8 @@ def load_principal(conn: Connection, token: str, s: AccessSettings, request_id: 
         text(
             """
             SELECT s.csrf_token, s.expires_at, u.id, u.fpo_id, u.role, u.extra_capabilities, u.language,
-                   u.must_change_password
-            FROM sessions s JOIN users u ON u.id = s.user_id
+                   u.must_change_password, u.display_name, f.name AS fpo_name
+            FROM sessions s JOIN users u ON u.id = s.user_id LEFT JOIN fpo f ON f.id = u.fpo_id
             WHERE s.token_sha256 = :h AND s.revoked_at IS NULL AND s.expires_at > now()
               AND s.last_seen_at > now() - make_interval(mins => :idle) AND u.active
             """
@@ -179,7 +183,9 @@ def load_principal(conn: Connection, token: str, s: AccessSettings, request_id: 
     conn.execute(text("UPDATE sessions SET last_seen_at = now() WHERE token_sha256 = :h"), {"h": h})
     return Principal(
         user_id=row.id,
+        display_name=row.display_name,
         fpo_id=row.fpo_id,
+        fpo_name=row.fpo_name,
         role=row.role,
         capabilities=capabilities_for(row.role, row.extra_capabilities),
         language=row.language,
