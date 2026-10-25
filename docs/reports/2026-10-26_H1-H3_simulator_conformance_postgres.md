@@ -41,11 +41,11 @@
 - The checker needed an overflow rule: the contract lets a device drop its oldest sample on buffer overflow, so an unacknowledged, unresent sample is only a FAIL when no overflow was reported.
 - Live, 6 receiver readings reach PostgreSQL against 7 in-process: the broker's ACL stops case R07 (publishing on another device's topic) before it reaches the backend. Both layers hold.
 - CI had no job for the ingestion service, so its tests ran only locally. A job was added (lint, types, tests, `kn-conformance selftest`).
+- The first CI run failed: the backend environment has no `paho`, so strict mypy rejected the ingestion modules' MQTT imports. My local mypy run had not reproduced it. Fixed with a `paho.*` entry in the backend's `ignore_missing_imports`; the next run (`d3d7601`) was green on all five jobs, including the one-command stack, which applies migration 0002 in the container.
 
 ## Not verified
 
 - Not run on a real ESP32 or on the Wokwi twin (the harness is ready for both: `kn-conformance publisher --origin WOKWI_TWIN`).
-- The new CI job and the updated backend job have not run on GitHub yet at the time of writing.
 - Behaviour when PostgreSQL goes away while `kn-ingest` runs: a failed write sends no ack, so the device resends; the worker has no reconnect logic.
 - `uv` is not installed on this machine, so lock files were not regenerated; the existing virtual environments were used with explicit `PYTHONPATH` (the known macOS hidden-`.pth` issue).
 
