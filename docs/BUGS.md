@@ -1,0 +1,13 @@
+# Bug register
+
+Rules: [BUG_TRACEABILITY_AND_COMPLETENESS.md](../../kisaniti/docs/BUG_TRACEABILITY_AND_COMPLETENESS.md) §3. A bug is recorded with its trace key, reproduced by a failing test first where possible, fixed, and closed with the root cause and the regression test. "Found by" shows which check caught it.
+
+| ID | Found | Trace | What went wrong | Root cause | Fix | Regression test |
+|---|---|---|---|---|---|---|
+| BUG-001 | 26 Oct, live broker run (`e2e/run_sim_conformance_e2e.sh`) | traceback in `MqttLink.send`, step C of the live run | the receiver conformance crashed on a deliberately malformed message ("not JSON") | the sender read the message identity from the payload and assumed every payload had one | `MqttLink.send` waits for any ack when no identity can be read | live script case R06, R12; the in-process tests cannot reach this code (a unit test with a fake MQTT client is still to add) |
+| BUG-002 | 26 Oct, conformance tests | finding `FIRST_SEND_MARKED_RESENT` on `test_outage_...` | the software node marked samples `resent` that had never been sent (buffered while the link was down) | one return value meant both "could not send" and "sent, no ack" | the link raises `ConnectionError` for "could not send" | `test_outage_is_buffered_then_delivered_exactly_once_not_marked_resent` |
+| BUG-003 | 26 Oct, CI run 40233621477 | failing step "mypy src tests", backend job | CI failed although local checks passed | the backend environment has no `paho`; the local run did not reproduce it | `paho.*` added to the backend's `ignore_missing_imports` (`d3d7601`) | the backend CI job itself; a local check that mirrors CI (clean environment) is still to add |
+| BUG-004 | 26 Oct, conformance tests | finding `UNACKED_NOT_RESENT` on `test_buffer_overflow_...` | the checker called a legal behaviour a failure | the contract lets a device drop its oldest sample on overflow; the checker did not allow for it | an overflow reported later downgrades the finding to a warning | `test_buffer_overflow_drops_oldest_and_reports_it` |
+| BUG-005 | 26 Oct, backend tests | `test_fpo_table_enforces_contract` failing after the new access tests | an existing test failed after adding tests | the new tests left fictional FPOs in the database; the old test deletes all FPOs | module cleanup fixture in `test_access.py` | the full backend suite order |
+
+Not bugs, recorded so they are not mistaken for product defects: two test-code errors in the first versions of the new tests (a helper reading rows from an UPDATE; an assertion that matched the legitimate field name `must_change_password`).

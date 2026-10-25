@@ -25,6 +25,10 @@ services:
     environment:
       DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-kisaniti}:${POSTGRES_PASSWORD:-kisaniti-local-only}@db:5432/${POSTGRES_DB:-kisaniti}
       KISANITI_MODE: ${KISANITI_MODE:-DEMO}
+      # local development over plain HTTP: the session cookie cannot be Secure there; a deployment behind HTTPS must
+      # set KISANITI_COOKIE_SECURE=true and its own website address in KISANITI_ALLOWED_ORIGINS
+      KISANITI_COOKIE_SECURE: ${KISANITI_COOKIE_SECURE:-false}
+      KISANITI_ALLOWED_ORIGINS: ${KISANITI_ALLOWED_ORIGINS:-http://localhost:3000}
     depends_on:
       db:
         condition: service_healthy

@@ -64,7 +64,7 @@ def test_unexpected_error_is_internal_problem(client: TestClient) -> None:
 
 def test_meta(client: TestClient) -> None:
     body = client.get("/api/v1/meta").json()
-    assert body["contracts"] == ["shared/v1"] and body["mode"] in {"RESEARCH", "DEMO", "LIVE"}
+    assert body["contracts"] == ["shared/v1", "access/v1"] and body["mode"] in {"RESEARCH", "DEMO", "LIVE"}
 
 
 def test_fpo_table_enforces_contract(engine: Engine) -> None:

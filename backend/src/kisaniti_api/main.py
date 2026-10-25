@@ -6,11 +6,13 @@ from fastapi import FastAPI
 from kisaniti_core import __version__ as core_version
 
 from . import __version__, health, problems
+from .access import routes as access_routes
 from .config import load_settings
 
 app = FastAPI(title="KisanNiti API", version=__version__)
 problems.install(app)
 app.include_router(health.router)
+access_routes.install(app)
 
 
 @app.get("/api/v1/meta")
@@ -19,6 +21,6 @@ def meta() -> dict[str, object]:
     return {
         "api_version": __version__,
         "core_version": core_version,
-        "contracts": ["shared/v1"],
+        "contracts": ["shared/v1", "access/v1"],
         "mode": load_settings().mode.value,
     }

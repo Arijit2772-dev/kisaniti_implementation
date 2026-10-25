@@ -117,6 +117,8 @@ jobs:
           curl -fsSL http://localhost:3000/en | grep -q "System status"
           curl -fsSL http://localhost:3000/pa | grep -q "ਸਿਸਟਮ ਦੀ ਸਥਿਤੀ"
           curl -fsSL -H "Accept-Language: pa-IN,pa;q=0.9" http://localhost:3000 | grep -q 'lang="pa"'
+      - name: Login and two-FPO isolation against the running stack
+        run: scripts/smoke_access.sh
       - if: failure()
         run: docker compose logs
       - if: always()

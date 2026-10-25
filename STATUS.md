@@ -31,6 +31,8 @@ Definitions: [Layer 1–3 handoff §10](../kisaniti/docs/handoff/2026-10-14/Kisa
 
 **26 Oct:** interface language foundation (Punjabi and English, CHAT-36): [report](docs/reports/2026-10-26_language_foundation_punjabi.md).
 
+**26 Oct:** access slice (login, sessions, roles, two-FPO isolation, contract `access/v1`): [report](docs/reports/2026-10-26_access_login_two_fpo.md). No sign-in page yet.
+
 ## Experiments
 
 All EXP-00…14 are **NOT_RUN**. Definitions: [research plan](../kisaniti/docs/research/RESEARCH_AND_EXPERIMENT_PLAN.md). Results go in `experiments/EXP-xx/<run-id>/report.md`.
