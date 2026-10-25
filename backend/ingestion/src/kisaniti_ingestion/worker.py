@@ -10,6 +10,7 @@ import json
 import logging
 import ssl
 import sys
+from collections.abc import Mapping
 from datetime import UTC, datetime
 from typing import Any
 
@@ -17,8 +18,10 @@ import paho.mqtt.client as mqtt
 from paho.mqtt.enums import CallbackAPIVersion
 
 from .config import Settings, load_registry
+from .registry import DbRegistry, postgres_fetcher
 from .service import handle
 from .store import open_store
+from .validate import Device
 
 TOPIC = "kisaniti/v1/devices/+/telemetry"
 log = logging.getLogger("kn-ingest")
@@ -27,7 +30,12 @@ log = logging.getLogger("kn-ingest")
 def main() -> None:
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s", stream=sys.stdout)
     s = Settings.from_env()
-    registry = load_registry(s.devices_file)
+    if s.registry == "db":
+        if not s.store.startswith(("postgresql://", "postgres://", "postgresql+psycopg://")):
+            raise SystemExit("KN_REGISTRY=db needs a PostgreSQL store (KN_STORE)")
+        registry: Mapping[str, Device] = DbRegistry(postgres_fetcher(s.store))
+    else:
+        registry = load_registry(s.devices_file)
     store = open_store(s.store)
     client = mqtt.Client(CallbackAPIVersion.VERSION2, client_id="kisaniti-ingestion", clean_session=False)
     if s.mqtt_user:

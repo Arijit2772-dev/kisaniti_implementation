@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from collections.abc import Mapping
 from dataclasses import dataclass
 from datetime import datetime
 from typing import Any
@@ -20,7 +21,7 @@ class Outcome:
 
 
 def handle(
-    topic: str, payload: bytes, received_at: datetime, registry: dict[str, Device], store: ReadingStore
+    topic: str, payload: bytes, received_at: datetime, registry: Mapping[str, Device], store: ReadingStore
 ) -> Outcome:
     r = to_reading(topic, payload, received_at, registry)
     if isinstance(r, Rejected):

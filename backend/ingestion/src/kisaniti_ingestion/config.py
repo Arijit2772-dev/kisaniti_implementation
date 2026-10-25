@@ -19,6 +19,7 @@ class Settings:
     mqtt_password: str | None
     devices_file: Path
     store: str
+    registry: str  # 'file' (devices.json) or 'db' (the devices table; needs a PostgreSQL store)
 
     @staticmethod
     def from_env() -> Settings:
@@ -30,6 +31,7 @@ class Settings:
             mqtt_password=os.environ.get("KN_MQTT_PASSWORD") or None,
             devices_file=Path(os.environ.get("KN_DEVICES", "devices.json")),
             store=os.environ.get("KN_STORE", "readings.sqlite3"),
+            registry=os.environ.get("KN_REGISTRY", "file"),
         )
 
 

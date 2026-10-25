@@ -56,7 +56,9 @@ the contract are checked (send order is not specified there, so it is not enforc
 only writes to them and refuses to start on an unmigrated database. Use
 `KN_STORE=postgresql://user:pass@host:5432/db` (psycopg: `uv sync --extra postgres`). Tests: `backend/tests/test_sensor_tables.py`.
 
-**Not done yet:** device registry and assignment with per-device broker credentials (H-4), scheduled assessments with
+**Device registry (H-4a, 26 Oct 2026).** `KN_REGISTRY=db` (with a PostgreSQL `KN_STORE`) makes `kn-ingest` read the devices registered in the website from the `devices` table (cached 30 s; an unknown device triggers at most one lookup per 5 s); `devices.json` stays for stand-alone use. Contract `devices/v1`; a deactivated device is no longer acknowledged. Live check: `REGISTRY=db PG_CONTAINER=<name> ./e2e/run_sim_conformance_e2e.sh`.
+
+**Not done yet:** per-device broker credentials (H-4b), scheduled assessments with
 stored hysteresis (H-5), device and lot screens (H-6), tenant-scoped HTTP read endpoints (they need H-4; the tables have
 no `fpo_id` by design), reconnect handling in `kn-ingest` when PostgreSQL goes away (a failed write sends no ack, so the
 device resends, but the worker does not retry its own connection), real-node acceptance (needs the kit).

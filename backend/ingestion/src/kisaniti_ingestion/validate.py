@@ -8,6 +8,7 @@ from __future__ import annotations
 import hashlib
 import json
 import re
+from collections.abc import Mapping
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 from functools import cache
@@ -78,7 +79,7 @@ def _in_range(v: Any, lo: float, hi: float) -> bool:
 
 
 def to_reading(
-    topic: str, payload: bytes, received_at: datetime, registry: dict[str, Device]
+    topic: str, payload: bytes, received_at: datetime, registry: Mapping[str, Device]
 ) -> dict[str, Any] | Rejected:
     """Validate a message and build the stored reading, or say why it is rejected.
 

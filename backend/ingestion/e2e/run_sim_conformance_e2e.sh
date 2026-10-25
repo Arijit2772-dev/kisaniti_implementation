@@ -2,6 +2,9 @@
 # Live check (H-1, H-2, H-3 together): real Mosquitto (TLS + ACL, Docker) <-> software node and conformance harness
 # <-> kn-ingest writing to a migrated PostgreSQL. All sensor data is SYNTHETIC. Nothing is left running.
 #
+# REGISTRY=db  (needs PG_CONTAINER, the name of the PostgreSQL container, and a migrated database): the devices are
+# registered in the `devices` table of a fictional FPO and kn-ingest reads its registry from there (KN_REGISTRY=db);
+# at the end the readings are read back through the restricted tenant role.
 # Needs: Docker; a PostgreSQL that has had `alembic upgrade head` (backend/); psycopg importable by the ingestion
 # Python. Defaults suit the local test container:
 #   KN_STORE=postgresql://kisaniti:test-only@localhost:5434/kisaniti_test
@@ -43,7 +46,19 @@ cat "$WORK/pub.out"
 
 echo "== B. start kn-ingest on PostgreSQL"
 printf '[{"device_id":"kn-sim-001","source_origin":"SIMULATOR"},{"device_id":"kn-conf-001","source_origin":"SIMULATOR"}]' > "$WORK/devices.json"
-KN_MQTT_HOST=localhost KN_MQTT_PORT=18883 KN_MQTT_TLS_CA="$CA" KN_MQTT_USER=ingestion KN_MQTT_PASSWORD="$PW_ING" \
+REG_ENV=""
+if [ "${REGISTRY:-file}" = db ]; then
+  BACKEND="$HERE/.."
+  FPO_JSON="$(cd "$BACKEND" && DATABASE_URL="postgresql+psycopg://${KN_STORE#postgresql://}" PYTHONPATH="src:../core/src" ./.venv/bin/python -m kisaniti_api.access.cli create-fpo --name "E2E FPO (fictional) $$" --admin-username "e2e.admin.$$" --synthetic)"
+  FPO_ID="$(echo "$FPO_JSON" | python3 -c 'import json,sys;print(json.load(sys.stdin)["fpo_id"])')"
+  for d in kn-sim-001 kn-conf-001; do
+    docker exec "$PG_CONTAINER" psql -q -U kisaniti -d kisaniti_test -c \
+      "INSERT INTO devices (device_id, fpo_id, source_origin) VALUES ('$d', '$FPO_ID', 'SIMULATOR') ON CONFLICT (device_id) DO UPDATE SET fpo_id = EXCLUDED.fpo_id" >/dev/null
+  done
+  REG_ENV="KN_REGISTRY=db"
+  echo "registry from the database: FPO $FPO_ID owns kn-sim-001 and kn-conf-001"
+fi
+env $REG_ENV KN_MQTT_HOST=localhost KN_MQTT_PORT=18883 KN_MQTT_TLS_CA="$CA" KN_MQTT_USER=ingestion KN_MQTT_PASSWORD="$PW_ING" \
   KN_DEVICES="$WORK/devices.json" KN_STORE="$KN_STORE" "$PY" -m kisaniti_ingestion.worker > "$WORK/ingest.log" 2>&1 &
 WPID=$!
 sleep 3
@@ -71,5 +86,9 @@ print("origins:", {(r["provenance"]["origin"], r["provenance"]["source_kind"]) f
 ok = len(rows) == 48 and seqs == list(range(48)) and all(r["provenance"]["origin"] == "SYNTHETIC" for r in rows)
 sys.exit(0 if ok else 1)
 PY
+if [ "${REGISTRY:-file}" = db ]; then
+  echo "== read back through the restricted tenant role (row-level security)"
+  docker exec "$PG_CONTAINER" psql -t -A -U kisaniti -d kisaniti_test -c "BEGIN; SET LOCAL ROLE kisaniti_app; SELECT set_config('app.fpo_id','$FPO_ID',true); SELECT 'own FPO sees ' || count(*) || ' readings of kn-sim-001' FROM sensor_readings WHERE device_id='kn-sim-001'; SELECT set_config('app.fpo_id','fpo_00000000000000000000000000',true); SELECT 'another FPO sees ' || count(*) || ' readings' FROM sensor_readings WHERE device_id='kn-sim-001'; COMMIT;" | grep -E "sees"
+fi
 echo "== worker log (tail)"; tail -5 "$WORK/ingest.log"
 [ "$FAILED" = 0 ] && echo "RESULT: PASS" || { echo "RESULT: FAIL"; exit 1; }
