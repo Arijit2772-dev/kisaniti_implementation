@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kisaniti.invalid/contracts/org/v1/location.schema.json",
+  "title": "StorageLocationV1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract",
+    "id",
+    "fpo_id",
+    "name",
+    "kind",
+    "village",
+    "latitude",
+    "longitude",
+    "created_at"
+  ],
+  "properties": {
+    "contract": {
+      "const": "org.location/v1"
+    },
+    "id": {
+      "$ref": "https://kisaniti.invalid/contracts/org/v1/common.schema.json#/$defs/stl_id"
+    },
+    "fpo_id": {
+      "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/fpo_id"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 120
+    },
+    "kind": {
+      "$ref": "https://kisaniti.invalid/contracts/org/v1/common.schema.json#/$defs/location_kind"
+    },
+    "village": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "maxLength": 100
+    },
+    "latitude": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "minimum": -90,
+      "maximum": 90
+    },
+    "longitude": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "minimum": -180,
+      "maximum": 180
+    },
+    "created_at": {
+      "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/instant_utc"
+    }
+  }
+}

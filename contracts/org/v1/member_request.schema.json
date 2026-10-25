@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kisaniti.invalid/contracts/org/v1/member_request.schema.json",
+  "title": "MemberRequestV1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "display_name",
+    "preferred_language"
+  ],
+  "properties": {
+    "display_name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 120
+    },
+    "village": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "maxLength": 100
+    },
+    "preferred_language": {
+      "$ref": "https://kisaniti.invalid/contracts/org/v1/common.schema.json#/$defs/language3"
+    }
+  }
+}

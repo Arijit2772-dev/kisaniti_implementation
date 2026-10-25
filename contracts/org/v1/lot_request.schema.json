@@ -1,0 +1,69 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kisaniti.invalid/contracts/org/v1/lot_request.schema.json",
+  "title": "LotRequestV1 (quantity must be positive and exact; the FPO comes from the login)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "member_id",
+    "commodity_id",
+    "registered_quantity_kg"
+  ],
+  "properties": {
+    "member_id": {
+      "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/mbr_id"
+    },
+    "commodity_id": {
+      "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/cmd_id"
+    },
+    "source_variety": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "maxLength": 60
+    },
+    "source_grade": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "maxLength": 60
+    },
+    "registered_quantity_kg": {
+      "allOf": [
+        {
+          "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/quantity_kg"
+        },
+        {
+          "not": {
+            "const": "0.000"
+          }
+        }
+      ]
+    },
+    "harvested_on": {
+      "anyOf": [
+        {
+          "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/business_date"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "location_id": {
+      "anyOf": [
+        {
+          "$ref": "https://kisaniti.invalid/contracts/org/v1/common.schema.json#/$defs/stl_id"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "quantity_verified": {
+      "type": "boolean"
+    }
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kisaniti.invalid/contracts/org/v1/placement_request.schema.json",
+  "title": "PlacementRequestV1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "location_id"
+  ],
+  "properties": {
+    "location_id": {
+      "$ref": "https://kisaniti.invalid/contracts/org/v1/common.schema.json#/$defs/stl_id"
+    },
+    "placed_at": {
+      "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/instant_utc"
+    }
+  }
+}

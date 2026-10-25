@@ -1,0 +1,11 @@
+{
+  "contract": "market.msp/v1",
+  "crop": "WHEAT",
+  "grade": "all",
+  "marketing_season": "RMS 2026-27",
+  "msp_inr_per_quintal": "2585.00",
+  "announced_on": "2025-05-28",
+  "source_url": "https://www.pib.gov.in/PressReleasePage.aspx?PRID=2131983",
+  "verified": true,
+  "origin": "POLICY"
+}

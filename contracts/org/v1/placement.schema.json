@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kisaniti.invalid/contracts/org/v1/placement.schema.json",
+  "title": "PlacementV1 (append-only history)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract",
+    "lot_id",
+    "location_id",
+    "placed_at",
+    "created_at"
+  ],
+  "properties": {
+    "contract": {
+      "const": "org.placement/v1"
+    },
+    "lot_id": {
+      "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/lot_id"
+    },
+    "location_id": {
+      "$ref": "https://kisaniti.invalid/contracts/org/v1/common.schema.json#/$defs/stl_id"
+    },
+    "placed_at": {
+      "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/instant_utc"
+    },
+    "created_at": {
+      "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/instant_utc"
+    }
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "contract": "market.price/v1",
+  "mandi_id": "mnd_00000000000000000000000001",
+  "commodity_id": "cmd_00000000000000000000000001",
+  "variety_label": "1121",
+  "observed_on": "2025-11-12",
+  "min_inr_per_quintal": "3300.00",
+  "max_inr_per_quintal": "4030.00",
+  "modal_inr_per_quintal": 3800.0,
+  "arrivals_tonnes": "7159.000",
+  "date_inferred": false,
+  "arrivals_shared": false,
+  "flags": [],
+  "dataset_version_id": "dsv_00000000000000000000000001",
+  "origin": "REAL"
+}

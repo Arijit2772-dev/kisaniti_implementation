@@ -1,0 +1,11 @@
+{
+  "contract": "org.location/v1",
+  "id": "stl_00000000000000000000000001",
+  "fpo_id": "fpo_00000000000000000000000001",
+  "name": "FPO collection centre (fictional)",
+  "kind": "COLLECTION_CENTRE",
+  "village": "Bhawanigarh",
+  "latitude": null,
+  "longitude": null,
+  "created_at": "2026-10-26T09:00:00.000Z"
+}

@@ -1,0 +1,72 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kisaniti.invalid/contracts/org/v1/common.schema.json",
+  "title": "org slice definitions",
+  "$defs": {
+    "stl_id": {
+      "type": "string",
+      "pattern": "^stl_[0-9A-HJKMNP-TV-Z]{26}$"
+    },
+    "usr_id": {
+      "type": "string",
+      "pattern": "^usr_[0-9A-HJKMNP-TV-Z]{26}$"
+    },
+    "language3": {
+      "enum": [
+        "pa",
+        "hi",
+        "en"
+      ]
+    },
+    "location_kind": {
+      "enum": [
+        "COLLECTION_CENTRE",
+        "FARM",
+        "WAREHOUSE",
+        "THIRD_PARTY"
+      ]
+    },
+    "stock_kind": {
+      "enum": [
+        "REGISTERED",
+        "ADJUSTED",
+        "RESERVED",
+        "RESERVATION_RELEASED",
+        "RESERVATION_CONSUMED",
+        "SOLD"
+      ]
+    },
+    "adjust_reason": {
+      "enum": [
+        "WEIGHING_CORRECTION",
+        "SPILLAGE",
+        "MOISTURE_LOSS",
+        "OTHER"
+      ]
+    },
+    "balance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "on_hand_kg",
+        "reserved_kg",
+        "available_kg",
+        "sold_kg"
+      ],
+      "properties": {
+        "on_hand_kg": {
+          "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/quantity_kg"
+        },
+        "reserved_kg": {
+          "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/quantity_kg"
+        },
+        "available_kg": {
+          "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/quantity_kg"
+        },
+        "sold_kg": {
+          "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/quantity_kg"
+        }
+      }
+    }
+  }
+}

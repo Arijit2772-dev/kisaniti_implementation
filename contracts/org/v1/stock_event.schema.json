@@ -1,0 +1,110 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kisaniti.invalid/contracts/org/v1/stock_event.schema.json",
+  "title": "StockEventV1 (append-only ledger entry)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract",
+    "id",
+    "lot_id",
+    "kind",
+    "quantity_kg",
+    "quantity_delta_kg",
+    "reason_code",
+    "created_by",
+    "created_at"
+  ],
+  "properties": {
+    "contract": {
+      "const": "org.stock_event/v1"
+    },
+    "id": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "lot_id": {
+      "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/lot_id"
+    },
+    "kind": {
+      "$ref": "https://kisaniti.invalid/contracts/org/v1/common.schema.json#/$defs/stock_kind"
+    },
+    "quantity_kg": {
+      "anyOf": [
+        {
+          "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/quantity_kg"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "quantity_delta_kg": {
+      "anyOf": [
+        {
+          "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/quantity_delta_kg"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "reason_code": {
+      "anyOf": [
+        {
+          "$ref": "https://kisaniti.invalid/contracts/org/v1/common.schema.json#/$defs/adjust_reason"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "created_by": {
+      "anyOf": [
+        {
+          "$ref": "https://kisaniti.invalid/contracts/org/v1/common.schema.json#/$defs/usr_id"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "created_at": {
+      "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/instant_utc"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "const": "ADJUSTED"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "quantity_kg": {
+            "type": "null"
+          },
+          "quantity_delta_kg": {
+            "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/quantity_delta_kg"
+          },
+          "reason_code": {
+            "$ref": "https://kisaniti.invalid/contracts/org/v1/common.schema.json#/$defs/adjust_reason"
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "quantity_kg": {
+            "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/quantity_kg"
+          },
+          "quantity_delta_kg": {
+            "type": "null"
+          }
+        }
+      }
+    }
+  ]
+}

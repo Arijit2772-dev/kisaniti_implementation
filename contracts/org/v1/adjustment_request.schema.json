@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kisaniti.invalid/contracts/org/v1/adjustment_request.schema.json",
+  "title": "AdjustmentRequestV1 (a signed correction with a reason; the result may not go below zero)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "quantity_delta_kg",
+    "reason_code"
+  ],
+  "properties": {
+    "quantity_delta_kg": {
+      "allOf": [
+        {
+          "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/quantity_delta_kg"
+        },
+        {
+          "not": {
+            "const": "0.000"
+          }
+        }
+      ]
+    },
+    "reason_code": {
+      "$ref": "https://kisaniti.invalid/contracts/org/v1/common.schema.json#/$defs/adjust_reason"
+    }
+  }
+}

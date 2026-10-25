@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kisaniti.invalid/contracts/market/v1/dataset.schema.json",
+  "title": "DatasetVersionV1 (a price dataset release and whether it has been checked by a person)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract",
+    "id",
+    "name",
+    "rows",
+    "dated_rows",
+    "blank_date_rows",
+    "flagged_rows",
+    "validation_status",
+    "manifest_sha256",
+    "imported_at",
+    "note"
+  ],
+  "properties": {
+    "contract": {
+      "const": "market.dataset/v1"
+    },
+    "id": {
+      "$ref": "https://kisaniti.invalid/contracts/market/v1/common.schema.json#/$defs/dsv_id"
+    },
+    "name": {
+      "type": "string",
+      "maxLength": 120
+    },
+    "rows": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "dated_rows": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "blank_date_rows": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "flagged_rows": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "validation_status": {
+      "$ref": "https://kisaniti.invalid/contracts/market/v1/common.schema.json#/$defs/validation_status"
+    },
+    "manifest_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "imported_at": {
+      "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/instant_utc"
+    },
+    "note": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "maxLength": 500
+    }
+  }
+}

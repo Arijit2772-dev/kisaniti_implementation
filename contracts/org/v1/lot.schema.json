@@ -1,0 +1,107 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kisaniti.invalid/contracts/org/v1/lot.schema.json",
+  "title": "LotV1: one commodity owned by one member; the balance is derived from the stock ledger, never entered",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract",
+    "id",
+    "fpo_id",
+    "member_id",
+    "commodity_id",
+    "source_variety",
+    "source_grade",
+    "registered_quantity_kg",
+    "harvested_on",
+    "current_location_id",
+    "balance",
+    "verified_by",
+    "verified_at",
+    "origin",
+    "created_at"
+  ],
+  "properties": {
+    "contract": {
+      "const": "org.lot/v1"
+    },
+    "id": {
+      "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/lot_id"
+    },
+    "fpo_id": {
+      "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/fpo_id"
+    },
+    "member_id": {
+      "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/mbr_id"
+    },
+    "commodity_id": {
+      "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/cmd_id"
+    },
+    "source_variety": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "maxLength": 60
+    },
+    "source_grade": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "maxLength": 60
+    },
+    "registered_quantity_kg": {
+      "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/quantity_kg"
+    },
+    "harvested_on": {
+      "anyOf": [
+        {
+          "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/business_date"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "current_location_id": {
+      "anyOf": [
+        {
+          "$ref": "https://kisaniti.invalid/contracts/org/v1/common.schema.json#/$defs/stl_id"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "balance": {
+      "$ref": "https://kisaniti.invalid/contracts/org/v1/common.schema.json#/$defs/balance"
+    },
+    "verified_by": {
+      "anyOf": [
+        {
+          "$ref": "https://kisaniti.invalid/contracts/org/v1/common.schema.json#/$defs/usr_id"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "verified_at": {
+      "anyOf": [
+        {
+          "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/instant_utc"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "origin": {
+      "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/origin"
+    },
+    "created_at": {
+      "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/instant_utc"
+    }
+  }
+}

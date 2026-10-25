@@ -1,0 +1,22 @@
+{
+  "contract": "org.lot/v1",
+  "id": "lot_00000000000000000000000001",
+  "fpo_id": "fpo_00000000000000000000000001",
+  "member_id": "mbr_00000000000000000000000001",
+  "commodity_id": "cmd_00000000000000000000000001",
+  "source_variety": "1121",
+  "source_grade": null,
+  "registered_quantity_kg": 1250.0,
+  "harvested_on": "2026-10-12",
+  "current_location_id": "stl_00000000000000000000000001",
+  "balance": {
+    "on_hand_kg": "1250.000",
+    "reserved_kg": "0.000",
+    "available_kg": "1250.000",
+    "sold_kg": "0.000"
+  },
+  "verified_by": "usr_00000000000000000000000001",
+  "verified_at": "2026-10-26T09:05:00.000Z",
+  "origin": "SYNTHETIC",
+  "created_at": "2026-10-26T09:00:00.000Z"
+}

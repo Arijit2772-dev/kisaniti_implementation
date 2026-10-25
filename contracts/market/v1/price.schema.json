@@ -1,0 +1,100 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kisaniti.invalid/contracts/market/v1/price.schema.json",
+  "title": "PriceObservationV1 (one reported row of the source; flags keep every doubt visible)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract",
+    "mandi_id",
+    "commodity_id",
+    "variety_label",
+    "observed_on",
+    "min_inr_per_quintal",
+    "max_inr_per_quintal",
+    "modal_inr_per_quintal",
+    "arrivals_tonnes",
+    "date_inferred",
+    "arrivals_shared",
+    "flags",
+    "dataset_version_id",
+    "origin"
+  ],
+  "properties": {
+    "contract": {
+      "const": "market.price/v1"
+    },
+    "mandi_id": {
+      "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/mnd_id"
+    },
+    "commodity_id": {
+      "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/cmd_id"
+    },
+    "variety_label": {
+      "type": "string",
+      "maxLength": 60
+    },
+    "observed_on": {
+      "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/business_date"
+    },
+    "min_inr_per_quintal": {
+      "anyOf": [
+        {
+          "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/rate_inr_per_quintal"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "max_inr_per_quintal": {
+      "anyOf": [
+        {
+          "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/rate_inr_per_quintal"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "modal_inr_per_quintal": {
+      "anyOf": [
+        {
+          "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/rate_inr_per_quintal"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "arrivals_tonnes": {
+      "anyOf": [
+        {
+          "$ref": "https://kisaniti.invalid/contracts/market/v1/common.schema.json#/$defs/tonnes"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "date_inferred": {
+      "type": "boolean"
+    },
+    "arrivals_shared": {
+      "type": "boolean"
+    },
+    "flags": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[A-Z][A-Z0-9_]*$"
+      }
+    },
+    "dataset_version_id": {
+      "$ref": "https://kisaniti.invalid/contracts/market/v1/common.schema.json#/$defs/dsv_id"
+    },
+    "origin": {
+      "const": "REAL"
+    }
+  }
+}

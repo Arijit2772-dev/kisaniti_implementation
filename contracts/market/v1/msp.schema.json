@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kisaniti.invalid/contracts/market/v1/msp.schema.json",
+  "title": "MspEntryV1 (origin POLICY, never a training row)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract",
+    "crop",
+    "grade",
+    "marketing_season",
+    "msp_inr_per_quintal",
+    "announced_on",
+    "source_url",
+    "verified",
+    "origin"
+  ],
+  "properties": {
+    "contract": {
+      "const": "market.msp/v1"
+    },
+    "crop": {
+      "$ref": "https://kisaniti.invalid/contracts/market/v1/common.schema.json#/$defs/crop"
+    },
+    "grade": {
+      "enum": [
+        "common",
+        "grade_a",
+        "all"
+      ]
+    },
+    "marketing_season": {
+      "type": "string",
+      "pattern": "^(KMS|RMS) [0-9]{4}-[0-9]{2}$"
+    },
+    "msp_inr_per_quintal": {
+      "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/rate_inr_per_quintal"
+    },
+    "announced_on": {
+      "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/business_date"
+    },
+    "source_url": {
+      "type": "string",
+      "format": "uri"
+    },
+    "verified": {
+      "type": "boolean"
+    },
+    "origin": {
+      "const": "POLICY"
+    }
+  }
+}

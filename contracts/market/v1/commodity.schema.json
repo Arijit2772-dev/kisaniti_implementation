@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kisaniti.invalid/contracts/market/v1/commodity.schema.json",
+  "title": "CommodityV1 (global reference data: no fpo_id)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract",
+    "id",
+    "source_name",
+    "crop",
+    "msp_applies"
+  ],
+  "properties": {
+    "contract": {
+      "const": "market.commodity/v1"
+    },
+    "id": {
+      "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/cmd_id"
+    },
+    "source_name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 80
+    },
+    "crop": {
+      "$ref": "https://kisaniti.invalid/contracts/market/v1/common.schema.json#/$defs/crop"
+    },
+    "msp_applies": {
+      "type": "boolean"
+    }
+  }
+}

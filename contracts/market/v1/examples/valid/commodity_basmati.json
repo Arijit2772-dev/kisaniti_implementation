@@ -1,0 +1,7 @@
+{
+  "contract": "market.commodity/v1",
+  "id": "cmd_00000000000000000000000001",
+  "source_name": "Paddy(Basmati)",
+  "crop": "PADDY",
+  "msp_applies": false
+}

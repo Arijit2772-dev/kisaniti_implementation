@@ -1,0 +1,11 @@
+{
+  "contract": "market.msp/v1",
+  "crop": "PADDY",
+  "grade": "common",
+  "marketing_season": "KMS 2025-26",
+  "msp_inr_per_quintal": 2369.0,
+  "announced_on": "2025-05-28",
+  "source_url": "https://www.pib.gov.in/PressReleasePage.aspx?PRID=2131983",
+  "verified": true,
+  "origin": "POLICY"
+}

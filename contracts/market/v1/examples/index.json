@@ -1,0 +1,8 @@
+{
+  "_comment": "prefix -> schema",
+  "commodity_": "commodity.schema.json",
+  "mandi_": "mandi.schema.json",
+  "mspentry_": "msp.schema.json",
+  "priceobs_": "price.schema.json",
+  "datasetversion_": "dataset.schema.json"
+}

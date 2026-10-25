@@ -1,0 +1,11 @@
+{
+  "contract": "org.member/v1",
+  "id": "mbr_00000000000000000000000001",
+  "fpo_id": "fpo_00000000000000000000000001",
+  "display_name": "Gurpreet Singh (fictional)",
+  "village": null,
+  "preferred_language": "hi",
+  "active": true,
+  "origin": "SYNTHETIC",
+  "created_at": "2026-10-26T09:00:00.000Z"
+}

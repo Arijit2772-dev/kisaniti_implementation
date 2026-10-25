@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kisaniti.invalid/contracts/org/v1/member.schema.json",
+  "title": "MemberV1 (no phone number here: contact data arrives with the consent controls)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract",
+    "id",
+    "fpo_id",
+    "display_name",
+    "village",
+    "preferred_language",
+    "active",
+    "origin",
+    "created_at"
+  ],
+  "properties": {
+    "contract": {
+      "const": "org.member/v1"
+    },
+    "id": {
+      "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/mbr_id"
+    },
+    "fpo_id": {
+      "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/fpo_id"
+    },
+    "display_name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 120
+    },
+    "village": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "maxLength": 100
+    },
+    "preferred_language": {
+      "$ref": "https://kisaniti.invalid/contracts/org/v1/common.schema.json#/$defs/language3"
+    },
+    "active": {
+      "type": "boolean"
+    },
+    "origin": {
+      "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/origin"
+    },
+    "created_at": {
+      "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/instant_utc"
+    }
+  }
+}

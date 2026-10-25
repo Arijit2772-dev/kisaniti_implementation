@@ -1,0 +1,11 @@
+{
+  "contract": "org.stock_event/v1",
+  "id": 1,
+  "lot_id": "lot_00000000000000000000000001",
+  "kind": "ADJUSTED",
+  "quantity_kg": "1250.000",
+  "quantity_delta_kg": null,
+  "reason_code": null,
+  "created_by": "usr_00000000000000000000000001",
+  "created_at": "2026-10-26T09:00:00.000Z"
+}

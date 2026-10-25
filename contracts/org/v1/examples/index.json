@@ -1,0 +1,13 @@
+{
+  "_comment": "prefix -> schema",
+  "memberrec_": "member.schema.json",
+  "memberreq_": "member_request.schema.json",
+  "locationrec_": "location.schema.json",
+  "locationreq_": "location_request.schema.json",
+  "lotrec_": "lot.schema.json",
+  "lotreq_": "lot_request.schema.json",
+  "placementreq_": "placement_request.schema.json",
+  "placementrec_": "placement.schema.json",
+  "adjustreq_": "adjustment_request.schema.json",
+  "stockevent_": "stock_event.schema.json"
+}

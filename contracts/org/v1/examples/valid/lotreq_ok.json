@@ -1,0 +1,9 @@
+{
+  "member_id": "mbr_00000000000000000000000001",
+  "commodity_id": "cmd_00000000000000000000000001",
+  "source_variety": "1121",
+  "registered_quantity_kg": "800.500",
+  "harvested_on": "2026-10-10",
+  "location_id": "stl_00000000000000000000000001",
+  "quantity_verified": true
+}
