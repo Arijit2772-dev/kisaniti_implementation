@@ -15,10 +15,11 @@ export interface ApiProblem {
 
 export type ApiResult<T> = { ok: true; status: number; data: T } | { ok: false; problem: ApiProblem };
 
-export async function api<T>(path: string, init: { method?: string; body?: unknown; csrf?: string } = {}): Promise<ApiResult<T>> {
+export async function api<T>(path: string, init: { method?: string; body?: unknown; csrf?: string; idempotencyKey?: string } = {}): Promise<ApiResult<T>> {
   const headers: Record<string, string> = {};
   if (init.body !== undefined) headers["content-type"] = "application/json";
   if (init.csrf) headers["x-csrf-token"] = init.csrf;
+  if (init.idempotencyKey) headers["idempotency-key"] = init.idempotencyKey;
   try {
     const res = await fetch(`/api/v1${path}`, {
       method: init.method ?? "GET",

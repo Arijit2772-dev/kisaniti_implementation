@@ -5,7 +5,7 @@ import { randomUUID } from "node:crypto";
 import type { NextRequest } from "next/server";
 
 const API_URL = process.env.KISANITI_API_URL ?? "http://localhost:8000";
-const FORWARD_REQUEST = ["cookie", "content-type", "x-csrf-token", "origin", "accept-language"];
+const FORWARD_REQUEST = ["cookie", "content-type", "x-csrf-token", "origin", "accept-language", "idempotency-key"];
 const SKIP_RESPONSE = new Set(["content-encoding", "content-length", "transfer-encoding", "connection", "set-cookie"]);
 
 async function forward(request: NextRequest, { params }: { params: Promise<{ path: string[] }> }) {

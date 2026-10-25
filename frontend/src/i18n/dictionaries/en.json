@@ -85,7 +85,11 @@
       "STAFF": "Staff",
       "VIEWER": "Viewer",
       "PLATFORM_OPERATOR": "Platform operator"
-    }
+    },
+    "members": "Members",
+    "lots": "Lots and stock",
+    "prices": "Prices",
+    "devices": "Storage sensors"
   },
   "home": {
     "welcome": "Welcome, {name}",
@@ -134,5 +138,221 @@
   },
   "language": {
     "switchTo": "Switch language"
+  },
+  "members": {
+    "title": "Members",
+    "intro": "The farmers of your FPO. Contact details come later, with the consent controls.",
+    "name": "Name",
+    "village": "Village",
+    "language": "Message language",
+    "status": "Status",
+    "active": "Active",
+    "inactive": "Inactive",
+    "add": "Add a member",
+    "submit": "Add member",
+    "adding": "Adding…",
+    "deactivate": "Deactivate",
+    "activate": "Activate",
+    "empty": "No members yet.",
+    "langs": {
+      "pa": "Punjabi",
+      "hi": "Hindi",
+      "en": "English"
+    },
+    "noWrite": "You can view members but not change them."
+  },
+  "lots": {
+    "title": "Lots and stock",
+    "intro": "Each lot is one crop owned by one member. The quantities come from a ledger that never rounds and never goes below zero; they cannot be typed in.",
+    "member": "Member",
+    "commodity": "Commodity",
+    "variety": "Variety (as reported)",
+    "quantity": "Quantity in kg",
+    "quantityHint": "Exactly three decimals, for example 1250.000",
+    "harvested": "Harvest date",
+    "location": "Placed at",
+    "noLocation": "Not placed yet",
+    "verified": "Weighing confirmed by me",
+    "add": "Register a lot",
+    "submit": "Register lot",
+    "adding": "Registering…",
+    "registered": "Registered",
+    "onHand": "On hand",
+    "reserved": "Reserved",
+    "available": "Available",
+    "sold": "Sold",
+    "adjust": "Correct the stock",
+    "delta": "Change in kg (minus to reduce)",
+    "deltaHint": "For example -12.500 or 3.000",
+    "reason": "Reason",
+    "reasons": {
+      "WEIGHING_CORRECTION": "Weighing correction",
+      "SPILLAGE": "Spillage",
+      "MOISTURE_LOSS": "Moisture loss",
+      "OTHER": "Other"
+    },
+    "apply": "Apply",
+    "history": "History",
+    "hide": "Hide",
+    "kinds": {
+      "REGISTERED": "Registered",
+      "ADJUSTED": "Corrected",
+      "RESERVED": "Reserved",
+      "RESERVATION_RELEASED": "Reservation released",
+      "RESERVATION_CONSUMED": "Reservation used",
+      "SOLD": "Sold"
+    },
+    "empty": "No lots yet.",
+    "needMember": "Add a member first.",
+    "refused": "Refused: this would make the stock negative.",
+    "badQuantity": "Write the quantity with exactly three decimals, for example 1250.000.",
+    "locationsTitle": "Storage places",
+    "locationName": "Name",
+    "locationKind": "Kind",
+    "kinds2": {
+      "COLLECTION_CENTRE": "FPO collection centre",
+      "FARM": "Farm",
+      "WAREHOUSE": "Warehouse",
+      "THIRD_PARTY": "Third party"
+    },
+    "addLocation": "Add a place",
+    "submitLocation": "Add place",
+    "noLocations": "No storage places yet.",
+    "place": "Move to",
+    "changePlace": "Move"
+  },
+  "prices": {
+    "title": "Market prices",
+    "intro": "Daily prices reported by the mandis (AGMARKNET), for Paddy(Basmati) in Punjab, and the official support prices. These are mandi-level prices, not the price a farmer received.",
+    "datasetTitle": "Price dataset",
+    "statusLabel": "Check status",
+    "status": {
+      "PENDING_HAND_CHECK": "Not yet checked by a person",
+      "VALIDATED": "Checked",
+      "REJECTED": "Rejected"
+    },
+    "pendingWarning": "These prices are shown with a warning: a person has not yet compared a sample with the AGMARKNET website, and the rule for rows without a date is not yet confirmed. Do not use them for any claim yet.",
+    "rows": "Rows",
+    "dated": "With their own date",
+    "blankDate": "Date taken from the row above",
+    "flagged": "With a doubt flagged",
+    "newest": "Newest price",
+    "daysAgo": "{days} days ago",
+    "season": "Season",
+    "variety": "Variety",
+    "count": "Rows",
+    "first": "From",
+    "last": "To",
+    "filter": "Filter",
+    "mandi": "Mandi",
+    "allMandis": "All mandis",
+    "allVarieties": "All varieties",
+    "from": "From date",
+    "to": "To date",
+    "show": "Show",
+    "date": "Date",
+    "modal": "Modal",
+    "min": "Min",
+    "max": "Max",
+    "arrivals": "Arrivals (t)",
+    "flags": "Doubts",
+    "missing": "missing",
+    "dateInferred": "date from row above",
+    "none": "No prices for this choice.",
+    "mspTitle": "Official support prices (MSP)",
+    "mspSeason": "Season",
+    "mspGrade": "Grade",
+    "grades": {
+      "common": "Common",
+      "grade_a": "Grade A",
+      "all": "All grades"
+    },
+    "crops": {
+      "PADDY": "Paddy",
+      "WHEAT": "Wheat"
+    },
+    "source": "Source",
+    "verified": "Verified",
+    "perQuintal": "₹ per quintal",
+    "noData": "No price dataset has been imported yet.",
+    "flagNames": {
+      "MAX_MISSING": "max price missing",
+      "MIN_MISSING": "min price missing",
+      "DUPLICATE_KEY": "two rows for the same day",
+      "BLANK_SAME_VARIETY_AS_ANCHOR": "date row repeats the variety",
+      "BLANK_DATE_HAS_OWN_ARRIVALS": "own arrivals figure",
+      "ARRIVALS_ROUNDED_3DP": "arrivals rounded to 3 decimals"
+    },
+    "crop": "Crop"
+  },
+  "devices": {
+    "title": "Storage sensors",
+    "intro": "Each sensor sits in one place and reports temperature and humidity. The category is an experimental approximation of conditions that favour mould and insects at that one point. It is not measured spoilage.",
+    "register": "Register a sensor",
+    "deviceId": "Device ID",
+    "origin": "Source",
+    "origins": {
+      "DEVICE": "Real sensor",
+      "WOKWI_TWIN": "Simulation (Wokwi)",
+      "SIMULATOR": "Software simulator"
+    },
+    "submit": "Register",
+    "registering": "Registering…",
+    "assign": "Place the sensor",
+    "placement": "Placement",
+    "placements": {
+      "IN_GRAIN": "In the grain",
+      "AMBIENT": "In the air of the shed"
+    },
+    "crop": "Crop",
+    "crops": {
+      "PADDY": "Paddy (including basmati)",
+      "WHEAT": "Wheat"
+    },
+    "interval": "Seconds between readings",
+    "apply": "Save placement",
+    "current": "Placed",
+    "none": "Not placed yet",
+    "lastReading": "Last reading",
+    "never": "never",
+    "category": "Condition",
+    "categories": {
+      "LOW": "Low risk",
+      "MEDIUM": "Medium risk",
+      "HIGH": "High risk",
+      "UNKNOWN": "Not known"
+    },
+    "why": "Why it is not known",
+    "reasons": {
+      "NO_ASSIGNMENT": "The sensor has not been placed yet.",
+      "NOT_IN_GRAIN": "The sensor is not in the grain, so the grain condition cannot be judged.",
+      "SETTLING": "The sensor was only just placed; the first 6 hours are ignored while it settles.",
+      "STALE": "No fresh reading in the last 15 minutes.",
+      "LOW_COVERAGE": "Fewer than three quarters of the expected readings arrived in the last 24 hours."
+    },
+    "humidity": "Humidity (24 h middle value)",
+    "temperature": "Temperature (24 h middle value)",
+    "samples": "Readings used",
+    "insects": {
+      "INSECT_FAVOURABLE": "Warm enough for insects to be active",
+      "INSECTS_SLOW": "Cool: insects are slow",
+      "INSECTS_INACTIVE": "Cold: insects are inactive"
+    },
+    "adjust": {
+      "COLD_BELOW_10C_LOWERED": "Lowered one step because it is below 10 °C",
+      "WARM_25C_RAISED": "Raised one step because it is 25 °C or warmer with humidity of 60% or more"
+    },
+    "assessedAt": "Assessed",
+    "trend": "Humidity over the last 24 hours",
+    "limits": "65% and 70% are the limits for medium and high",
+    "noAssessment": "No assessment yet; the job runs every hour.",
+    "deactivate": "Stop accepting this sensor",
+    "empty": "No sensors yet.",
+    "origin2": "Data origin",
+    "synthetic": "Simulated data",
+    "real": "Real sensor data",
+    "noReadings": "No readings yet.",
+    "label": "Experimental approximation, not measured spoilage",
+    "confirmDeactivate": "Stop accepting readings from {id}? Its history stays."
   }
 }

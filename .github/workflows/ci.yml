@@ -122,9 +122,9 @@ jobs:
         run: |
           for i in $(seq 1 20); do docker compose logs assessor | grep -q '"failed": 0' && break; sleep 3; done
           docker compose logs assessor | grep -q '"failed": 0'
-      - name: Login and two-FPO isolation against the running stack
+      - name: Login, two-FPO isolation, lots and stock ledger, market reads against the running stack
         run: |
-          scripts/smoke_access.sh
+          SMOKE_SEED_MARKET=1 scripts/smoke_access.sh   # imports a fixture price release (invented numbers) first
           scripts/smoke_access.sh http://localhost:3000   # the same checks through the website's API proxy
       - if: failure()
         run: docker compose logs

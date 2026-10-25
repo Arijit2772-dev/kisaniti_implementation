@@ -75,3 +75,11 @@ code.temp { font-size: 1.1rem; user-select: all; padding: 0.2rem 0.4rem; border:
   td::before { content: attr(data-label); font-weight: 600; color: var(--muted); flex: 0 0 40%; }
   .row-actions { flex-wrap: wrap; }
 }
+.card.warn { border-color: var(--demo); }
+.plain { list-style: none; padding: 0; margin: 0.5rem 0; display: grid; gap: 0.25rem; }
+.inline-move { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.25rem; }
+.trend { width: 100%; max-width: 28rem; height: auto; }
+.trend .line { fill: none; stroke: var(--ok); stroke-width: 2; }
+.trend .limit { stroke: var(--bad); stroke-dasharray: 4 3; stroke-width: 1; }
+.category { font-weight: 700; }
+.category.HIGH { color: var(--bad); }
