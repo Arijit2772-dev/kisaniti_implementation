@@ -9,6 +9,7 @@ from . import __version__, health, problems
 from .access import routes as access_routes
 from .config import load_settings
 from .devices import routes as device_routes
+from .market import routes as market_routes
 from .org import routes as org_routes
 
 app = FastAPI(title="KisanNiti API", version=__version__)
@@ -17,6 +18,7 @@ app.include_router(health.router)
 access_routes.install(app)
 device_routes.install(app)
 org_routes.install(app)
+market_routes.install(app)
 
 
 @app.get("/api/v1/meta")
@@ -25,6 +27,6 @@ def meta() -> dict[str, object]:
     return {
         "api_version": __version__,
         "core_version": core_version,
-        "contracts": ["shared/v1", "access/v1", "devices/v1", "org/v1"],
+        "contracts": ["shared/v1", "access/v1", "devices/v1", "org/v1", "market/v1"],
         "mode": load_settings().mode.value,
     }

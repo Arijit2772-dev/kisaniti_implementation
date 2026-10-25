@@ -1,0 +1,84 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kisaniti.invalid/contracts/market/v1/price_summary.schema.json",
+  "title": "PriceSummaryV1: what the latest non-rejected price dataset covers and how fresh it is",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract",
+    "dataset",
+    "rows",
+    "newest_observed_on",
+    "days_since_newest",
+    "by_season_variety"
+  ],
+  "properties": {
+    "contract": {
+      "const": "market.price_summary/v1"
+    },
+    "dataset": {
+      "anyOf": [
+        {
+          "$ref": "https://kisaniti.invalid/contracts/market/v1/dataset.schema.json"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "rows": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "newest_observed_on": {
+      "anyOf": [
+        {
+          "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/business_date"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "days_since_newest": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "by_season_variety": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "season",
+          "variety_label",
+          "rows",
+          "first_on",
+          "last_on"
+        ],
+        "properties": {
+          "season": {
+            "type": "string",
+            "pattern": "^[0-9]{4}-[0-9]{2}$"
+          },
+          "variety_label": {
+            "type": "string"
+          },
+          "rows": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "first_on": {
+            "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/business_date"
+          },
+          "last_on": {
+            "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/business_date"
+          }
+        }
+      }
+    }
+  }
+}

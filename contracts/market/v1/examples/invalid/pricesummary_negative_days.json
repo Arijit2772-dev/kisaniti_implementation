@@ -1,0 +1,28 @@
+{
+  "contract": "market.price_summary/v1",
+  "dataset": {
+    "contract": "market.dataset/v1",
+    "id": "dsv_00000000000000000000000001",
+    "name": "basmati_punjab_2021-2026 (release 1)",
+    "rows": 6678,
+    "dated_rows": 6098,
+    "blank_date_rows": 580,
+    "flagged_rows": 8,
+    "validation_status": "PENDING_HAND_CHECK",
+    "manifest_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "imported_at": "2026-10-26T10:00:00.000Z",
+    "note": "blank-date rule not yet confirmed on the website"
+  },
+  "rows": 6678,
+  "newest_observed_on": "2026-10-21",
+  "days_since_newest": -1,
+  "by_season_variety": [
+    {
+      "season": "2025-26",
+      "variety_label": "1121",
+      "rows": 567,
+      "first_on": "2025-09-02",
+      "last_on": "2026-02-27"
+    }
+  ]
+}

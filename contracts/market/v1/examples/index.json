@@ -4,5 +4,6 @@
   "mandi_": "mandi.schema.json",
   "mspentry_": "msp.schema.json",
   "priceobs_": "price.schema.json",
-  "datasetversion_": "dataset.schema.json"
+  "datasetversion_": "dataset.schema.json",
+  "pricesummary_": "price_summary.schema.json"
 }
