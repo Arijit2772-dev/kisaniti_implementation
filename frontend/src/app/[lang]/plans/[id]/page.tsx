@@ -1,5 +1,6 @@
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
+import { InstructionsPanel, type Instruction } from "@/components/InstructionsPanel";
 import { PlanReview, type Choice, type Context, type PlanState, type Revision } from "@/components/PlanReview";
 import { Protected } from "@/components/Protected";
 import { hasLocale } from "@/i18n/config";
@@ -63,13 +64,14 @@ async function PlanContent({ params }: { params: Promise<{ lang: string; id: str
       <Protected lang={lang}>
         {async (p, dict) => {
           const pid = encodeURIComponent(id);
-          const [plan, members, state, revisions, context, users] = await Promise.all([
+          const [plan, members, state, revisions, context, users, instructions] = await Promise.all([
             serverGet<Plan>(`/plans/${pid}`),
             serverGet<Member[]>("/members"),
             serverGet<PlanState>(`/plans/${pid}/state`),
             serverGet<Revision[]>(`/plans/${pid}/revisions`),
             serverGet<Context>(`/plans/${pid}/approval-context`),
             p.capabilities.includes("users.manage") ? serverGet<{ id: string; display_name: string }[]>("/users") : Promise.resolve(null),
+            serverGet<Instruction[]>(`/plans/${pid}/instructions`),
           ]);
           if (!plan || !state || !revisions || !context) notFound();
           const t = dict.plans;
@@ -159,6 +161,20 @@ async function PlanContent({ params }: { params: Promise<{ lang: string; id: str
                     ))}
                   </ul>
                 </>
+              )}
+
+              {state.status === "APPROVED" && (
+                <InstructionsPanel
+                  csrf={p.csrf_token}
+                  canSend={p.capabilities.includes("messages.send")}
+                  t={dict.messages}
+                  langs={dict.members.langs}
+                  errors={dict.errors}
+                  planId={plan.id}
+                  reservation={state.reservation.state}
+                  memberNames={Object.fromEntries((members ?? []).map((m) => [m.id, m.display_name]))}
+                  initial={instructions ?? []}
+                />
               )}
 
               <h2>{t.assignments}</h2>

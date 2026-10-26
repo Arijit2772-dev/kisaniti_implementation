@@ -83,3 +83,4 @@ code.temp { font-size: 1.1rem; user-select: all; padding: 0.2rem 0.4rem; border:
 .trend .limit { stroke: var(--bad); stroke-dasharray: 4 3; stroke-width: 1; }
 .category { font-weight: 700; }
 .category.HIGH { color: var(--bad); }
+.message-text { white-space: pre-wrap; padding: 0.75rem; border: 1px dashed var(--muted); border-radius: 6px; font-family: inherit; }

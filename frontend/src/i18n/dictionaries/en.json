@@ -90,7 +90,9 @@
     "lots": "Lots and stock",
     "prices": "Prices",
     "devices": "Storage sensors",
-    "plans": "Plans"
+    "plans": "Plans",
+    "contacts": "Contacts",
+    "messages": "Messages"
   },
   "home": {
     "welcome": "Welcome, {name}",
@@ -606,5 +608,109 @@
       "NO_CHANGE": "Nothing changed compared with the current revision.",
       "PLAN_INVALID": "The edited plan is not valid."
     }
+  },
+  "contacts": {
+    "title": "Contacts and consent",
+    "intro": "Phone numbers and each farmer's permission to be messaged. Use fictional numbers only until the privacy controls and a legal review exist. Numbers are hidden unless your role may see them.",
+    "member": "Member",
+    "language": "Message language",
+    "phone": "Phone",
+    "noPhone": "none",
+    "consents": "Permission",
+    "kinds": {
+      "ADVICE": "Selling advice and records",
+      "WHATSAPP": "WhatsApp messages",
+      "RESEARCH": "Research use (optional)"
+    },
+    "states": {
+      "GRANTED": "Given",
+      "WITHDRAWN": "Withdrawn",
+      "NONE": "Not asked"
+    },
+    "grant": "Record: given",
+    "withdraw": "Record: withdrawn",
+    "method": "How the farmer agreed",
+    "methods": {
+      "STAFF_ASSISTED_ORAL": "Told and agreed in person",
+      "PAPER_FORM": "Paper form",
+      "DIGITAL_FORM": "Digital form"
+    },
+    "notice": "Notice version (demo)",
+    "setPhone": "Save number",
+    "newPhone": "Phone number",
+    "maskedNote": "Your role sees numbers masked.",
+    "saved": "Saved.",
+    "active": "Active",
+    "inactive": "Not active",
+    "issues": {
+      "PHONE_INVALID": "Enter a valid mobile number, for example 90000 00001.",
+      "NO_CHANGE": "Nothing changed."
+    },
+    "noWrite": "You can look at contacts but not change them."
+  },
+  "messages": {
+    "statuses": {
+      "PREPARED": "Ready",
+      "BLOCKED": "Blocked"
+    },
+    "delivery": {
+      "NOT_SENT": "Not previewed",
+      "PREVIEWED": "Previewed (nothing was sent)",
+      "BLOCKED": "Blocked at send",
+      "QUEUED": "Queued",
+      "SENT": "Sent",
+      "DELIVERED": "Delivered",
+      "READ": "Read",
+      "FAILED": "Failed"
+    },
+    "issues": {
+      "MEMBER_INACTIVE": "The member is not active.",
+      "NO_CONTACT": "No phone number is recorded.",
+      "NO_WHATSAPP_CONSENT": "The farmer has not agreed to WhatsApp messages.",
+      "CONSENT_WITHDRAWN": "The farmer withdrew agreement to WhatsApp messages.",
+      "TEMPLATE_UNAVAILABLE": "There is no message text in this farmer's language.",
+      "LANGUAGE_CHANGED": "The farmer's language changed after the message was written; prepare it again.",
+      "COMMITMENT_NOT_ACTIVE": "The reservation is no longer active."
+    },
+    "title": "Messages to farmers",
+    "intro": "The approved plan, written for each farmer in their own language. In this version a message is only previewed: it shows the exact text and who it would go to, and nothing is sent to anyone.",
+    "prepare": "Prepare the messages",
+    "prepareCancel": "Prepare cancellation messages",
+    "cancelIntro": "The reservation was released. Farmers who were told about the plan can be told it is cancelled.",
+    "farmer": "Farmer",
+    "language": "Language",
+    "status": "Status",
+    "deliveryCol": "Delivery",
+    "preview": "Preview",
+    "previewing": "Checking…",
+    "previewedLabel": "PREVIEW — nothing was sent",
+    "recipient": "Would go to",
+    "exactText": "Exact message",
+    "reviewStatus": {
+      "UNREVIEWED": "Translation not yet checked by a native speaker.",
+      "REVIEWED": "Translation checked."
+    },
+    "empty": "No messages yet.",
+    "queueTitle": "Needs attention",
+    "queueEmpty": "Nothing needs attention.",
+    "templatesTitle": "Message texts",
+    "version": "version",
+    "kinds": {
+      "SALE_INSTRUCTION": "Sale plan",
+      "CANCELLATION": "Cancellation"
+    },
+    "openPlan": "Open the plan",
+    "show": "Show text",
+    "hide": "Hide text",
+    "errors": {
+      "NOT_APPROVED": "The plan is not approved with an active reservation.",
+      "NOT_RELEASED": "The reservation has not been released.",
+      "NOTHING_TO_CANCEL": "No farmer was told about this plan, so there is nothing to cancel.",
+      "INSTRUCTION_BLOCKED": "This message is blocked. Fix the reason, then prepare the messages again.",
+      "ALREADY_SENT": "This message was already sent.",
+      "CHANNEL_NOT_AVAILABLE": "This channel is not available yet."
+    },
+    "noRights": "You can look at the messages. Only a user allowed to send messages can prepare or preview them.",
+    "attempts": "previews"
   }
 }
