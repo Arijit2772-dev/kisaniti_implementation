@@ -1,0 +1,753 @@
+{
+  "contract": "plan.proposal/v1",
+  "id": "pln_01M5VC64B9FS3FT31B0DNAXGHY",
+  "fpo_id": "fpo_01M5VC64B9PKY2TP8S1E73SZWA",
+  "commodity_id": "cmd_01M5VC64B90J4MW669Z1E96YHP",
+  "variety": "1121",
+  "created_at": "2026-10-26T12:00:00.000Z",
+  "created_by": "usr_01M5VC64B98N1YC1TDA0K06ECG",
+  "status": "NOT_PROPOSED",
+  "not_proposed_reasons": [],
+  "request": {
+    "variety": "1121",
+    "horizons_days": [
+      1,
+      7
+    ],
+    "mandis": [
+      {
+        "mandi_id": "mnd_01M5VC64B8BEZYPARZQ6TVWYWW",
+        "transport_inr_per_quintal": "35.00"
+      },
+      {
+        "mandi_id": "mnd_01M5VC64B825N66BA1BJVCYARW",
+        "transport_inr_per_quintal": "0.00"
+      }
+    ],
+    "increment_kg": "100.000"
+  },
+  "dataset": {
+    "id": "dsv_01M5VC64B856BREE9ZV0R92RPQ",
+    "name": "example release (invented numbers)",
+    "validation_status": "PENDING_HAND_CHECK",
+    "manifest_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "origin_date": "2025-11-18",
+  "forecast": {
+    "contract": "plan.forecast_set/v1",
+    "variety": "1121",
+    "index_variant": "dated_only",
+    "dataset": {
+      "id": "dsv_01M5VC64B856BREE9ZV0R92RPQ",
+      "name": "example release (invented numbers)",
+      "validation_status": "PENDING_HAND_CHECK",
+      "manifest_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "origin_date": "2025-11-18",
+    "season": "2025-26",
+    "index_days_in_season": 70,
+    "label": "Baseline forecast, not validated on held-out data",
+    "signal_verdict": "NOT_ASSESSED",
+    "calibration": "NOT_VERIFIED",
+    "methods": [
+      {
+        "method": "NAIVE",
+        "horizons": [
+          {
+            "h": 1,
+            "target_date": "2025-11-19",
+            "point_inr_per_quintal": "3297.00",
+            "range80": {
+              "low_inr_per_quintal": "3276.00",
+              "high_inr_per_quintal": "3318.00"
+            },
+            "range95": {
+              "low_inr_per_quintal": "3272.00",
+              "high_inr_per_quintal": "3322.00"
+            },
+            "residual_pairs": 180,
+            "status": "RANGE_AVAILABLE"
+          },
+          {
+            "h": 7,
+            "target_date": "2025-11-25",
+            "point_inr_per_quintal": "3297.00",
+            "range80": {
+              "low_inr_per_quintal": "3247.00",
+              "high_inr_per_quintal": "3347.00"
+            },
+            "range95": {
+              "low_inr_per_quintal": "3211.00",
+              "high_inr_per_quintal": "3383.00"
+            },
+            "residual_pairs": 162,
+            "status": "RANGE_AVAILABLE"
+          },
+          {
+            "h": 14,
+            "target_date": "2025-12-02",
+            "point_inr_per_quintal": "3297.00",
+            "range80": {
+              "low_inr_per_quintal": "3229.00",
+              "high_inr_per_quintal": "3365.00"
+            },
+            "range95": {
+              "low_inr_per_quintal": "3202.00",
+              "high_inr_per_quintal": "3392.00"
+            },
+            "residual_pairs": 141,
+            "status": "RANGE_AVAILABLE"
+          }
+        ]
+      },
+      {
+        "method": "MOVING_AVERAGE_5",
+        "horizons": [
+          {
+            "h": 1,
+            "target_date": "2025-11-19",
+            "point_inr_per_quintal": "3278.40",
+            "range80": {
+              "low_inr_per_quintal": "3248.40",
+              "high_inr_per_quintal": "3308.40"
+            },
+            "range95": {
+              "low_inr_per_quintal": "3231.00",
+              "high_inr_per_quintal": "3325.80"
+            },
+            "residual_pairs": 180,
+            "status": "RANGE_AVAILABLE"
+          },
+          {
+            "h": 7,
+            "target_date": "2025-11-25",
+            "point_inr_per_quintal": "3278.40",
+            "range80": {
+              "low_inr_per_quintal": "3222.80",
+              "high_inr_per_quintal": "3334.00"
+            },
+            "range95": {
+              "low_inr_per_quintal": "3195.60",
+              "high_inr_per_quintal": "3361.20"
+            },
+            "residual_pairs": 162,
+            "status": "RANGE_AVAILABLE"
+          },
+          {
+            "h": 14,
+            "target_date": "2025-12-02",
+            "point_inr_per_quintal": "3278.40",
+            "range80": {
+              "low_inr_per_quintal": "3210.80",
+              "high_inr_per_quintal": "3346.00"
+            },
+            "range95": {
+              "low_inr_per_quintal": "3188.40",
+              "high_inr_per_quintal": "3368.40"
+            },
+            "residual_pairs": 141,
+            "status": "RANGE_AVAILABLE"
+          }
+        ]
+      }
+    ],
+    "candidate_mandis": [
+      {
+        "mandi_id": "mnd_01M5VC64B8BEZYPARZQ6TVWYWW",
+        "name": "Alpha APMC (example)",
+        "basis_inr_per_quintal": "40.00",
+        "days_used": 30,
+        "status": "ELIGIBLE"
+      },
+      {
+        "mandi_id": "mnd_01M5VC64B825N66BA1BJVCYARW",
+        "name": "Beta APMC (example)",
+        "basis_inr_per_quintal": null,
+        "days_used": 3,
+        "status": "BASIS_TOO_FEW_DAYS"
+      }
+    ],
+    "series_tail": [
+      {
+        "date": "2025-10-20",
+        "index_inr_per_quintal": "3257.000",
+        "n_mandis": 3
+      },
+      {
+        "date": "2025-10-21",
+        "index_inr_per_quintal": "3284.000",
+        "n_mandis": 3
+      },
+      {
+        "date": "2025-10-22",
+        "index_inr_per_quintal": "3298.000",
+        "n_mandis": 3
+      },
+      {
+        "date": "2025-10-23",
+        "index_inr_per_quintal": "3288.000",
+        "n_mandis": 3
+      },
+      {
+        "date": "2025-10-24",
+        "index_inr_per_quintal": "3309.000",
+        "n_mandis": 3
+      },
+      {
+        "date": "2025-10-25",
+        "index_inr_per_quintal": "3296.000",
+        "n_mandis": 3
+      },
+      {
+        "date": "2025-10-26",
+        "index_inr_per_quintal": "3281.000",
+        "n_mandis": 3
+      },
+      {
+        "date": "2025-10-27",
+        "index_inr_per_quintal": "3303.000",
+        "n_mandis": 3
+      },
+      {
+        "date": "2025-10-28",
+        "index_inr_per_quintal": "3318.000",
+        "n_mandis": 3
+      },
+      {
+        "date": "2025-10-29",
+        "index_inr_per_quintal": "3328.000",
+        "n_mandis": 3
+      },
+      {
+        "date": "2025-10-30",
+        "index_inr_per_quintal": "3315.000",
+        "n_mandis": 3
+      },
+      {
+        "date": "2025-10-31",
+        "index_inr_per_quintal": "3333.000",
+        "n_mandis": 3
+      },
+      {
+        "date": "2025-11-01",
+        "index_inr_per_quintal": "3332.000",
+        "n_mandis": 3
+      },
+      {
+        "date": "2025-11-02",
+        "index_inr_per_quintal": "3337.000",
+        "n_mandis": 3
+      },
+      {
+        "date": "2025-11-03",
+        "index_inr_per_quintal": "3350.000",
+        "n_mandis": 3
+      },
+      {
+        "date": "2025-11-04",
+        "index_inr_per_quintal": "3330.000",
+        "n_mandis": 3
+      },
+      {
+        "date": "2025-11-05",
+        "index_inr_per_quintal": "3331.000",
+        "n_mandis": 3
+      },
+      {
+        "date": "2025-11-06",
+        "index_inr_per_quintal": "3309.000",
+        "n_mandis": 3
+      },
+      {
+        "date": "2025-11-07",
+        "index_inr_per_quintal": "3290.000",
+        "n_mandis": 3
+      },
+      {
+        "date": "2025-11-08",
+        "index_inr_per_quintal": "3271.000",
+        "n_mandis": 3
+      },
+      {
+        "date": "2025-11-09",
+        "index_inr_per_quintal": "3248.000",
+        "n_mandis": 3
+      },
+      {
+        "date": "2025-11-10",
+        "index_inr_per_quintal": "3255.000",
+        "n_mandis": 3
+      },
+      {
+        "date": "2025-11-11",
+        "index_inr_per_quintal": "3246.000",
+        "n_mandis": 3
+      },
+      {
+        "date": "2025-11-12",
+        "index_inr_per_quintal": "3236.000",
+        "n_mandis": 3
+      },
+      {
+        "date": "2025-11-13",
+        "index_inr_per_quintal": "3258.000",
+        "n_mandis": 3
+      },
+      {
+        "date": "2025-11-14",
+        "index_inr_per_quintal": "3278.000",
+        "n_mandis": 3
+      },
+      {
+        "date": "2025-11-15",
+        "index_inr_per_quintal": "3278.000",
+        "n_mandis": 3
+      },
+      {
+        "date": "2025-11-16",
+        "index_inr_per_quintal": "3269.000",
+        "n_mandis": 3
+      },
+      {
+        "date": "2025-11-17",
+        "index_inr_per_quintal": "3270.000",
+        "n_mandis": 3
+      },
+      {
+        "date": "2025-11-18",
+        "index_inr_per_quintal": "3297.000",
+        "n_mandis": 3
+      }
+    ],
+    "policy_versions": {
+      "index": "INDEX_DATED_ONLY_DEMO_V1",
+      "forecast": "BASELINE_FORECAST_V1",
+      "range": "RANGE_ABS_ERROR_CONFORMAL_V1"
+    }
+  },
+  "mandis": [
+    {
+      "mandi_id": "mnd_01M5VC64B8BEZYPARZQ6TVWYWW",
+      "name": "Alpha APMC (example)",
+      "basis_inr_per_quintal": "40.00",
+      "days_used": 30,
+      "transport_inr_per_quintal": "35.00",
+      "eligible": true,
+      "excluded_reason": null
+    },
+    {
+      "mandi_id": "mnd_01M5VC64B825N66BA1BJVCYARW",
+      "name": "Beta APMC (example)",
+      "basis_inr_per_quintal": null,
+      "days_used": 3,
+      "transport_inr_per_quintal": "0.00",
+      "eligible": false,
+      "excluded_reason": "BASIS_TOO_FEW_DAYS"
+    }
+  ],
+  "lots": [
+    {
+      "lot_id": "lot_01M5VC64B9EF3PBFDXXPQEVRXP",
+      "member_id": "mbr_01M5VC64B9XARWZXANJJKC3ZYX",
+      "available_kg": "800.000",
+      "planned_kg": "800.000",
+      "excluded_reason": null,
+      "storage": "UNKNOWN",
+      "storage_reason": "NO_SENSOR_LINK",
+      "device_id": null,
+      "assessed_at": null
+    },
+    {
+      "lot_id": "lot_01M5VC64B9S1M1QCDQEYC6RBZ0",
+      "member_id": "mbr_01M5VC64B9G8DMPZR4G3N7Y4NK",
+      "available_kg": "1250.000",
+      "planned_kg": "1250.000",
+      "excluded_reason": null,
+      "storage": "HIGH",
+      "storage_reason": null,
+      "device_id": "kn-sim-001",
+      "assessed_at": "2026-10-26T11:30:00.000Z"
+    }
+  ],
+  "allocation_input": {
+    "contract": "allocation_input/v1",
+    "fpo_id": "fpo_01M5VC64B9PKY2TP8S1E73SZWA",
+    "commodity_id": "cmd_01M5VC64B90J4MW669Z1E96YHP",
+    "mode": "DEMO",
+    "provenance": {
+      "origin": "SYNTHETIC",
+      "source_kind": "DERIVED",
+      "source_ref": "plan/v1 pln_01M5VC64B9FS3FT31B0DNAXGHY over dataset example release (invented numbers)",
+      "acquired_at": "2026-10-26T12:00:00.000Z",
+      "generator": {
+        "script": "kisaniti_api.plan",
+        "version": "1",
+        "seed": 0
+      }
+    },
+    "run_id": "run_01M5VC64B9PDV0ZSGG2E1MS7XV",
+    "allocation_mode": "PARTIAL",
+    "market_load_policy": "DISABLED",
+    "dates": [
+      "2025-11-19",
+      "2025-11-25"
+    ],
+    "mandis": [
+      {
+        "id": "mnd_01M5VC64B8BEZYPARZQ6TVWYWW"
+      }
+    ],
+    "farmers": [
+      {
+        "id": "mbr_01M5VC64B9G8DMPZR4G3N7Y4NK"
+      },
+      {
+        "id": "mbr_01M5VC64B9XARWZXANJJKC3ZYX"
+      }
+    ],
+    "lots": [
+      {
+        "id": "lot_01M5VC64B9EF3PBFDXXPQEVRXP",
+        "farmer_id": "mbr_01M5VC64B9XARWZXANJJKC3ZYX",
+        "quantity_kg": "800.000",
+        "increment_kg": "100.000",
+        "storage": "UNKNOWN"
+      },
+      {
+        "id": "lot_01M5VC64B9S1M1QCDQEYC6RBZ0",
+        "farmer_id": "mbr_01M5VC64B9G8DMPZR4G3N7Y4NK",
+        "quantity_kg": "1250.000",
+        "increment_kg": "100.000",
+        "storage": "HIGH"
+      }
+    ],
+    "choices": [
+      {
+        "lot_id": "lot_01M5VC64B9EF3PBFDXXPQEVRXP",
+        "mandi_id": "mnd_01M5VC64B8BEZYPARZQ6TVWYWW",
+        "date": "2025-11-19",
+        "price_inr_per_kg": "33.3700",
+        "cost_inr_per_kg": "0.3500"
+      },
+      {
+        "lot_id": "lot_01M5VC64B9EF3PBFDXXPQEVRXP",
+        "mandi_id": "mnd_01M5VC64B8BEZYPARZQ6TVWYWW",
+        "date": "2025-11-25",
+        "price_inr_per_kg": "33.3700",
+        "cost_inr_per_kg": "0.3500"
+      },
+      {
+        "lot_id": "lot_01M5VC64B9S1M1QCDQEYC6RBZ0",
+        "mandi_id": "mnd_01M5VC64B8BEZYPARZQ6TVWYWW",
+        "date": "2025-11-19",
+        "price_inr_per_kg": "33.3700",
+        "cost_inr_per_kg": "0.3500"
+      },
+      {
+        "lot_id": "lot_01M5VC64B9S1M1QCDQEYC6RBZ0",
+        "mandi_id": "mnd_01M5VC64B8BEZYPARZQ6TVWYWW",
+        "date": "2025-11-25",
+        "price_inr_per_kg": "33.3700",
+        "cost_inr_per_kg": "0.3500"
+      }
+    ],
+    "capacities": [],
+    "policy_versions": {
+      "fairness": "LEXIMIN_FULFILMENT_V1",
+      "storage": "STORAGE_PRIORITY_V1",
+      "tie_break": "TIE_BREAK_V1",
+      "economic": "NONE_DEMO_V1"
+    }
+  },
+  "allocation_input_sha256": "99fbf61975b8463d779b29e6dbf5c9cccbe87e1de02facde373283c5e359bdf9",
+  "allocation_result": {
+    "contract": "allocation_result/v1",
+    "fpo_id": "fpo_01M5VC64B9PKY2TP8S1E73SZWA",
+    "commodity_id": "cmd_01M5VC64B90J4MW669Z1E96YHP",
+    "input_sha256": "99fbf61975b8463d779b29e6dbf5c9cccbe87e1de02facde373283c5e359bdf9",
+    "origin": "SYNTHETIC",
+    "mode": "DEMO",
+    "solver": {
+      "name": "highs",
+      "hierarchy": "KISANITI"
+    },
+    "status": {
+      "solution": "FOUND",
+      "allocation_outcome": "PARTIAL",
+      "optimality": "PROVEN_OPTIMAL",
+      "termination": "COMPLETED",
+      "certified_stages": [
+        "ALLOCATION",
+        "LEXIMIN",
+        "STORAGE_HIGH_TOTAL",
+        "STORAGE_HIGH_2025-11-19",
+        "STORAGE_HIGH_2025-11-25",
+        "STORAGE_MEDIUM",
+        "NET_RETURN",
+        "TIE_BREAK"
+      ]
+    },
+    "assignments": [
+      {
+        "lot_id": "lot_01M5VC64B9EF3PBFDXXPQEVRXP",
+        "mandi_id": "mnd_01M5VC64B8BEZYPARZQ6TVWYWW",
+        "date": "2025-11-19",
+        "quantity_kg": "800.000"
+      },
+      {
+        "lot_id": "lot_01M5VC64B9S1M1QCDQEYC6RBZ0",
+        "mandi_id": "mnd_01M5VC64B8BEZYPARZQ6TVWYWW",
+        "date": "2025-11-19",
+        "quantity_kg": "1200.000"
+      }
+    ],
+    "lots": [
+      {
+        "lot_id": "lot_01M5VC64B9EF3PBFDXXPQEVRXP",
+        "participating_kg": "800.000",
+        "scheduled_kg": "800.000",
+        "unallocated_kg": "0.000"
+      },
+      {
+        "lot_id": "lot_01M5VC64B9S1M1QCDQEYC6RBZ0",
+        "participating_kg": "1250.000",
+        "scheduled_kg": "1200.000",
+        "unallocated_kg": "50.000"
+      }
+    ],
+    "farmers": [
+      {
+        "farmer_id": "mbr_01M5VC64B9G8DMPZR4G3N7Y4NK",
+        "fulfilment": {
+          "numerator_kg": "1200.000",
+          "denominator_kg": "1250.000",
+          "display": "0.960000"
+        }
+      },
+      {
+        "farmer_id": "mbr_01M5VC64B9XARWZXANJJKC3ZYX",
+        "fulfilment": {
+          "numerator_kg": "800.000",
+          "denominator_kg": "800.000",
+          "display": "1.000000"
+        }
+      }
+    ],
+    "storage": {
+      "HIGH": {
+        "scheduled_kg": "1200.000",
+        "by_date_kg": [
+          "1200.000",
+          "0.000"
+        ]
+      },
+      "MEDIUM": {
+        "scheduled_kg": "0.000",
+        "by_date_kg": [
+          "0.000",
+          "0.000"
+        ]
+      }
+    },
+    "totals": {
+      "participating_kg": "2050.000",
+      "scheduled_kg": "2000.000",
+      "gross_inr": "66740.00",
+      "cost_inr": "700.00",
+      "expected_net_return_inr": "66040.00"
+    },
+    "tie_break_score": 24,
+    "validation": {
+      "contract": "plan_validation/v1",
+      "valid": true,
+      "issues": [],
+      "recomputed": {
+        "scheduled_kg": "2000.000",
+        "gross_inr": "66740.00",
+        "cost_inr": "700.00",
+        "expected_net_return_inr": "66040.00"
+      },
+      "market_load": {
+        "limit_violations": 0,
+        "excess_kg": "0.000"
+      }
+    }
+  },
+  "validation": {
+    "contract": "plan_validation/v1",
+    "valid": true,
+    "issues": [],
+    "recomputed": {
+      "scheduled_kg": "2000.000",
+      "gross_inr": "66740.00",
+      "cost_inr": "700.00",
+      "expected_net_return_inr": "66040.00"
+    },
+    "market_load": {
+      "limit_violations": 0,
+      "excess_kg": "0.000"
+    }
+  },
+  "warnings": [
+    {
+      "code": "PRICE_DATASET_UNCHECKED",
+      "params": {
+        "status": "PENDING_HAND_CHECK"
+      }
+    },
+    {
+      "code": "PRICE_DATA_OLDER_THAN_TODAY",
+      "params": {
+        "days": "342",
+        "origin_date": "2025-11-18"
+      }
+    },
+    {
+      "code": "NOT_ALL_STOCK_ALLOCATED",
+      "params": {
+        "scheduled_kg": "2000.000",
+        "participating_kg": "2050.000"
+      }
+    },
+    {
+      "code": "SYNTHETIC_DEMO_DATA",
+      "params": {}
+    },
+    {
+      "code": "PRICE_SAME_ON_ALL_DATES",
+      "params": {}
+    }
+  ],
+  "explanation": [
+    {
+      "code": "FORECAST_METHOD",
+      "params": {
+        "method": "NAIVE"
+      }
+    },
+    {
+      "code": "FORECAST_NOT_VALIDATED",
+      "params": {}
+    },
+    {
+      "code": "PRICE_DATASET_STATUS",
+      "params": {
+        "status": "PENDING_HAND_CHECK"
+      }
+    },
+    {
+      "code": "PRICE_DATA_AGE",
+      "params": {
+        "origin_date": "2025-11-18",
+        "days": "342"
+      }
+    },
+    {
+      "code": "MANDI_BASIS",
+      "params": {
+        "mandi_id": "mnd_01M5VC64B8BEZYPARZQ6TVWYWW",
+        "basis_inr_per_quintal": "40.00",
+        "days_used": "30"
+      }
+    },
+    {
+      "code": "TRANSPORT_AS_ENTERED",
+      "params": {
+        "mandi_id": "mnd_01M5VC64B8BEZYPARZQ6TVWYWW",
+        "inr_per_quintal": "35.00"
+      }
+    },
+    {
+      "code": "MANDI_EXCLUDED",
+      "params": {
+        "mandi_id": "mnd_01M5VC64B825N66BA1BJVCYARW",
+        "reason": "BASIS_TOO_FEW_DAYS",
+        "days_used": "3"
+      }
+    },
+    {
+      "code": "WAITING_COST_NOT_MODELLED",
+      "params": {}
+    },
+    {
+      "code": "STORAGE_UNKNOWN",
+      "params": {
+        "lot_id": "lot_01M5VC64B9EF3PBFDXXPQEVRXP",
+        "reason": "NO_SENSOR_LINK"
+      }
+    },
+    {
+      "code": "STORAGE_PRIORITY",
+      "params": {
+        "lot_id": "lot_01M5VC64B9S1M1QCDQEYC6RBZ0",
+        "category": "HIGH"
+      }
+    },
+    {
+      "code": "INCREMENT_REMAINDER",
+      "params": {
+        "lot_id": "lot_01M5VC64B9S1M1QCDQEYC6RBZ0",
+        "remainder_kg": "50.000",
+        "increment_kg": "100.000"
+      }
+    },
+    {
+      "code": "FAIRNESS_RULE",
+      "params": {
+        "rule": "LEXIMIN_FULFILMENT_V1",
+        "lowest_fulfilment": "0.960000"
+      }
+    },
+    {
+      "code": "FARMER_FULFILMENT",
+      "params": {
+        "farmer_id": "mbr_01M5VC64B9G8DMPZR4G3N7Y4NK",
+        "display": "0.960000"
+      }
+    },
+    {
+      "code": "FARMER_FULFILMENT",
+      "params": {
+        "farmer_id": "mbr_01M5VC64B9XARWZXANJJKC3ZYX",
+        "display": "1.000000"
+      }
+    },
+    {
+      "code": "DATE_BY_TIE_BREAK",
+      "params": {
+        "rule": "TIE_BREAK_V1"
+      }
+    },
+    {
+      "code": "OUTCOME",
+      "params": {
+        "allocated_kg": "2000.000",
+        "net_return_inr": "66040.00"
+      }
+    }
+  ],
+  "policy_versions": {
+    "index": "INDEX_DATED_ONLY_DEMO_V1",
+    "forecast": "BASELINE_FORECAST_V1",
+    "range": "RANGE_ABS_ERROR_CONFORMAL_V1",
+    "plan_forecast": "PLAN_USES_NAIVE_DEMO_V1",
+    "basis": "BASIS_RECENT_MEDIAN_DEMO_V1",
+    "transport": "TRANSPORT_AS_ENTERED_V1",
+    "waiting_cost": "WAITING_COST_NOT_MODELLED_V1",
+    "storage": "STORAGE_FROM_LINKED_SENSOR_V1",
+    "lots": "PLAN_LOTS_V1",
+    "increment": "PLAN_INCREMENT_DEMO_V1"
+  },
+  "origin": "SYNTHETIC",
+  "provenance": {
+    "origin": "SYNTHETIC",
+    "source_kind": "DERIVED",
+    "source_ref": "plan/v1 pln_01M5VC64B9FS3FT31B0DNAXGHY over dataset example release (invented numbers)",
+    "acquired_at": "2026-10-26T12:00:00.000Z",
+    "generator": {
+      "script": "kisaniti_api.plan",
+      "version": "1",
+      "seed": 0
+    }
+  }
+}

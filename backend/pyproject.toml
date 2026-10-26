@@ -10,6 +10,7 @@ dependencies = [
     "sqlalchemy>=2.0.44,<2.1",
     "psycopg[binary]>=3.2.10,<3.3",
     "alembic>=1.17,<1.18",
+    "highspy==1.11.0",  # the allocation optimiser's solver (plan/v1 orchestration); same pin as kisaniti-core[solvers]
 ]
 
 [dependency-groups]
@@ -48,6 +49,16 @@ mypy_path = "src:ingestion/src"
 [[tool.mypy.overrides]]
 module = ["alembic.*", "jsonschema.*", "referencing.*", "paho.*"]  # paho: only the ingestion modules the tests import use it
 ignore_missing_imports = true
+
+# The optimiser's solver libraries are untyped or not installed here (only HiGHS is); the core's own checks cover
+# kisaniti_core.allocation.backends, which also carries ignores that only apply when every solver is installed.
+[[tool.mypy.overrides]]
+module = ["highspy.*", "pyscipopt.*", "ortools.*"]
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = ["kisaniti_core.allocation.backends"]
+warn_unused_ignores = false
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
