@@ -14,6 +14,7 @@ class AccessError(Exception):
     issue_code: str | None = None  # a finer code inside `issues`, e.g. CSRF_INVALID, PASSWORD_CHANGE_REQUIRED
     issue_path: str | None = None
     headers: dict[str, str] = field(default_factory=dict)
+    extra_issues: list[dict[str, str]] = field(default_factory=list)  # further issues of the same problem
 
 
 @dataclass

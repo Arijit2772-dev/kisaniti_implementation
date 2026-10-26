@@ -323,7 +323,8 @@ def install(app: FastAPI) -> None:
                     "message": exc.detail,
                     "severity": "ERROR",
                     **({"path": exc.issue_path} if exc.issue_path else {}),
-                }
+                },
+                *exc.extra_issues,
             ]
         resp = problem(exc.code, exc.detail, request, issues)
         for k, v in exc.headers.items():
