@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kisaniti.invalid/contracts/handover/v1/handover.schema.json",
+  "title": "HandoverV1: one press of 'Send to farmers' after the yes",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract",
+    "id",
+    "plan_id",
+    "kind",
+    "created_by",
+    "created_at",
+    "recipient_count",
+    "acknowledged_unreviewed",
+    "items",
+    "label"
+  ],
+  "properties": {
+    "contract": {
+      "const": "handover.handover/v1"
+    },
+    "id": {
+      "$ref": "https://kisaniti.invalid/contracts/handover/v1/common.schema.json#/$defs/hnd_id"
+    },
+    "plan_id": {
+      "$ref": "https://kisaniti.invalid/contracts/handover/v1/common.schema.json#/$defs/pln_id"
+    },
+    "kind": {
+      "$ref": "https://kisaniti.invalid/contracts/handover/v1/common.schema.json#/$defs/kind"
+    },
+    "created_by": {
+      "$ref": "https://kisaniti.invalid/contracts/handover/v1/common.schema.json#/$defs/usr_id"
+    },
+    "created_at": {
+      "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/instant_utc"
+    },
+    "recipient_count": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "acknowledged_unreviewed": {
+      "type": "boolean"
+    },
+    "items": {
+      "type": "array",
+      "items": {
+        "$ref": "https://kisaniti.invalid/contracts/handover/v1/item.schema.json"
+      }
+    },
+    "label": {
+      "$ref": "https://kisaniti.invalid/contracts/handover/v1/common.schema.json#/$defs/label"
+    }
+  }
+}

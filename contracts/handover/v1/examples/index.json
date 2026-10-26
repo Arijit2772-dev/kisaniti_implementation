@@ -1,0 +1,8 @@
+{
+  "_comment": "prefix -> schema",
+  "preview_": "preview.schema.json",
+  "handoverreq_": "create_request.schema.json",
+  "outcomereq_": "outcome_request.schema.json",
+  "item_": "item.schema.json",
+  "handover_": "handover.schema.json"
+}

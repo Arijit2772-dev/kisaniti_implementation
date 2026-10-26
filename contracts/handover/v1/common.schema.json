@@ -1,0 +1,78 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kisaniti.invalid/contracts/handover/v1/common.schema.json",
+  "title": "handover/v1 shared definitions",
+  "$defs": {
+    "hnd_id": {
+      "type": "string",
+      "pattern": "^hnd_[0-9A-HJKMNP-TV-Z]{26}$",
+      "description": "slice-local ID kind, same ULID format as shared/v1 section 1"
+    },
+    "ins_id": {
+      "type": "string",
+      "pattern": "^ins_[0-9A-HJKMNP-TV-Z]{26}$"
+    },
+    "pln_id": {
+      "type": "string",
+      "pattern": "^pln_[0-9A-HJKMNP-TV-Z]{26}$"
+    },
+    "language": {
+      "enum": [
+        "pa",
+        "hi",
+        "en"
+      ]
+    },
+    "kind": {
+      "enum": [
+        "SALE_INSTRUCTION",
+        "CANCELLATION"
+      ]
+    },
+    "review_status": {
+      "enum": [
+        "UNREVIEWED",
+        "REVIEWED"
+      ]
+    },
+    "issue_code": {
+      "enum": [
+        "MEMBER_INACTIVE",
+        "NO_CONTACT",
+        "NO_WHATSAPP_CONSENT",
+        "CONSENT_WITHDRAWN",
+        "TEMPLATE_UNAVAILABLE",
+        "LANGUAGE_CHANGED",
+        "COMMITMENT_NOT_ACTIVE",
+        "CONTACT_CHANGED"
+      ]
+    },
+    "issues": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "$ref": "https://kisaniti.invalid/contracts/handover/v1/common.schema.json#/$defs/issue_code"
+      }
+    },
+    "link": {
+      "type": "string",
+      "pattern": "^https://wa\\.me/[0-9]{8,15}\\?text=[A-Za-z0-9%._~-]+$",
+      "maxLength": 4000,
+      "description": "wa.me link: E.164 digits without the plus sign; the exact stored text, percent-encoded UTF-8. Built per request, never stored, never logged"
+    },
+    "report_state": {
+      "enum": [
+        "NOT_REPORTED",
+        "MANAGER_REPORTED_SENT",
+        "MANAGER_REPORTED_NOT_SENT"
+      ]
+    },
+    "label": {
+      "const": "Sent by hand from the manager's own WhatsApp. The system cannot see whether it was delivered or read."
+    },
+    "usr_id": {
+      "type": "string",
+      "pattern": "^usr_[0-9A-HJKMNP-TV-Z]{26}$"
+    }
+  }
+}

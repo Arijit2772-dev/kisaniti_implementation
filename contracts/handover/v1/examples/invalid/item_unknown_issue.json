@@ -1,0 +1,18 @@
+{
+  "contract": "handover.item/v1",
+  "handover_id": "hnd_01M5VKYDFD7V3GCPKSGHWCGCNX",
+  "instruction_id": "ins_01M5VKYDFD7V3GCPKSGHWCGCN1",
+  "member_id": "mbr_01M5VKYDFD7V3GCPKSGHWCGCM1",
+  "display_name": "Chaman Singh (fictional)",
+  "language": "pa",
+  "review_status": "UNREVIEWED",
+  "status": "ISSUED",
+  "issues": [
+    "NO_SUCH_CODE"
+  ],
+  "link": "https://wa.me/919000000001?text=%E0%A8%B8%E0%A8%A4%20%E0%A8%B8%E0%A9%8D%E0%A8%B0%E0%A9%80%20%E0%A8%85%E0%A8%95%E0%A8%BE%E0%A8%B2%2C%20%E0%A8%9A%E0%A8%AE%E0%A8%A8%20%E0%A8%B8%E0%A8%BF%E0%A9%B0%E0%A8%98%E0%A5%A4%20500.000%20%E0%A8%95%E0%A8%BF%E0%A8%B2%E0%A9%8B",
+  "link_withheld": [],
+  "state": "NOT_REPORTED",
+  "reported_by": null,
+  "reported_at": null
+}

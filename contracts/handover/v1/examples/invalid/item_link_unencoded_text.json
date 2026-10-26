@@ -1,0 +1,16 @@
+{
+  "contract": "handover.item/v1",
+  "handover_id": "hnd_01M5VKYDFD7V3GCPKSGHWCGCNX",
+  "instruction_id": "ins_01M5VKYDFD7V3GCPKSGHWCGCN1",
+  "member_id": "mbr_01M5VKYDFD7V3GCPKSGHWCGCM1",
+  "display_name": "Chaman Singh (fictional)",
+  "language": "pa",
+  "review_status": "UNREVIEWED",
+  "status": "ISSUED",
+  "issues": [],
+  "link": "https://wa.me/919000000001?text=hello world",
+  "link_withheld": [],
+  "state": "NOT_REPORTED",
+  "reported_by": null,
+  "reported_at": null
+}

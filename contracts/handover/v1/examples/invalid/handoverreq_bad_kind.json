@@ -1,0 +1,5 @@
+{
+  "kind": "BROADCAST",
+  "recipient_count": 2,
+  "acknowledge_unreviewed": true
+}

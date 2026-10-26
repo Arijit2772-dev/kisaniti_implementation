@@ -1,0 +1,13 @@
+{
+  "contract": "handover.preview/v1",
+  "plan_id": "pln_01M5VKYDFD7V3GCPKSGHWCGCNP",
+  "kind": "CANCELLATION",
+  "recipient_count": -1,
+  "unreviewed_count": 0,
+  "ready": [],
+  "blocked": [],
+  "already_reported_sent": [
+    "mbr_01M5VKYDFD7V3GCPKSGHWCGCM1"
+  ],
+  "label": "Sent by hand from the manager's own WhatsApp. The system cannot see whether it was delivered or read."
+}

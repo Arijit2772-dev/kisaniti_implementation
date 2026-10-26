@@ -1,0 +1,110 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kisaniti.invalid/contracts/handover/v1/item.schema.json",
+  "title": "HandoverItemV1: one farmer in one hand-over",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract",
+    "handover_id",
+    "instruction_id",
+    "member_id",
+    "display_name",
+    "language",
+    "review_status",
+    "status",
+    "issues",
+    "link",
+    "link_withheld",
+    "state",
+    "reported_by",
+    "reported_at"
+  ],
+  "properties": {
+    "contract": {
+      "const": "handover.item/v1"
+    },
+    "handover_id": {
+      "$ref": "https://kisaniti.invalid/contracts/handover/v1/common.schema.json#/$defs/hnd_id"
+    },
+    "instruction_id": {
+      "$ref": "https://kisaniti.invalid/contracts/handover/v1/common.schema.json#/$defs/ins_id"
+    },
+    "member_id": {
+      "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/mbr_id"
+    },
+    "display_name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 120
+    },
+    "language": {
+      "anyOf": [
+        {
+          "$ref": "https://kisaniti.invalid/contracts/handover/v1/common.schema.json#/$defs/language"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "review_status": {
+      "anyOf": [
+        {
+          "$ref": "https://kisaniti.invalid/contracts/handover/v1/common.schema.json#/$defs/review_status"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "status": {
+      "enum": [
+        "ISSUED",
+        "BLOCKED"
+      ],
+      "description": "ISSUED: a link was made at the yes; BLOCKED: a check failed and no link exists"
+    },
+    "issues": {
+      "$ref": "https://kisaniti.invalid/contracts/handover/v1/common.schema.json#/$defs/issues"
+    },
+    "link": {
+      "anyOf": [
+        {
+          "$ref": "https://kisaniti.invalid/contracts/handover/v1/common.schema.json#/$defs/link"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "description": "present only for ISSUED items not yet reported, only to a caller holding contacts.view_phone"
+    },
+    "link_withheld": {
+      "$ref": "https://kisaniti.invalid/contracts/handover/v1/common.schema.json#/$defs/issues",
+      "description": "why a link that would be due is not shown now (checks repeated at every view)"
+    },
+    "state": {
+      "$ref": "https://kisaniti.invalid/contracts/handover/v1/common.schema.json#/$defs/report_state"
+    },
+    "reported_by": {
+      "anyOf": [
+        {
+          "$ref": "https://kisaniti.invalid/contracts/handover/v1/common.schema.json#/$defs/usr_id"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "reported_at": {
+      "anyOf": [
+        {
+          "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/instant_utc"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    }
+  }
+}

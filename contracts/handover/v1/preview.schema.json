@@ -1,0 +1,109 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kisaniti.invalid/contracts/handover/v1/preview.schema.json",
+  "title": "HandoverPreviewV1: what pressing 'Send to farmers' would do; no phone numbers",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract",
+    "plan_id",
+    "kind",
+    "recipient_count",
+    "unreviewed_count",
+    "ready",
+    "blocked",
+    "already_reported_sent",
+    "label"
+  ],
+  "properties": {
+    "contract": {
+      "const": "handover.preview/v1"
+    },
+    "plan_id": {
+      "$ref": "https://kisaniti.invalid/contracts/handover/v1/common.schema.json#/$defs/pln_id"
+    },
+    "kind": {
+      "$ref": "https://kisaniti.invalid/contracts/handover/v1/common.schema.json#/$defs/kind"
+    },
+    "recipient_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "unreviewed_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "ready": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "instruction_id",
+          "member_id",
+          "display_name",
+          "language",
+          "review_status"
+        ],
+        "properties": {
+          "instruction_id": {
+            "$ref": "https://kisaniti.invalid/contracts/handover/v1/common.schema.json#/$defs/ins_id"
+          },
+          "member_id": {
+            "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/mbr_id"
+          },
+          "display_name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120
+          },
+          "language": {
+            "$ref": "https://kisaniti.invalid/contracts/handover/v1/common.schema.json#/$defs/language"
+          },
+          "review_status": {
+            "$ref": "https://kisaniti.invalid/contracts/handover/v1/common.schema.json#/$defs/review_status"
+          }
+        }
+      }
+    },
+    "blocked": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "instruction_id",
+          "member_id",
+          "display_name",
+          "issues"
+        ],
+        "properties": {
+          "instruction_id": {
+            "$ref": "https://kisaniti.invalid/contracts/handover/v1/common.schema.json#/$defs/ins_id"
+          },
+          "member_id": {
+            "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/mbr_id"
+          },
+          "display_name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120
+          },
+          "issues": {
+            "$ref": "https://kisaniti.invalid/contracts/handover/v1/common.schema.json#/$defs/issues",
+            "minItems": 1
+          }
+        }
+      }
+    },
+    "already_reported_sent": {
+      "type": "array",
+      "items": {
+        "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/mbr_id"
+      }
+    },
+    "label": {
+      "$ref": "https://kisaniti.invalid/contracts/handover/v1/common.schema.json#/$defs/label"
+    }
+  }
+}

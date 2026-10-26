@@ -1,0 +1,30 @@
+{
+  "contract": "handover.preview/v1",
+  "plan_id": "pln_01M5VKYDFD7V3GCPKSGHWCGCNP",
+  "kind": "SALE_INSTRUCTION",
+  "recipient_count": 1,
+  "unreviewed_count": 1,
+  "ready": [
+    {
+      "instruction_id": "ins_01M5VKYDFD7V3GCPKSGHWCGCN1",
+      "member_id": "mbr_01M5VKYDFD7V3GCPKSGHWCGCM1",
+      "display_name": "Chaman Singh (fictional)",
+      "language": "pa",
+      "review_status": "UNREVIEWED"
+    }
+  ],
+  "blocked": [
+    {
+      "instruction_id": "ins_01M5VKYDFD7V3GCPKSGHWCGCN2",
+      "member_id": "mbr_01M5VKYDFD7V3GCPKSGHWCGCM2",
+      "display_name": "Dalip Kaur (fictional)",
+      "issues": [
+        "NO_CONTACT",
+        "NO_WHATSAPP_CONSENT"
+      ]
+    }
+  ],
+  "already_reported_sent": [],
+  "label": "Sent by hand from the manager's own WhatsApp. The system cannot see whether it was delivered or read.",
+  "phone": "+919000000001"
+}

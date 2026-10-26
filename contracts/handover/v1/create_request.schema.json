@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kisaniti.invalid/contracts/handover/v1/create_request.schema.json",
+  "title": "HandoverRequestV1: the yes of the yes/no question",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "kind",
+    "recipient_count",
+    "acknowledge_unreviewed"
+  ],
+  "properties": {
+    "kind": {
+      "$ref": "https://kisaniti.invalid/contracts/handover/v1/common.schema.json#/$defs/kind"
+    },
+    "recipient_count": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "the number the manager was shown; a different current number answers 409 CONFIRMATION_STALE"
+    },
+    "acknowledge_unreviewed": {
+      "type": "boolean"
+    }
+  }
+}

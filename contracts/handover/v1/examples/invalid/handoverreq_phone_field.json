@@ -1,0 +1,6 @@
+{
+  "kind": "SALE_INSTRUCTION",
+  "recipient_count": 2,
+  "acknowledge_unreviewed": true,
+  "phone": "9000000001"
+}

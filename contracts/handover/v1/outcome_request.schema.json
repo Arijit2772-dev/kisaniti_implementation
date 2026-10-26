@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kisaniti.invalid/contracts/handover/v1/outcome_request.schema.json",
+  "title": "HandoverOutcomeRequestV1: what the manager reports",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "outcome"
+  ],
+  "properties": {
+    "outcome": {
+      "enum": [
+        "SENT",
+        "NOT_SENT"
+      ]
+    }
+  }
+}
