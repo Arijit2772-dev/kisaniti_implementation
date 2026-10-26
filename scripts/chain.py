@@ -15,11 +15,13 @@ import argparse
 import http.cookiejar
 import json
 import os
+import re
 import subprocess
 import sys
 import tempfile
 import time
 import urllib.error
+import urllib.parse
 import urllib.request
 import uuid
 from collections.abc import Callable
@@ -43,6 +45,7 @@ EXPECTED_CONTRACTS = [
     "approval/v1",
     "messaging/v1",
     "sales/v1",
+    "handover/v1",
 ]
 CENT = Decimal("0.01")
 
@@ -258,6 +261,7 @@ def step_fpos(r: Run) -> None:
             p,
         )
         r.x[f"fpo_{tag}"], r.x[f"admin_{tag}"] = out["fpo_id"], p["user_id"]
+        r.x[f"login_{tag}"] = (out["username"], pw)
     check("fpos", r.x["fpo_a"] != r.x["fpo_b"], "two different FPOs")
 
 
@@ -976,7 +980,100 @@ def step_messages(r: Run) -> None:
         instructions={m["id"]: (again[m["id"]]) for m in members},
         lines_of=lines_of,
         phones=phones,
+        viewer=v,
     )
+
+
+WA_LINK = re.compile(r"^https://wa\.me/(?P<digits>[0-9]{8,15})\?text=(?P<text>[A-Za-z0-9%._~-]+)$")
+
+
+def parse_link(step: str, link: str | None) -> tuple[str, str]:
+    """(digits, decoded text) of a wa.me link, or a failure naming what is wrong with it."""
+    check(step, link is not None and WA_LINK.match(link) is not None, "a wa.me link of the agreed shape", link)
+    m = WA_LINK.match(link or "")
+    assert m is not None
+    return m["digits"], urllib.parse.unquote(m["text"])
+
+
+def step_handover(r: Run) -> None:
+    """Stage 4 by the manager's own WhatsApp (handover/v1): preview, the yes, one exact link per farmer, reports."""
+    a, b, v = r.a, r.b, r.x["viewer"]
+    pid, members, phones, ins = r.x["plan"]["id"], r.x["members"], r.x["phones"], r.x["instructions"]
+    pv = a.call("GET", f"/plans/{pid}/handover-preview?kind=SALE_INSTRUCTION")
+    eq(
+        "handover",
+        (pv["recipient_count"], pv["unreviewed_count"], pv["blocked"]),
+        (3, 3, []),
+        "the question: 3 farmers",
+    )
+    check("handover", not any(n in json.dumps(pv) for n in phones.values()), "a preview never shows a number", pv)
+    v.call("GET", f"/plans/{pid}/handover-preview?kind=SALE_INSTRUCTION", expect=403)
+    body = {"kind": "SALE_INSTRUCTION", "recipient_count": 3, "acknowledge_unreviewed": True}
+    a.call("POST", f"/plans/{pid}/handovers", {**body, "recipient_count": 2}, expect=409, code="CONFIRMATION_STALE")
+    a.call(
+        "POST",
+        f"/plans/{pid}/handovers",
+        {**body, "acknowledge_unreviewed": False},
+        expect=422,
+        code="UNREVIEWED_NOT_ACKNOWLEDGED",
+    )
+    v.call("POST", f"/plans/{pid}/handovers", body, expect=403)
+    eq("handover", a.call("GET", f"/plans/{pid}/handovers"), [], "nothing was created by the refused presses")
+    h = a.call("POST", f"/plans/{pid}/handovers", body, key=f"chain-hnd-{uuid.uuid4().hex}", expect=201)
+    eq("handover", (h["recipient_count"], len(h["items"])), (3, 3), "one item per farmer")
+    items = {i["member_id"]: i for i in h["items"]}
+    for m in members:
+        i = items[m["id"]]
+        digits, decoded = parse_link("handover", i["link"])
+        eq("handover", digits, "91" + phones[m["id"]], "the digits of the link are the farmer's number")
+        eq("handover", decoded, ins[m["id"]]["text"], "the link carries the stored instruction text, byte for byte")
+        eq("handover", (i["state"], i["status"]), ("NOT_REPORTED", "ISSUED"), "a new item")
+    # a viewer and the other FPO never get a link or a number
+    seen = v.call("GET", f"/handovers/{h['id']}")
+    check("handover", all(i["link"] is None for i in seen["items"]), "a viewer gets no link", seen)
+    b.call("GET", f"/handovers/{h['id']}", expect=404)
+    # the manager's reports: farmers 1 and 3 sent, farmer 2 not
+    a0, a1, a2 = (items[m["id"]]["instruction_id"] for m in members)
+    for ins_id, outcome in ((a0, "SENT"), (a1, "NOT_SENT"), (a2, "SENT")):
+        got = a.call("POST", f"/handovers/{h['id']}/items/{ins_id}/outcome", {"outcome": outcome}, expect=201)
+        eq(
+            "handover",
+            got["state"],
+            {"SENT": "MANAGER_REPORTED_SENT", "NOT_SENT": "MANAGER_REPORTED_NOT_SENT"}[outcome],
+            "state",
+        )
+    a.call("POST", f"/handovers/{h['id']}/items/{a0}/outcome", {"outcome": "SENT"}, expect=409, code="NO_CHANGE")
+    after = {i["member_id"]: i for i in a.call("GET", f"/handovers/{h['id']}")["items"]}
+    eq(
+        "handover",
+        [after[m["id"]]["link"] is None for m in members],
+        [True, False, True],
+        "links remain only for farmer 2",
+    )
+    # a report is the manager's word, not delivery: messaging/v1 is unchanged
+    got_att = [[x["status"] for x in a.call("GET", f"/instructions/{ins[m['id']]['id']}/attempts")] for m in members]
+    eq(
+        "handover",
+        got_att,
+        [["PREVIEWED"], [], ["PREVIEWED"]],
+        "delivery records: only the earlier previews, no SENT or DELIVERED",
+    )
+    pv2 = a.call("GET", f"/plans/{pid}/handover-preview?kind=SALE_INSTRUCTION")
+    eq(
+        "handover",
+        ([x["member_id"] for x in pv2["ready"]], sorted(pv2["already_reported_sent"])),
+        ([members[1]["id"]], sorted([members[0]["id"], members[2]["id"]])),
+        "second press: only farmer 2",
+    )
+    h2 = a.call("POST", f"/plans/{pid}/handovers", {**body, "recipient_count": 1}, expect=201)
+    eq(
+        "handover",
+        [parse_link("handover", i["link"])[0] for i in h2["items"]],
+        ["91" + phones[members[1]["id"]]],
+        "the second press",
+    )
+    r.x["handover_2"] = h2["id"]
+    r.x["handover_1"] = h["id"]
 
 
 def step_sales(r: Run) -> None:
@@ -1304,6 +1401,32 @@ def step_close(r: Run) -> None:
             "PREVIEWED",
             "preview of the cancellation",
         )
+    # the unsent link of the second hand-over is withheld now that the reservation is released
+    left = {i["member_id"]: i for i in a.call("GET", f"/handovers/{r.x['handover_2']}")["items"]}
+    eq(
+        "close",
+        (left[members[1]["id"]]["link"], left[members[1]["id"]]["link_withheld"]),
+        (None, ["COMMITMENT_NOT_ACTIVE"]),
+        "a released plan withholds the link",
+    )
+    # the cancellation by the manager's own WhatsApp reaches exactly the farmers who were told: 1 and 3
+    cpv = a.call("GET", f"/plans/{pid}/handover-preview?kind=CANCELLATION")
+    eq(
+        "close",
+        sorted(x["member_id"] for x in cpv["ready"]),
+        sorted([members[0]["id"], members[2]["id"]]),
+        "who gets the cancellation",
+    )
+    ch = a.call(
+        "POST",
+        f"/plans/{pid}/handovers",
+        {"kind": "CANCELLATION", "recipient_count": 2, "acknowledge_unreviewed": True},
+        expect=201,
+    )
+    for i in ch["items"]:
+        digits, decoded = parse_link("close", i["link"])
+        eq("close", digits, "91" + r.x["phones"][i["member_id"]], "the number of the cancellation link")
+        eq("close", decoded, docs[i["member_id"]]["text"], "the cancellation text, byte for byte")
 
 
 def step_ledger_audit(r: Run) -> None:
@@ -1386,6 +1509,9 @@ def step_ledger_audit(r: Run) -> None:
 def step_isolation(r: Run) -> None:
     a, b = r.a, r.b
     pid, lot = r.x["plan"]["id"], r.x["lots"][0]["id"]
+    b.call("GET", f"/plans/{pid}/handover-preview?kind=SALE_INSTRUCTION", expect=404)
+    b.call("GET", f"/plans/{pid}/handovers", expect=404)
+    b.call("GET", f"/handovers/{r.x['handover_1']}", expect=404)
     for path in (
         f"/plans/{pid}",
         f"/plans/{pid}/state",
@@ -1422,7 +1548,7 @@ def step_isolation(r: Run) -> None:
 STEPS: list[tuple[str, Callable[[Run], None]]] = [
     ("preflight", step_preflight), ("fpos", step_fpos), ("data", step_data), ("stock", step_stock),
     ("sensor", step_sensor), ("plan", step_plan), ("review", step_review), ("approval", step_approval),
-    ("messages", step_messages), ("sales", step_sales),
+    ("messages", step_messages), ("handover", step_handover), ("sales", step_sales),
     ("close", step_close), ("ledger-audit", step_ledger_audit), ("isolation", step_isolation),
 ]  # fmt: skip
 
@@ -1431,6 +1557,8 @@ def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--api", default=os.environ.get("KN_API", "http://localhost:8000"))
     ap.add_argument("--report", default="chain_report.json")
+    ap.add_argument("--stop-after", choices=[n for n, _ in STEPS], help="stop after this step (for a demo)")
+    ap.add_argument("--print-login", action="store_true", help="print the fictional manager login of FPO A")
     ap.add_argument(
         "--sabotage",
         choices=["ledger"],
@@ -1484,6 +1612,10 @@ def main(argv: list[str] | None = None) -> int:
             break
         report["steps"].append({"step": name, "ok": True, "seconds": round(time.time() - t0, 2)})
         print(f"[ ok ] {name:13s} {time.time() - t0:5.1f} s")
+        if args.stop_after == name:
+            print(f"stopped after {name} on request: the later steps did not run")
+            report["stopped_after"] = name
+            break
     report["ok"] = failure is None
     if failure:
         report["failure"] = {
@@ -1504,11 +1636,19 @@ def main(argv: list[str] | None = None) -> int:
             "price_dataset_status": run.x["dataset_status"],
             "fixture_prices_seeded": bool(run.x.get("seeded_fixture")),
         }
+    if args.print_login and failure is None:
+        user, pw = run.x["login_a"]
+        site = os.environ.get("KN_SITE", "http://localhost:3000")
+        print(f"demo login (fictional, local only): {user} / {pw}\n  plan page: {site}/en/plans/{run.x['plan']['id']}")
     Path(args.report).write_text(json.dumps(report, indent=2))
     print(
         "RESULT: "
         + (
-            "PASS (all fictional data; report in " + args.report + ")"
+            (
+                f"STOPPED EARLY after {args.stop_after}: a demo, not a full pass"
+                if args.stop_after
+                else "PASS (all fictional data; report in " + args.report + ")"
+            )
             if failure is None
             else f"FAIL at step {failure.step}"
         )

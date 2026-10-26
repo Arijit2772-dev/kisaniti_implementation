@@ -74,6 +74,7 @@ def test_meta(client: TestClient) -> None:
         "approval/v1",
         "messaging/v1",
         "sales/v1",
+        "handover/v1",
     ] and body["mode"] in {
         "RESEARCH",
         "DEMO",

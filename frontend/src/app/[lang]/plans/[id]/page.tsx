@@ -1,5 +1,6 @@
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
+import { HandoverPanel, type EarlierHandover } from "@/components/HandoverPanel";
 import { InstructionsPanel, type Instruction } from "@/components/InstructionsPanel";
 import { PlanReview, type Choice, type Context, type PlanState, type Revision } from "@/components/PlanReview";
 import { Protected } from "@/components/Protected";
@@ -87,7 +88,7 @@ async function PlanContent({ params }: { params: Promise<{ lang: string; id: str
       <Protected lang={lang}>
         {async (p, dict) => {
           const pid = encodeURIComponent(id);
-          const [plan, members, state, revisions, context, users, instructions, execution, report] = await Promise.all([
+          const [plan, members, state, revisions, context, users, instructions, execution, report, handovers] = await Promise.all([
             serverGet<Plan>(`/plans/${pid}`),
             serverGet<Member[]>("/members"),
             serverGet<PlanState>(`/plans/${pid}/state`),
@@ -97,6 +98,7 @@ async function PlanContent({ params }: { params: Promise<{ lang: string; id: str
             serverGet<Instruction[]>(`/plans/${pid}/instructions`),
             serverGet<Execution>(`/plans/${pid}/execution`),
             serverGet<Report>(`/plans/${pid}/report`),
+            serverGet<EarlierHandover[]>(`/plans/${pid}/handovers`),
           ]);
           if (!plan || !state || !revisions || !context) notFound();
           const t = dict.plans;
@@ -186,6 +188,21 @@ async function PlanContent({ params }: { params: Promise<{ lang: string; id: str
                     ))}
                   </ul>
                 </>
+              )}
+
+              {state.status === "APPROVED" && (
+                <HandoverPanel
+                  csrf={p.csrf_token}
+                  canSend={p.capabilities.includes("messages.send")}
+                  canLink={p.capabilities.includes("contacts.view_phone")}
+                  t={dict.handover}
+                  langs={dict.members.langs}
+                  issueTexts={dict.messages.issues}
+                  errors={dict.errors}
+                  planId={plan.id}
+                  reservation={state.reservation.state}
+                  earlier={handovers ?? []}
+                />
               )}
 
               {state.status === "APPROVED" && (

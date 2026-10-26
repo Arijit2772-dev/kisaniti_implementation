@@ -69,7 +69,7 @@ def _invalid(code: str, message: str, path: str | None = None) -> AccessError:
 
 def _missing(request: Request, p: Principal, table: str, key: str, label: str) -> AccessError:
     """404 for a missing object and for another FPO's alike; the second case is audited."""
-    assert table in {"members", "plans", "instructions"}
+    assert table in {"members", "plans", "instructions", "handovers"}
     with auth_conn(engine()) as conn:
         elsewhere = conn.execute(
             text(f"SELECT 1 FROM {table} WHERE id = :k AND fpo_id <> :f"), {"k": key, "f": p.fpo_id}
@@ -477,8 +477,13 @@ def prepare(plan_id: str, body: PrepareBody, request: Request, p: Sender) -> lis
                         "SELECT DISTINCT ON (i.member_id) i.id, i.member_id, i.facts FROM instructions i "
                         "WHERE i.fpo_id = :f AND i.plan_id = :p AND i.kind = 'SALE_INSTRUCTION' "
                         "AND i.status = 'PREPARED' "
-                        "AND EXISTS (SELECT 1 FROM delivery_attempts a WHERE a.instruction_id = i.id AND a.status = "
+                        "AND (EXISTS (SELECT 1 FROM delivery_attempts a WHERE a.instruction_id = i.id AND a.status = "
                         "ANY(:ok)) "
+                        # handover/v1 section 5: a send the manager reported counts as reached
+                        "OR EXISTS (SELECT 1 FROM handover_reports r WHERE r.fpo_id = i.fpo_id AND "
+                        "r.instruction_id = i.id AND r.outcome = 'SENT' AND NOT EXISTS (SELECT 1 FROM "
+                        "handover_reports r2 WHERE r2.handover_id = r.handover_id AND r2.instruction_id = "
+                        "r.instruction_id AND r2.id > r.id))) "
                         "ORDER BY i.member_id, i.version DESC"
                     ),
                     {"f": p.fpo_id, "p": plan_id, "ok": list(REACHED)},

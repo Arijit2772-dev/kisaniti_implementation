@@ -671,7 +671,8 @@
       "CONSENT_WITHDRAWN": "The farmer withdrew agreement to WhatsApp messages.",
       "TEMPLATE_UNAVAILABLE": "There is no message text in this farmer's language.",
       "LANGUAGE_CHANGED": "The farmer's language changed after the message was written; prepare it again.",
-      "COMMITMENT_NOT_ACTIVE": "The reservation is no longer active."
+      "COMMITMENT_NOT_ACTIVE": "The reservation is no longer active.",
+      "CONTACT_CHANGED": "The phone number changed after the message was written."
     },
     "title": "Messages to farmers",
     "intro": "The approved plan, written for each farmer in their own language. In this version a message is only previewed: it shows the exact text and who it would go to, and nothing is sent to anyone.",
@@ -810,5 +811,49 @@
     "lowestPlanned": "Lowest planned share",
     "lowestActual": "Lowest sold share",
     "fullySold": "All reserved stock has been used by sales."
+  },
+  "handover": {
+    "title": "Send to farmers from your own WhatsApp",
+    "intro": "After you approve, you can send each farmer their message from your own WhatsApp. The system makes one ready-to-send link per farmer. You tap a link, WhatsApp opens with the text already written, and you press Send there. One tap sends to one farmer. The system cannot see whether a message was delivered or read.",
+    "send": "Send to farmers",
+    "sendCancel": "Send the cancellation to farmers",
+    "preparing": "Preparing…",
+    "askTitle": "Send this to {count} farmers?",
+    "askBody": "Each farmer gets the message in their own language. Nothing is sent yet: the next step shows one link per farmer.",
+    "cannotSend": "These farmers cannot be sent this now:",
+    "alreadySent": "{count} farmers were already marked as sent and are not included.",
+    "unreviewed": "The texts have not been checked by a native speaker yet ({count} farmers).",
+    "ack": "I understand and want to continue.",
+    "yes": "Yes, show the links",
+    "no": "No",
+    "declined": "Nothing was done.",
+    "linksTitle": "One link per farmer",
+    "open": "Open WhatsApp",
+    "markSent": "I sent it",
+    "markNotSent": "I did not send it",
+    "noLink": "No link is shown now:",
+    "language": "Language",
+    "states": {
+      "NOT_REPORTED": "Not sent yet",
+      "MANAGER_REPORTED_SENT": "You said: sent",
+      "MANAGER_REPORTED_NOT_SENT": "You said: not sent"
+    },
+    "label": "Sent by hand from your own WhatsApp. The system cannot see whether it was delivered or read.",
+    "earlier": "Earlier sends for this plan",
+    "earlierRow": "{when}: {count} farmers",
+    "reportedCount": "{sent} marked as sent",
+    "showLinks": "Show the links again",
+    "noRights": "Only a person who may send messages and see phone numbers can do this.",
+    "nothing": "No farmer can be sent this now.",
+    "contactChanged": "The phone number changed after the question was answered. Ask again.",
+    "errors": {
+      "CONFIRMATION_STALE": "The number of farmers changed. Ask again.",
+      "NOTHING_TO_SEND": "No farmer can be sent this now.",
+      "UNREVIEWED_NOT_ACKNOWLEDGED": "Tick the box to continue.",
+      "NOT_APPROVED": "The plan is not approved with an active reservation.",
+      "NOT_RELEASED": "The reservation has not been released.",
+      "ITEM_NOT_ISSUED": "No link was made for this farmer.",
+      "NO_CHANGE": "This is already the reported state."
+    }
   }
 }

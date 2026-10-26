@@ -77,7 +77,7 @@
           "type": "null"
         }
       ],
-      "description": "present only for ISSUED items not yet reported, only to a caller holding contacts.view_phone"
+      "description": "present only for ISSUED items not reported as sent, only to a caller holding contacts.view_phone"
     },
     "link_withheld": {
       "$ref": "https://kisaniti.invalid/contracts/handover/v1/common.schema.json#/$defs/issues",

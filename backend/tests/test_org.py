@@ -231,6 +231,27 @@ def test_unknown_commodity_is_a_validation_error(two: tuple[Fpo, Fpo]) -> None:
     assert r.status_code == 422 and r.json()["issues"][0]["code"] == "UNKNOWN_COMMODITY"
 
 
+def test_a_placement_without_a_time_uses_the_databases_clock_so_a_fast_application_clock_cannot_hide_it(
+    two: tuple[Fpo, Fpo], commodity: str, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """BUG-008: the placement was stamped with the application's clock and read back against the database's clock; with
+    the application 30 seconds ahead (two machines, a Docker VM) a new lot looked like it had no location."""
+    import kisaniti_api.org.routes as routes
+
+    class Ahead(datetime):
+        @classmethod
+        def now(cls, tz: Any = None) -> Any:
+            return super().now(tz) + timedelta(seconds=30)
+
+    monkeypatch.setattr(routes, "datetime", Ahead)
+    a, _ = two
+    m, l1, l2 = member(a), location(a, "Shed 1"), location(a, "Shed 2")
+    t = lot(a, m, commodity, location_id=l1["id"])
+    assert call(a.admin, "GET", f"/lots/{t['id']}").json()["current_location_id"] == l1["id"]
+    assert call(a.admin, "POST", f"/lots/{t['id']}/placements", {"location_id": l2["id"]}).status_code == 201
+    assert call(a.admin, "GET", f"/lots/{t['id']}").json()["current_location_id"] == l2["id"]
+
+
 # ---- placements ------------------------------------------------------------------------------------------------------
 def test_placement_history_is_append_only_and_the_current_location_is_the_latest(
     two: tuple[Fpo, Fpo], commodity: str

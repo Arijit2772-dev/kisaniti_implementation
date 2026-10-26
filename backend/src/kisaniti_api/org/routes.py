@@ -385,9 +385,9 @@ def create_lot(body: LotBody, request: Request, p: Write, idempotency_key: IdemK
                 conn.execute(
                     text(
                         "INSERT INTO lot_placements (lot_id, fpo_id, location_id, placed_at, created_by) "
-                        "VALUES (:l, :f, :s, :t, :u)"
+                        "VALUES (:l, :f, :s, clock_timestamp(), :u)"  # the database's clock, which reads compare with
                     ),
-                    {"l": lot_id, "f": p.fpo_id, "s": body.location_id, "t": now, "u": p.user_id},
+                    {"l": lot_id, "f": p.fpo_id, "s": body.location_id, "u": p.user_id},
                 )
         row = _read_lot(conn, p, lot_id) if missing is None and refusal is None else None
     if missing:
@@ -401,10 +401,10 @@ def create_lot(body: LotBody, request: Request, p: Write, idempotency_key: IdemK
 @router.post("/lots/{lot_id}/placements", status_code=201)
 def place_lot(lot_id: str, body: PlacementBody, request: Request, p: Write) -> dict[str, Any]:
     try:
-        when = parse_instant(body.placed_at) if body.placed_at else datetime.now(UTC)
+        when = parse_instant(body.placed_at) if body.placed_at else None  # None: the database stamps it
     except ContractError as e:
         raise _bad(e, "placed_at") from e
-    if when > datetime.now(UTC) + FUTURE_TOLERANCE:
+    if when is not None and when > datetime.now(UTC) + FUTURE_TOLERANCE:
         raise AccessError(
             ErrorCode.VALIDATION_FAILED, "placed_at lies in the future", "PLACED_AT_IN_FUTURE", "/placed_at"
         )
@@ -428,7 +428,8 @@ def place_lot(lot_id: str, body: PlacementBody, request: Request, p: Write) -> d
                     row = conn.execute(
                         text(
                             "INSERT INTO lot_placements (lot_id, fpo_id, location_id, placed_at, created_by) "
-                            "VALUES (:l, :f, :s, :t, :u) RETURNING lot_id, location_id, placed_at, created_at"
+                            "VALUES (:l, :f, :s, COALESCE(:t, clock_timestamp()), :u) "
+                            "RETURNING lot_id, location_id, placed_at, created_at"
                         ),
                         {"l": lot_id, "f": p.fpo_id, "s": body.location_id, "t": when, "u": p.user_id},
                     ).one()
