@@ -1,0 +1,11 @@
+{
+  "_comment": "prefix -> schema",
+  "sale_": "actual_sale.schema.json",
+  "salereq_": "sale_request.schema.json",
+  "voidreq_": "void_request.schema.json",
+  "execution_": "execution.schema.json",
+  "report_": "report.schema.json",
+  "outcomes_": "outcomes.schema.json",
+  "reply_": "reply.schema.json",
+  "replyreq_": "reply_request.schema.json"
+}

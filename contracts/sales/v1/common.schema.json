@@ -1,0 +1,90 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kisaniti.invalid/contracts/sales/v1/common.schema.json",
+  "title": "sales/v1 shared definitions",
+  "$defs": {
+    "sal_id": {
+      "type": "string",
+      "pattern": "^sal_[0-9A-HJKMNP-TV-Z]{26}$",
+      "description": "slice-local ID kind, same ULID format as shared/v1 section 1"
+    },
+    "rpl_id": {
+      "type": "string",
+      "pattern": "^rpl_[0-9A-HJKMNP-TV-Z]{26}$",
+      "description": "slice-local ID kind"
+    },
+    "ins_id": {
+      "type": "string",
+      "pattern": "^ins_[0-9A-HJKMNP-TV-Z]{26}$"
+    },
+    "pln_id": {
+      "type": "string",
+      "pattern": "^pln_[0-9A-HJKMNP-TV-Z]{26}$"
+    },
+    "usr_id": {
+      "type": "string",
+      "pattern": "^usr_[0-9A-HJKMNP-TV-Z]{26}$"
+    },
+    "price_positive": {
+      "type": "string",
+      "pattern": "^([1-9][0-9]{0,9}\\.[0-9]{2}|0\\.(0[1-9]|[1-9][0-9]))$",
+      "description": "rupees per quintal, two decimals, greater than zero"
+    },
+    "j_form_no": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9/_-]{0,39}$"
+    },
+    "void_reason": {
+      "enum": [
+        "ENTRY_ERROR",
+        "BUYER_CANCELLED",
+        "OTHER"
+      ]
+    },
+    "line_status": {
+      "enum": [
+        "NOT_STARTED",
+        "PARTIAL",
+        "COMPLETED"
+      ]
+    },
+    "plan_ref": {
+      "title": "the planned line a sale belongs to (planned mandi and date, not the actual ones)",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "plan_id",
+        "mandi_id",
+        "date"
+      ],
+      "properties": {
+        "plan_id": {
+          "$ref": "https://kisaniti.invalid/contracts/sales/v1/common.schema.json#/$defs/pln_id"
+        },
+        "mandi_id": {
+          "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/mnd_id"
+        },
+        "date": {
+          "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/business_date"
+        }
+      }
+    },
+    "release_item": {
+      "title": "a reservation to release for an off-plan sale",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "plan_id",
+        "quantity_kg"
+      ],
+      "properties": {
+        "plan_id": {
+          "$ref": "https://kisaniti.invalid/contracts/sales/v1/common.schema.json#/$defs/pln_id"
+        },
+        "quantity_kg": {
+          "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/quantity_kg"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kisaniti.invalid/contracts/sales/v1/void_request.schema.json",
+  "title": "VoidRequestV1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "reason_code"
+  ],
+  "properties": {
+    "reason_code": {
+      "$ref": "https://kisaniti.invalid/contracts/sales/v1/common.schema.json#/$defs/void_reason"
+    }
+  }
+}

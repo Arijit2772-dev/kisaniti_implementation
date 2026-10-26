@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kisaniti.invalid/contracts/sales/v1/reply.schema.json",
+  "title": "ReplyV1: what a farmer replied, as entered by staff; never interpreted",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract",
+    "id",
+    "instruction_id",
+    "member_id",
+    "text",
+    "source",
+    "recorded_by",
+    "recorded_at"
+  ],
+  "properties": {
+    "contract": {
+      "const": "sales.reply/v1"
+    },
+    "id": {
+      "$ref": "https://kisaniti.invalid/contracts/sales/v1/common.schema.json#/$defs/rpl_id"
+    },
+    "instruction_id": {
+      "$ref": "https://kisaniti.invalid/contracts/sales/v1/common.schema.json#/$defs/ins_id"
+    },
+    "member_id": {
+      "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/mbr_id"
+    },
+    "text": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 500
+    },
+    "source": {
+      "enum": [
+        "STAFF_ENTERED",
+        "WEBHOOK"
+      ]
+    },
+    "recorded_by": {
+      "anyOf": [
+        {
+          "$ref": "https://kisaniti.invalid/contracts/sales/v1/common.schema.json#/$defs/usr_id"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "recorded_at": {
+      "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/instant_utc"
+    }
+  }
+}

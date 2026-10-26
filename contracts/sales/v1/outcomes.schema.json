@@ -1,0 +1,138 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kisaniti.invalid/contracts/sales/v1/outcomes.schema.json",
+  "title": "OutcomesV1: plan price against realised price. Not an evaluation of the forecast method; synthetic figures are never evidence",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract",
+    "label",
+    "real",
+    "synthetic",
+    "pairs"
+  ],
+  "properties": {
+    "contract": {
+      "const": "sales.outcomes/v1"
+    },
+    "label": {
+      "const": "Plan price against realised price. Not an evaluation of the forecast method. Fictional (synthetic) rows are not evidence."
+    },
+    "real": {
+      "title": "summary",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "pairs",
+        "mean_abs_error_inr_per_quintal",
+        "mean_error_inr_per_quintal"
+      ],
+      "properties": {
+        "pairs": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "mean_abs_error_inr_per_quintal": {
+          "anyOf": [
+            {
+              "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/rate_inr_per_quintal"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "mean_error_inr_per_quintal": {
+          "anyOf": [
+            {
+              "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/rate_inr_per_quintal"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
+    },
+    "synthetic": {
+      "title": "summary",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "pairs",
+        "mean_abs_error_inr_per_quintal",
+        "mean_error_inr_per_quintal"
+      ],
+      "properties": {
+        "pairs": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "mean_abs_error_inr_per_quintal": {
+          "anyOf": [
+            {
+              "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/rate_inr_per_quintal"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "mean_error_inr_per_quintal": {
+          "anyOf": [
+            {
+              "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/rate_inr_per_quintal"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
+    },
+    "pairs": {
+      "type": "array",
+      "items": {
+        "title": "one planned line with sales",
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "plan_id",
+          "mandi_id",
+          "date",
+          "origin",
+          "sold_kg",
+          "planned_price_inr_per_quintal",
+          "actual_avg_price_inr_per_quintal",
+          "error_inr_per_quintal"
+        ],
+        "properties": {
+          "plan_id": {
+            "$ref": "https://kisaniti.invalid/contracts/sales/v1/common.schema.json#/$defs/pln_id"
+          },
+          "mandi_id": {
+            "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/mnd_id"
+          },
+          "date": {
+            "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/business_date"
+          },
+          "origin": {
+            "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/origin"
+          },
+          "sold_kg": {
+            "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/quantity_kg"
+          },
+          "planned_price_inr_per_quintal": {
+            "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/rate_inr_per_quintal"
+          },
+          "actual_avg_price_inr_per_quintal": {
+            "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/rate_inr_per_quintal"
+          },
+          "error_inr_per_quintal": {
+            "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/rate_inr_per_quintal"
+          }
+        }
+      }
+    }
+  }
+}

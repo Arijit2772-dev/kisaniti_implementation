@@ -1,0 +1,114 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kisaniti.invalid/contracts/sales/v1/actual_sale.schema.json",
+  "title": "ActualSaleV1: what was actually sold. Belongs to a lot; the plan reference is optional; never edited",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract",
+    "id",
+    "lot_id",
+    "member_id",
+    "plan_ref",
+    "mandi_id",
+    "sale_date",
+    "quantity_kg",
+    "price_inr_per_quintal",
+    "amount_inr",
+    "j_form_no",
+    "consumed_kg",
+    "released_for_sale",
+    "origin",
+    "voided",
+    "recorded_by",
+    "recorded_at"
+  ],
+  "properties": {
+    "contract": {
+      "const": "sales.actual_sale/v1"
+    },
+    "id": {
+      "$ref": "https://kisaniti.invalid/contracts/sales/v1/common.schema.json#/$defs/sal_id"
+    },
+    "lot_id": {
+      "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/lot_id"
+    },
+    "member_id": {
+      "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/mbr_id"
+    },
+    "plan_ref": {
+      "anyOf": [
+        {
+          "$ref": "https://kisaniti.invalid/contracts/sales/v1/common.schema.json#/$defs/plan_ref"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "mandi_id": {
+      "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/mnd_id"
+    },
+    "sale_date": {
+      "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/business_date"
+    },
+    "quantity_kg": {
+      "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/quantity_kg"
+    },
+    "price_inr_per_quintal": {
+      "$ref": "https://kisaniti.invalid/contracts/sales/v1/common.schema.json#/$defs/price_positive"
+    },
+    "amount_inr": {
+      "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/money_inr"
+    },
+    "j_form_no": {
+      "$ref": "https://kisaniti.invalid/contracts/sales/v1/common.schema.json#/$defs/j_form_no"
+    },
+    "consumed_kg": {
+      "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/quantity_kg"
+    },
+    "released_for_sale": {
+      "type": "array",
+      "items": {
+        "$ref": "https://kisaniti.invalid/contracts/sales/v1/common.schema.json#/$defs/release_item"
+      }
+    },
+    "origin": {
+      "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/origin"
+    },
+    "voided": {
+      "anyOf": [
+        {
+          "title": "void",
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "reason_code",
+            "voided_by",
+            "voided_at"
+          ],
+          "properties": {
+            "reason_code": {
+              "$ref": "https://kisaniti.invalid/contracts/sales/v1/common.schema.json#/$defs/void_reason"
+            },
+            "voided_by": {
+              "$ref": "https://kisaniti.invalid/contracts/sales/v1/common.schema.json#/$defs/usr_id"
+            },
+            "voided_at": {
+              "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/instant_utc"
+            }
+          }
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "recorded_by": {
+      "$ref": "https://kisaniti.invalid/contracts/sales/v1/common.schema.json#/$defs/usr_id"
+    },
+    "recorded_at": {
+      "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/instant_utc"
+    }
+  }
+}

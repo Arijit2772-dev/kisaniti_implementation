@@ -1,0 +1,110 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kisaniti.invalid/contracts/sales/v1/execution.schema.json",
+  "title": "PlanExecutionV1: derived execution of an approved plan",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract",
+    "plan_id",
+    "revision_no",
+    "status",
+    "lines",
+    "lots"
+  ],
+  "properties": {
+    "contract": {
+      "const": "sales.execution/v1"
+    },
+    "plan_id": {
+      "$ref": "https://kisaniti.invalid/contracts/sales/v1/common.schema.json#/$defs/pln_id"
+    },
+    "revision_no": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "status": {
+      "$ref": "https://kisaniti.invalid/contracts/sales/v1/common.schema.json#/$defs/line_status"
+    },
+    "lines": {
+      "type": "array",
+      "items": {
+        "title": "planned line and what happened",
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "lot_id",
+          "mandi_id",
+          "date",
+          "planned_kg",
+          "sold_kg",
+          "status",
+          "deviation_kg"
+        ],
+        "properties": {
+          "lot_id": {
+            "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/lot_id"
+          },
+          "mandi_id": {
+            "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/mnd_id"
+          },
+          "date": {
+            "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/business_date"
+          },
+          "planned_kg": {
+            "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/quantity_kg"
+          },
+          "sold_kg": {
+            "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/quantity_kg"
+          },
+          "status": {
+            "$ref": "https://kisaniti.invalid/contracts/sales/v1/common.schema.json#/$defs/line_status"
+          },
+          "deviation_kg": {
+            "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/quantity_kg"
+          }
+        }
+      }
+    },
+    "lots": {
+      "type": "array",
+      "items": {
+        "title": "reservation arithmetic of one lot",
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "lot_id",
+          "reserved_kg",
+          "consumed_kg",
+          "released_kg",
+          "released_for_sale_kg",
+          "remaining_kg",
+          "off_plan_sold_kg"
+        ],
+        "properties": {
+          "lot_id": {
+            "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/lot_id"
+          },
+          "reserved_kg": {
+            "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/quantity_kg"
+          },
+          "consumed_kg": {
+            "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/quantity_kg"
+          },
+          "released_kg": {
+            "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/quantity_kg"
+          },
+          "released_for_sale_kg": {
+            "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/quantity_kg"
+          },
+          "remaining_kg": {
+            "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/quantity_kg"
+          },
+          "off_plan_sold_kg": {
+            "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/quantity_kg"
+          }
+        }
+      }
+    }
+  }
+}

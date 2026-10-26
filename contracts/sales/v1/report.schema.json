@@ -1,0 +1,184 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kisaniti.invalid/contracts/sales/v1/report.schema.json",
+  "title": "PlanReportV1: planned and actual side by side, never merged",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract",
+    "plan_id",
+    "revision_no",
+    "label",
+    "lines",
+    "farmers",
+    "totals",
+    "lowest_planned_display",
+    "lowest_actual_display"
+  ],
+  "properties": {
+    "contract": {
+      "const": "sales.report/v1"
+    },
+    "plan_id": {
+      "$ref": "https://kisaniti.invalid/contracts/sales/v1/common.schema.json#/$defs/pln_id"
+    },
+    "revision_no": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "label": {
+      "const": "Planned and actual are separate records. Values are gross; transport costs are not recorded."
+    },
+    "lines": {
+      "type": "array",
+      "items": {
+        "title": "planned against actual for one line",
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "lot_id",
+          "mandi_id",
+          "date",
+          "planned_kg",
+          "sold_kg",
+          "planned_price_inr_per_quintal",
+          "actual_avg_price_inr_per_quintal",
+          "price_gap_inr_per_quintal",
+          "planned_value_inr",
+          "actual_value_inr"
+        ],
+        "properties": {
+          "lot_id": {
+            "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/lot_id"
+          },
+          "mandi_id": {
+            "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/mnd_id"
+          },
+          "date": {
+            "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/business_date"
+          },
+          "planned_kg": {
+            "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/quantity_kg"
+          },
+          "sold_kg": {
+            "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/quantity_kg"
+          },
+          "planned_price_inr_per_quintal": {
+            "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/rate_inr_per_quintal"
+          },
+          "actual_avg_price_inr_per_quintal": {
+            "anyOf": [
+              {
+                "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/rate_inr_per_quintal"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "price_gap_inr_per_quintal": {
+            "anyOf": [
+              {
+                "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/rate_inr_per_quintal"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "planned_value_inr": {
+            "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/money_inr"
+          },
+          "actual_value_inr": {
+            "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/money_inr"
+          }
+        }
+      }
+    },
+    "farmers": {
+      "type": "array",
+      "items": {
+        "title": "a farmer's planned and actual share",
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "farmer_id",
+          "participating_kg",
+          "planned_kg",
+          "sold_kg",
+          "planned_ratio",
+          "actual_ratio"
+        ],
+        "properties": {
+          "farmer_id": {
+            "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/mbr_id"
+          },
+          "participating_kg": {
+            "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/quantity_kg"
+          },
+          "planned_kg": {
+            "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/quantity_kg"
+          },
+          "sold_kg": {
+            "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/quantity_kg"
+          },
+          "planned_ratio": {
+            "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/exact_ratio"
+          },
+          "actual_ratio": {
+            "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/exact_ratio"
+          }
+        }
+      }
+    },
+    "totals": {
+      "title": "totals",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "planned_kg",
+        "sold_kg",
+        "off_plan_kg",
+        "planned_value_inr",
+        "actual_value_inr"
+      ],
+      "properties": {
+        "planned_kg": {
+          "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/quantity_kg"
+        },
+        "sold_kg": {
+          "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/quantity_kg"
+        },
+        "off_plan_kg": {
+          "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/quantity_kg"
+        },
+        "planned_value_inr": {
+          "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/money_inr"
+        },
+        "actual_value_inr": {
+          "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/money_inr"
+        }
+      }
+    },
+    "lowest_planned_display": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "lowest_actual_display": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    }
+  }
+}

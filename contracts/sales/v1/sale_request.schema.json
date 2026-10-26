@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kisaniti.invalid/contracts/sales/v1/sale_request.schema.json",
+  "title": "SaleRequestV1: a sale as recorded from the J-form; the amount and the FPO are never in the body",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "lot_id",
+    "plan_ref",
+    "mandi_id",
+    "sale_date",
+    "quantity_kg",
+    "price_inr_per_quintal",
+    "j_form_no"
+  ],
+  "properties": {
+    "lot_id": {
+      "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/lot_id"
+    },
+    "plan_ref": {
+      "anyOf": [
+        {
+          "$ref": "https://kisaniti.invalid/contracts/sales/v1/common.schema.json#/$defs/plan_ref"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "mandi_id": {
+      "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/mnd_id"
+    },
+    "sale_date": {
+      "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/business_date"
+    },
+    "quantity_kg": {
+      "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/quantity_kg"
+    },
+    "price_inr_per_quintal": {
+      "$ref": "https://kisaniti.invalid/contracts/sales/v1/common.schema.json#/$defs/price_positive"
+    },
+    "j_form_no": {
+      "$ref": "https://kisaniti.invalid/contracts/sales/v1/common.schema.json#/$defs/j_form_no"
+    },
+    "release_reservations": {
+      "type": "array",
+      "maxItems": 20,
+      "items": {
+        "$ref": "https://kisaniti.invalid/contracts/sales/v1/common.schema.json#/$defs/release_item"
+      }
+    }
+  }
+}

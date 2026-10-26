@@ -1,0 +1,15 @@
+{
+  "lot_id": "lot_0000000000F28PMYXK2HRQXS5G",
+  "plan_ref": null,
+  "mandi_id": "mnd_0000000000RVYXBPA2N4Y8B6PY",
+  "sale_date": "2026-10-21",
+  "quantity_kg": "1000.000",
+  "price_inr_per_quintal": "4400.00",
+  "j_form_no": "J/2026/00123",
+  "release_reservations": [
+    {
+      "plan_id": "pln_0000000000CXVSX1PRPME6HFNW",
+      "quantity_kg": "200.000"
+    }
+  ]
+}

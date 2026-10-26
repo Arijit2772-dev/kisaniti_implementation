@@ -1,0 +1,27 @@
+{
+  "contract": "sales.actual_sale/v1",
+  "id": "sal_0000000000X4C4HN7C3KWXS8FZ",
+  "lot_id": "lot_0000000000F28PMYXK2HRQXS5G",
+  "member_id": "mbr_0000000000CANFA56R4Z58R19X",
+  "plan_ref": {
+    "plan_id": "pln_0000000000CXVSX1PRPME6HFNW",
+    "mandi_id": "mnd_0000000000RVYXBPA2N4Y8B6PY",
+    "date": "2026-10-20"
+  },
+  "mandi_id": "mnd_0000000000RVYXBPA2N4Y8B6PY",
+  "sale_date": "2026-10-21",
+  "quantity_kg": "1000.000",
+  "price_inr_per_quintal": "4400.00",
+  "amount_inr": "44000.00",
+  "j_form_no": "J/2026/00123",
+  "consumed_kg": "1000.000",
+  "released_for_sale": [],
+  "origin": "SYNTHETIC",
+  "voided": {
+    "reason_code": "typo",
+    "voided_by": "usr_0000000000AB5T4Y3QRF0EB7JG",
+    "voided_at": "2026-10-21T11:00:00.000Z"
+  },
+  "recorded_by": "usr_0000000000AB5T4Y3QRF0EB7JG",
+  "recorded_at": "2026-10-21T10:00:00.000Z"
+}

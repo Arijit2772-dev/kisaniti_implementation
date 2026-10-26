@@ -1,0 +1,26 @@
+{
+  "contract": "sales.outcomes/v1",
+  "label": "Forecast accuracy",
+  "real": {
+    "pairs": 0,
+    "mean_abs_error_inr_per_quintal": null,
+    "mean_error_inr_per_quintal": null
+  },
+  "synthetic": {
+    "pairs": 1,
+    "mean_abs_error_inr_per_quintal": "15.00",
+    "mean_error_inr_per_quintal": "-15.00"
+  },
+  "pairs": [
+    {
+      "plan_id": "pln_0000000000CXVSX1PRPME6HFNW",
+      "mandi_id": "mnd_0000000000RVYXBPA2N4Y8B6PY",
+      "date": "2026-10-20",
+      "origin": "SYNTHETIC",
+      "sold_kg": "1000.000",
+      "planned_price_inr_per_quintal": "4415.00",
+      "actual_avg_price_inr_per_quintal": "4400.00",
+      "error_inr_per_quintal": "-15.00"
+    }
+  ]
+}
