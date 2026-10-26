@@ -1,0 +1,48 @@
+{
+  "contract": "messaging.instruction/v1",
+  "id": "ins_01M5VFB9GZ405HQB2Y5M1Q7ZHQ",
+  "plan_id": "pln_01M5VFB9GXS4M7ZJSAC788NQYH",
+  "revision_no": 2,
+  "member_id": "mbr_01M5VFB9GZF4508AHP73BHXNK2",
+  "kind": "SALE_INSTRUCTION",
+  "version": 1,
+  "status": "PREPARED",
+  "issues": [],
+  "language": "hi",
+  "template": {
+    "id": "SALE_INSTRUCTION",
+    "version": 1,
+    "review_status": "UNREVIEWED",
+    "text_sha256": "bf3e4a8ee28212bfa508b6f1d4e56b8cfc25c8749cd1f3f00e2880e3c5a28a32"
+  },
+  "text": "नमस्ते Gurpreet Singh (fictional) जी। आपके FPO मैनेजर ने आपके 1121 बासमती धान के लिए यह योजना मंज़ूर की है:\n• 2000.000 किलो, Mansa APMC में, 20 अक्टूबर 2026 को\n• 400.000 किलो, Mansa APMC में, 26 अक्टूबर 2026 को\nअगर कुछ गलत लगे तो कृपया अपने FPO कार्यालय से संपर्क करें।",
+  "facts": {
+    "variety": "1121",
+    "lines": [
+      {
+        "lot_id": "lot_01M5VFB9GX9ZJ3SYMW07N67GPE",
+        "mandi_id": "mnd_01M5VFB9GXJJZXTS6M5P8SZJPZ",
+        "mandi_name": "Mansa APMC",
+        "date": "2026-10-20",
+        "quantity_kg": "2000.000"
+      },
+      {
+        "lot_id": "lot_01M5VFB9GX9ZJ3SYMW07N67GPE",
+        "mandi_id": "mnd_01M5VFB9GXJJZXTS6M5P8SZJPZ",
+        "mandi_name": "Mansa APMC",
+        "date": "2026-10-26",
+        "quantity_kg": "400.000"
+      }
+    ]
+  },
+  "contact_version": 1,
+  "consent_event_no": 1,
+  "supersedes": null,
+  "prepared_by": "usr_01M5VFB9GXGJ8R3MDTAHY8ZDRC",
+  "prepared_at": "2026-10-26T13:00:00.000Z",
+  "delivery": {
+    "state": "NOT_SENT",
+    "attempts": 0,
+    "last_attempt_at": null
+  }
+}

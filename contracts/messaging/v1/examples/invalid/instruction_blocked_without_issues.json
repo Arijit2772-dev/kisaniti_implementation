@@ -1,0 +1,43 @@
+{
+  "contract": "messaging.instruction/v1",
+  "id": "ins_01M5VFB9H0A7TVH48HYY4KFGKC",
+  "plan_id": "pln_01M5VFB9GXS4M7ZJSAC788NQYH",
+  "revision_no": 2,
+  "member_id": "mbr_01M5VFB9H0ACN8NDCDS0TJT6QH",
+  "kind": "SALE_INSTRUCTION",
+  "version": 1,
+  "status": "BLOCKED",
+  "issues": [],
+  "language": null,
+  "template": null,
+  "text": null,
+  "facts": {
+    "variety": "1121",
+    "lines": [
+      {
+        "lot_id": "lot_01M5VFB9GX9ZJ3SYMW07N67GPE",
+        "mandi_id": "mnd_01M5VFB9GXJJZXTS6M5P8SZJPZ",
+        "mandi_name": "Mansa APMC",
+        "date": "2026-10-20",
+        "quantity_kg": "2000.000"
+      },
+      {
+        "lot_id": "lot_01M5VFB9GX9ZJ3SYMW07N67GPE",
+        "mandi_id": "mnd_01M5VFB9GXJJZXTS6M5P8SZJPZ",
+        "mandi_name": "Mansa APMC",
+        "date": "2026-10-26",
+        "quantity_kg": "400.000"
+      }
+    ]
+  },
+  "contact_version": null,
+  "consent_event_no": null,
+  "supersedes": null,
+  "prepared_by": "usr_01M5VFB9GXGJ8R3MDTAHY8ZDRC",
+  "prepared_at": "2026-10-26T13:00:00.000Z",
+  "delivery": {
+    "state": "NOT_SENT",
+    "attempts": 0,
+    "last_attempt_at": null
+  }
+}

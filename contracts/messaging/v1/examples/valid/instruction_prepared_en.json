@@ -1,0 +1,48 @@
+{
+  "contract": "messaging.instruction/v1",
+  "id": "ins_01M5VFB9H09BZXF3RQ1X6GBW07",
+  "plan_id": "pln_01M5VFB9GXS4M7ZJSAC788NQYH",
+  "revision_no": 2,
+  "member_id": "mbr_01M5VFB9H0SF892XFDX6RY0MMT",
+  "kind": "SALE_INSTRUCTION",
+  "version": 1,
+  "status": "PREPARED",
+  "issues": [],
+  "language": "en",
+  "template": {
+    "id": "SALE_INSTRUCTION",
+    "version": 1,
+    "review_status": "UNREVIEWED",
+    "text_sha256": "042fb0ee63e6691744656b79aceaaf187f800fc271be450d668fb2b855e78d35"
+  },
+  "text": "Namaste Gurpreet Singh (fictional). Your FPO manager has approved this plan for your 1121 basmati paddy:\n• 2000.000 kg at Mansa APMC on 20 October 2026\n• 400.000 kg at Mansa APMC on 26 October 2026\nIf anything looks wrong, please contact your FPO office.",
+  "facts": {
+    "variety": "1121",
+    "lines": [
+      {
+        "lot_id": "lot_01M5VFB9GX9ZJ3SYMW07N67GPE",
+        "mandi_id": "mnd_01M5VFB9GXJJZXTS6M5P8SZJPZ",
+        "mandi_name": "Mansa APMC",
+        "date": "2026-10-20",
+        "quantity_kg": "2000.000"
+      },
+      {
+        "lot_id": "lot_01M5VFB9GX9ZJ3SYMW07N67GPE",
+        "mandi_id": "mnd_01M5VFB9GXJJZXTS6M5P8SZJPZ",
+        "mandi_name": "Mansa APMC",
+        "date": "2026-10-26",
+        "quantity_kg": "400.000"
+      }
+    ]
+  },
+  "contact_version": 1,
+  "consent_event_no": 1,
+  "supersedes": null,
+  "prepared_by": "usr_01M5VFB9GXGJ8R3MDTAHY8ZDRC",
+  "prepared_at": "2026-10-26T13:00:00.000Z",
+  "delivery": {
+    "state": "NOT_SENT",
+    "attempts": 0,
+    "last_attempt_at": null
+  }
+}

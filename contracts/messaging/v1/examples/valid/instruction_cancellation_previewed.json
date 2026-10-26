@@ -1,0 +1,48 @@
+{
+  "contract": "messaging.instruction/v1",
+  "id": "ins_01M5VFB9H08Y3DKRQR1AY257GW",
+  "plan_id": "pln_01M5VFB9GXS4M7ZJSAC788NQYH",
+  "revision_no": 2,
+  "member_id": "mbr_01M5VFB9H0DC7ABTD7QVGF1JVP",
+  "kind": "CANCELLATION",
+  "version": 1,
+  "status": "PREPARED",
+  "issues": [],
+  "language": "hi",
+  "template": {
+    "id": "CANCELLATION",
+    "version": 1,
+    "review_status": "UNREVIEWED",
+    "text_sha256": "481e1b77e9017f1f939c00c795a635133403f5ac1fff4b9f864292aa634fe10b"
+  },
+  "text": "नमस्ते Gurpreet Singh (fictional) जी। आपके 1121 बासमती धान की पहले वाली योजना रद्द हो गई है। कृपया उसके अनुसार कुछ न करें:\n• 2000.000 किलो, Mansa APMC में, 20 अक्टूबर 2026 को\n• 400.000 किलो, Mansa APMC में, 26 अक्टूबर 2026 को\nविवरण के लिए अपने FPO कार्यालय से संपर्क करें।",
+  "facts": {
+    "variety": "1121",
+    "lines": [
+      {
+        "lot_id": "lot_01M5VFB9GX9ZJ3SYMW07N67GPE",
+        "mandi_id": "mnd_01M5VFB9GXJJZXTS6M5P8SZJPZ",
+        "mandi_name": "Mansa APMC",
+        "date": "2026-10-20",
+        "quantity_kg": "2000.000"
+      },
+      {
+        "lot_id": "lot_01M5VFB9GX9ZJ3SYMW07N67GPE",
+        "mandi_id": "mnd_01M5VFB9GXJJZXTS6M5P8SZJPZ",
+        "mandi_name": "Mansa APMC",
+        "date": "2026-10-26",
+        "quantity_kg": "400.000"
+      }
+    ]
+  },
+  "contact_version": 1,
+  "consent_event_no": 1,
+  "supersedes": "ins_01M5VFB9GZ405HQB2Y5M1Q7ZHQ",
+  "prepared_by": "usr_01M5VFB9GXGJ8R3MDTAHY8ZDRC",
+  "prepared_at": "2026-10-26T13:00:00.000Z",
+  "delivery": {
+    "state": "PREVIEWED",
+    "attempts": 1,
+    "last_attempt_at": "2026-10-26T13:05:00.000Z"
+  }
+}

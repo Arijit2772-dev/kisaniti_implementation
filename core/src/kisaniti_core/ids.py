@@ -41,6 +41,17 @@ def id_kind(value: str) -> str:
     return validate_id(value).split("_", 1)[0]
 
 
+# Slice-local kinds (messaging/v1): same ULID format, not part of the frozen shared/v1 kind list.
+LOCAL_KINDS: frozenset[str] = frozenset({"ins", "att"})
+
+
+def new_local_id(kind: str) -> str:
+    """A fresh ID of a slice-local kind (see LOCAL_KINDS): ``ins_<ULID>`` or ``att_<ULID>``."""
+    if kind not in LOCAL_KINDS:
+        raise ContractError(ErrorCode.INVALID_ID, f"unknown slice-local ID kind {kind!r}")
+    return kind + new_id("run")[3:]
+
+
 def new_id(kind: str, *, now_ms: int | None = None, randomness: bytes | None = None) -> str:
     """A fresh ULID-based ID (48-bit millisecond time + 80 random bits)."""
     if kind not in KINDS:

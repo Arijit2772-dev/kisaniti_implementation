@@ -11,6 +11,7 @@ from .approval import routes as approval_routes
 from .config import load_settings
 from .devices import routes as device_routes
 from .market import routes as market_routes
+from .messaging import routes as messaging_routes
 from .org import routes as org_routes
 from .plan import routes as plan_routes
 
@@ -23,6 +24,7 @@ org_routes.install(app)
 market_routes.install(app)
 plan_routes.install(app)
 approval_routes.install(app)
+messaging_routes.install(app)
 
 
 @app.get("/api/v1/meta")
@@ -31,6 +33,15 @@ def meta() -> dict[str, object]:
     return {
         "api_version": __version__,
         "core_version": core_version,
-        "contracts": ["shared/v1", "access/v1", "devices/v1", "org/v1", "market/v1", "plan/v1", "approval/v1"],
+        "contracts": [
+            "shared/v1",
+            "access/v1",
+            "devices/v1",
+            "org/v1",
+            "market/v1",
+            "plan/v1",
+            "approval/v1",
+            "messaging/v1",
+        ],
         "mode": load_settings().mode.value,
     }

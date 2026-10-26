@@ -1,0 +1,15 @@
+{
+  "contract": "messaging.delivery_attempt/v1",
+  "id": "att_01M5VFB9H1FV2T6F1956GXW510",
+  "instruction_id": "ins_01M5VFB9GYHKVZZNK97QEZSYHZ",
+  "channel": "PREVIEW",
+  "status": "BLOCKED",
+  "issues": [
+    "CONSENT_WITHDRAWN"
+  ],
+  "provider_message_id": null,
+  "simulated": true,
+  "preview": null,
+  "attempted_by": "usr_01M5VFB9GXGJ8R3MDTAHY8ZDRC",
+  "attempted_at": "2026-10-26T13:05:00.000Z"
+}

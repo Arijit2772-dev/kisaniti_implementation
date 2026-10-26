@@ -1,0 +1,18 @@
+{
+  "contract": "messaging.delivery_attempt/v1",
+  "id": "att_01M5VFB9H0D4ZR6JVN7Y7ZQWJ3",
+  "instruction_id": "ins_01M5VFB9GYHKVZZNK97QEZSYHZ",
+  "channel": "PREVIEW",
+  "status": "PREVIEWED",
+  "issues": [],
+  "provider_message_id": null,
+  "simulated": false,
+  "preview": {
+    "recipient": "+91•••••••001",
+    "language": "pa",
+    "text": "ਸਤਿ ਸ੍ਰੀ ਅਕਾਲ Gurpreet Singh (fictional) ਜੀ। ਤੁਹਾਡੇ FPO ਮੈਨੇਜਰ ਨੇ ਤੁਹਾਡੇ 1121 ਬਾਸਮਤੀ ਝੋਨੇ ਲਈ ਇਹ ਯੋਜਨਾ ਮਨਜ਼ੂਰ ਕੀਤੀ ਹੈ:\n• 2000.000 ਕਿਲੋ, Mansa APMC ਵਿੱਚ, 20 ਅਕਤੂਬਰ 2026 ਨੂੰ\n• 400.000 ਕਿਲੋ, Mansa APMC ਵਿੱਚ, 26 ਅਕਤੂਬਰ 2026 ਨੂੰ\nਜੇ ਕੁਝ ਗ਼ਲਤ ਲੱਗੇ ਤਾਂ ਕਿਰਪਾ ਕਰਕੇ ਆਪਣੇ FPO ਦਫ਼ਤਰ ਨਾਲ ਸੰਪਰਕ ਕਰੋ।",
+    "label": "PREVIEW — nothing was sent"
+  },
+  "attempted_by": "usr_01M5VFB9GXGJ8R3MDTAHY8ZDRC",
+  "attempted_at": "2026-10-26T13:05:00.000Z"
+}
