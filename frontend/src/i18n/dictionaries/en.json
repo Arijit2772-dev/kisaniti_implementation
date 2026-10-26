@@ -376,7 +376,9 @@
     "back": "All plans",
     "statuses": {
       "PROPOSED": "Proposed",
-      "NOT_PROPOSED": "Not proposed"
+      "NOT_PROPOSED": "Not proposed",
+      "APPROVED": "Approved",
+      "REJECTED": "Rejected"
     },
     "outlook": "Price outlook",
     "forecastLabel": "Baseline forecast, not validated on held-out data",
@@ -418,7 +420,7 @@
       "PRICE_NOT_POSITIVE": "The forecast price for a mandi would not be positive; check the data.",
       "SYNTHETIC_INPUT_IN_LIVE": "Demonstration data cannot be used in live mode."
     },
-    "notApproved": "This is a proposal. Nothing is reserved, sold or sent. Approval by a manager is the next step and is not built yet.",
+    "notApproved": "This is a proposal until a manager approves it. Nothing is sold or sent by approving; approval only reserves the stock.",
     "notProposedTitle": "Not proposed",
     "notProposedReasons": {
       "NO_SOLUTION": "The planner found no solution.",
@@ -494,6 +496,115 @@
     },
     "policiesTitle": "Rules and settings used",
     "fingerprint": "Fingerprint of the inputs",
-    "planId": "Plan"
+    "planId": "Plan",
+    "reservationStates": {
+      "ACTIVE": "stock reserved",
+      "RELEASED": "reservation released"
+    }
+  },
+  "review": {
+    "title": "Review and decision",
+    "state": "State",
+    "statusNames": {
+      "NOT_PROPOSED": "Not proposed",
+      "PROPOSED": "Waiting for a decision",
+      "APPROVED": "Approved",
+      "REJECTED": "Rejected"
+    },
+    "revisions": "Revisions",
+    "revision": "Revision {n}",
+    "kinds": {
+      "SYSTEM_PROPOSAL": "System proposal",
+      "MANAGER_EDIT": "Manager edit"
+    },
+    "current": "current",
+    "superseded": "replaced by a newer revision",
+    "planned": "Planned (kg)",
+    "net": "Expected return (₹)",
+    "changesTitle": "Changes from revision {n}",
+    "noChanges": "This is the original proposal.",
+    "from": "From (kg)",
+    "to": "To (kg)",
+    "lot": "Lot",
+    "mandi": "Mandi",
+    "date": "Date",
+    "quantity": "Quantity (kg)",
+    "editTitle": "Edit the plan",
+    "editIntro": "Change the quantities. Only the choices the planner considered can be used, in whole selling steps. The plan is checked before it is saved. A saved edit becomes a new revision; the original proposal is never changed.",
+    "save": "Save as a new revision",
+    "saving": "Checking…",
+    "saved": "Saved as revision {n}.",
+    "invalidTitle": "The edited plan is not valid:",
+    "approveTitle": "Approve",
+    "approveIntro": "Approving reserves the quantities below from the stock of each lot, in one step. Nothing is sold or sent.",
+    "lotCol": "Lot",
+    "assigned": "To reserve (kg)",
+    "available": "Available now (kg)",
+    "canReserve": "Enough stock",
+    "yes": "yes",
+    "no": "NO",
+    "ackTitle": "Tick to confirm that you have read each warning:",
+    "approveBtn": "Approve revision {n} and reserve the stock",
+    "approving": "Reserving…",
+    "confirmApprove": "Reserve the stock and approve revision {n}?",
+    "blockers": {
+      "PLAN_NOT_PROPOSED": "The planner did not propose this plan.",
+      "ALREADY_DECIDED": "This plan has already been decided.",
+      "NOTHING_TO_RESERVE": "This revision plans nothing, so there is nothing to reserve.",
+      "INSUFFICIENT_AVAILABLE": "There is not enough free stock for this revision."
+    },
+    "contextWarnings": {
+      "NEWER_PRICE_DATASET": "A newer price dataset ({dataset}) exists than the one this plan used.",
+      "STORAGE_CHANGED": "Storage condition of {lot} changed from {from} to {to} since the plan.",
+      "STOCK_CHANGED_SINCE_PLAN": "Available stock of {lot} changed from {planned_available_kg} kg to {now_available_kg} kg since the plan."
+    },
+    "rejectTitle": "Reject",
+    "rejectReason": "Reason",
+    "rejectReasons": {
+      "PRICE_CONCERN": "Price concern",
+      "QUANTITY_CONCERN": "Quantity concern",
+      "MARKET_CONCERN": "Market concern",
+      "STORAGE_CONCERN": "Storage concern",
+      "OTHER": "Other"
+    },
+    "rejectBtn": "Reject this plan",
+    "confirmReject": "Reject this plan? It cannot be reopened.",
+    "decisionTitle": "Decision",
+    "decidedBy": "Decided by",
+    "decidedAt": "Decided at",
+    "reasonLabel": "Reason",
+    "reservationTitle": "Reserved stock",
+    "reserved": "Reserved (kg)",
+    "released": "Released (kg)",
+    "remaining": "Still reserved (kg)",
+    "reservationStates": {
+      "NONE": "No reservation",
+      "ACTIVE": "Stock is reserved",
+      "RELEASED": "Reservation released"
+    },
+    "releaseTitle": "Release the reservation",
+    "releaseIntro": "Gives the remaining reserved stock back as free stock. The approval stays on record.",
+    "releaseReasons": {
+      "PLAN_CANCELLED": "Plan cancelled",
+      "STOCK_NEEDED_ELSEWHERE": "Stock needed elsewhere",
+      "MARKET_CHANGED": "Market changed",
+      "OTHER": "Other"
+    },
+    "releaseBtn": "Release the reservation",
+    "confirmRelease": "Release all remaining reserved stock of this plan?",
+    "noRights": "You can look at this plan. Only a manager can approve, reject or release it.",
+    "noEdit": "You can look at this plan but not change it.",
+    "issues": {
+      "STALE_REVISION": "A newer revision exists. Reload the page.",
+      "ALREADY_DECIDED": "This plan has already been decided.",
+      "PLAN_NOT_PROPOSED": "The planner did not propose this plan.",
+      "INSUFFICIENT_AVAILABLE": "There is not enough free stock for this plan any more.",
+      "WARNINGS_NOT_ACKNOWLEDGED": "Confirm every warning first.",
+      "NOTHING_TO_RESERVE": "This revision plans nothing, so it cannot be approved.",
+      "NOT_APPROVED": "Only an approved plan has a reservation.",
+      "NOTHING_TO_RELEASE": "Nothing is left reserved.",
+      "NO_CHANGE": "Nothing changed compared with the current revision.",
+      "PLAN_INVALID": "The edited plan is not valid."
+    }
   }
 }

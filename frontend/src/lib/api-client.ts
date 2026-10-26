@@ -11,6 +11,7 @@ export interface ApiProblem {
   issueCode?: string;
   requestId: string;
   retryAfterS?: number;
+  issueList?: { code?: string; message?: string; path?: string }[];
 }
 
 export type ApiResult<T> = { ok: true; status: number; data: T } | { ok: false; problem: ApiProblem };
@@ -42,6 +43,7 @@ export async function api<T>(path: string, init: { method?: string; body?: unkno
         status: res.status,
         code: String(body.code ?? "INTERNAL"),
         issueCode: issues[0]?.code,
+        issueList: issues as { code?: string; message?: string; path?: string }[],
         requestId: String(body.request_id ?? res.headers.get("x-request-id") ?? ""),
         retryAfterS: typeof body.retry_after_s === "number" ? body.retry_after_s : undefined,
       },

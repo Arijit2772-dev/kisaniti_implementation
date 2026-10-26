@@ -40,6 +40,13 @@ const INCREMENT = /^[0-9]+\.[0-9]{3}$/;
 const fill = (s: string, v: Record<string, string>) => s.replace(/\{(\w+)\}/g, (w, k: string) => v[k] ?? w);
 const newKey = () => crypto.randomUUID();
 
+export interface PlanStateRow {
+  plan_id: string;
+  status: string;
+  current_revision_no: number;
+  reservation: { state: string };
+}
+
 export function PlansPanel({
   lang,
   csrf,
@@ -48,6 +55,7 @@ export function PlansPanel({
   datasetStatus,
   errors,
   initial,
+  states,
 }: {
   lang: string;
   csrf: string;
@@ -56,7 +64,9 @@ export function PlansPanel({
   datasetStatus: Text;
   errors: Text;
   initial: PlanSummary[];
+  states: PlanStateRow[];
 }) {
+  const stateOf = new Map(states.map((x) => [x.plan_id, x]));
   const [variety, setVariety] = useState<string>(VARIETIES[0]);
   const [fc, setFc] = useState<ForecastSet | null | "none">(null);
   const [picked, setPicked] = useState<Record<string, string>>({});
@@ -143,7 +153,13 @@ export function PlansPanel({
               <tr key={p.id}>
                 <td data-label={t.created}>{p.created_at}</td>
                 <td data-label={t.variety}>{p.variety}</td>
-                <td data-label={t.status}>{statuses[p.status] ?? p.status}</td>
+                <td data-label={t.status}>
+                  {statuses[stateOf.get(p.id)?.status ?? p.status] ?? p.status}
+                  {stateOf.get(p.id)?.reservation.state && stateOf.get(p.id)?.reservation.state !== "NONE" && (
+                    <span className="muted"> · {(t.reservationStates as Text)[stateOf.get(p.id)?.reservation.state ?? ""]}</span>
+                  )}
+                  {(stateOf.get(p.id)?.current_revision_no ?? 1) > 1 && <span className="muted"> · v{stateOf.get(p.id)?.current_revision_no}</span>}
+                </td>
                 <td data-label={t.farmers}>{p.farmers}</td>
                 <td data-label={t.lots}>{p.lots}</td>
                 <td data-label={t.planned}>{p.allocated_kg}</td>

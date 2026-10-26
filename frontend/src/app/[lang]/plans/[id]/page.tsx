@@ -1,5 +1,6 @@
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
+import { PlanReview, type Choice, type Context, type PlanState, type Revision } from "@/components/PlanReview";
 import { Protected } from "@/components/Protected";
 import { hasLocale } from "@/i18n/config";
 import { format } from "@/i18n/dictionaries";
@@ -29,6 +30,7 @@ interface Plan {
     storage_reason: string | null;
   }[];
   allocation_input_sha256: string;
+  allocation_input: { choices: { lot_id: string; mandi_id: string; date: string }[] };
   allocation_result: {
     assignments: { lot_id: string; mandi_id: string; date: string; quantity_kg: string }[];
     farmers: { farmer_id: string; fulfilment: { numerator_kg: string; denominator_kg: string; display: string } }[];
@@ -59,9 +61,17 @@ async function PlanContent({ params }: { params: Promise<{ lang: string; id: str
   return (
     <>
       <Protected lang={lang}>
-        {async (_p, dict) => {
-          const [plan, members] = await Promise.all([serverGet<Plan>(`/plans/${encodeURIComponent(id)}`), serverGet<Member[]>("/members")]);
-          if (!plan) notFound();
+        {async (p, dict) => {
+          const pid = encodeURIComponent(id);
+          const [plan, members, state, revisions, context, users] = await Promise.all([
+            serverGet<Plan>(`/plans/${pid}`),
+            serverGet<Member[]>("/members"),
+            serverGet<PlanState>(`/plans/${pid}/state`),
+            serverGet<Revision[]>(`/plans/${pid}/revisions`),
+            serverGet<Context>(`/plans/${pid}/approval-context`),
+            p.capabilities.includes("users.manage") ? serverGet<{ id: string; display_name: string }[]>("/users") : Promise.resolve(null),
+          ]);
+          if (!plan || !state || !revisions || !context) notFound();
           const t = dict.plans;
           const memberName = new Map((members ?? []).map((m) => [m.id, m.display_name]));
           const mandiName = new Map(plan.mandis.map((m) => [m.mandi_id, m.name]));
@@ -85,9 +95,15 @@ async function PlanContent({ params }: { params: Promise<{ lang: string; id: str
             if (p.status) out.status = statusNames[p.status] ?? p.status;
             return out;
           };
-          const res = plan.allocation_result;
+          const currentRev = revisions[revisions.length - 1];
+          const res = currentRev.allocation_result as Plan["allocation_result"];
+          const lotLabels: Params = Object.fromEntries(plan.lots.map((l) => [l.lot_id, lotLabel(l.lot_id)]));
+          const mandiNames: Params = Object.fromEntries(plan.mandis.map((m) => [m.mandi_id, m.name]));
+          const userNames: Params = Object.fromEntries([[p.user_id, p.display_name], ...(users ?? []).map((u) => [u.id, u.display_name])]);
+          const planWarningTexts: Params = {};
+          for (const w of plan.warnings) planWarningTexts[w.code] ??= format(warnTexts[w.code] ?? w.code, resolve(w.params));
           const left = (Number(res.totals.participating_kg) - Number(res.totals.scheduled_kg)).toFixed(3);
-          const proposed = plan.status === "PROPOSED";
+          const proposed = state.status === "PROPOSED" || state.status === "APPROVED";
           return (
             <>
               <p>
@@ -101,7 +117,7 @@ async function PlanContent({ params }: { params: Promise<{ lang: string; id: str
               </p>
               <section className={proposed ? "card ready" : "card blocked"}>
                 <p>
-                  <strong>{(t.statuses as Params)[plan.status] ?? plan.status}</strong>
+                  <strong>{(dict.review.statusNames as Params)[state.status] ?? state.status}</strong>
                 </p>
                 {!proposed && (
                   <>
@@ -113,8 +129,26 @@ async function PlanContent({ params }: { params: Promise<{ lang: string; id: str
                     </ul>
                   </>
                 )}
-                <p role="note">{t.notApproved}</p>
+                {state.status === "PROPOSED" && <p role="note">{t.notApproved}</p>}
               </section>
+
+              <PlanReview
+                csrf={p.csrf_token}
+                canWrite={p.capabilities.includes("data.write")}
+                canApprove={p.capabilities.includes("plans.approve")}
+                t={dict.review}
+                planWarningTexts={planWarningTexts}
+                errors={dict.errors}
+                planId={plan.id}
+                state={state}
+                revisions={revisions}
+                context={context}
+                choices={plan.allocation_input.choices.map((c): Choice => ({ lot_id: c.lot_id, mandi_id: c.mandi_id, date: c.date }))}
+                lotLabels={lotLabels}
+                mandiNames={mandiNames}
+                userNames={userNames}
+                categories={categories}
+              />
 
               {plan.warnings.length > 0 && (
                 <>
@@ -128,6 +162,7 @@ async function PlanContent({ params }: { params: Promise<{ lang: string; id: str
               )}
 
               <h2>{t.assignments}</h2>
+              <p className="muted">{format(dict.review.revision, { n: String(currentRev.revision_no) })}</p>
               {res.assignments.length === 0 ? (
                 <p className="muted">{t.nothing}</p>
               ) : (

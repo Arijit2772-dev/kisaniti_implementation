@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
-import { PlansPanel, type PlanSummary } from "@/components/PlansPanel";
+import { PlansPanel, type PlanStateRow, type PlanSummary } from "@/components/PlansPanel";
 import { Protected } from "@/components/Protected";
 import { hasLocale } from "@/i18n/config";
 import { getDictionary } from "@/i18n/dictionaries";
@@ -14,7 +14,7 @@ export default async function PlansPage({ params }: { params: Promise<{ lang: st
     <Suspense fallback={<p className="muted loading">{d.common.loading}</p>}>
       <Protected lang={lang}>
         {async (p, dict) => {
-          const initial = (await serverGet<PlanSummary[]>("/plans")) ?? [];
+          const [initial, states] = await Promise.all([serverGet<PlanSummary[]>("/plans"), serverGet<PlanStateRow[]>("/plan-states")]);
           return (
             <>
               <h1>{dict.plans.title}</h1>
@@ -26,7 +26,8 @@ export default async function PlansPage({ params }: { params: Promise<{ lang: st
                 t={dict.plans}
                 datasetStatus={dict.prices.status}
                 errors={dict.errors}
-                initial={initial}
+                initial={initial ?? []}
+                states={states ?? []}
               />
             </>
           );
