@@ -14,6 +14,7 @@ from .market import routes as market_routes
 from .messaging import routes as messaging_routes
 from .org import routes as org_routes
 from .plan import routes as plan_routes
+from .sales import routes as sales_routes
 
 app = FastAPI(title="KisanNiti API", version=__version__)
 problems.install(app)
@@ -25,6 +26,7 @@ market_routes.install(app)
 plan_routes.install(app)
 approval_routes.install(app)
 messaging_routes.install(app)
+sales_routes.install(app)
 
 
 @app.get("/api/v1/meta")
@@ -42,6 +44,7 @@ def meta() -> dict[str, object]:
             "plan/v1",
             "approval/v1",
             "messaging/v1",
+            "sales/v1",
         ],
         "mode": load_settings().mode.value,
     }

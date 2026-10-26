@@ -1,0 +1,46 @@
+{
+  "contract": "sales.execution/v1",
+  "plan_id": "pln_0000000000CXVSX1PRPME6HFNW",
+  "revision_no": 1,
+  "status": "NOT_STARTED",
+  "lines": [
+    {
+      "lot_id": "lot_0000000000F28PMYXK2HRQXS5G",
+      "mandi_id": "mnd_0000000000RVYXBPA2N4Y8B6PY",
+      "date": "2026-10-20",
+      "planned_kg": "1200.000",
+      "sold_kg": "0.000",
+      "status": "NOT_STARTED",
+      "deviation_kg": "0.000"
+    },
+    {
+      "lot_id": "lot_00000000006XRVZBMXPGN7YNFZ",
+      "mandi_id": "mnd_0000000000RVYXBPA2N4Y8B6PY",
+      "date": "2026-10-20",
+      "planned_kg": "800.000",
+      "sold_kg": "0.000",
+      "status": "NOT_STARTED",
+      "deviation_kg": "0.000"
+    }
+  ],
+  "lots": [
+    {
+      "lot_id": "lot_0000000000F28PMYXK2HRQXS5G",
+      "reserved_kg": "1200.000",
+      "consumed_kg": "1200.000",
+      "released_kg": "0.000",
+      "released_for_sale_kg": "0.000",
+      "remaining_kg": "0.000",
+      "off_plan_sold_kg": "0.000"
+    },
+    {
+      "lot_id": "lot_00000000006XRVZBMXPGN7YNFZ",
+      "reserved_kg": "800.000",
+      "consumed_kg": "400.000",
+      "released_kg": "0.000",
+      "released_for_sale_kg": "0.000",
+      "remaining_kg": "400.000",
+      "off_plan_sold_kg": "50.000"
+    }
+  ]
+}

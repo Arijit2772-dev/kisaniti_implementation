@@ -450,7 +450,9 @@ def prepare(plan_id: str, body: PrepareBody, request: Request, p: Sender) -> lis
             approved = state["status"] == "APPROVED" and state["decision"] is not None
             if body.kind == "SALE_INSTRUCTION" and not (approved and state["reservation"]["state"] == "ACTIVE"):
                 raise _conflict("NOT_APPROVED", "the plan is not approved with an active reservation")
-            if body.kind == "CANCELLATION" and not (approved and state["reservation"]["state"] == "RELEASED"):
+            if body.kind == "CANCELLATION" and not (
+                approved and state["reservation"]["state"] == "RELEASED" and state["reservation"]["release"] is not None
+            ):
                 raise _conflict("NOT_RELEASED", "the plan's reservation has not been released")
             decision_no = state["decision"]["revision_no"]
             revision = next(r for r in _revisions(conn, p, plan) if r["revision_no"] == decision_no)

@@ -136,7 +136,13 @@ def _lines(conn: Connection, p: Principal, plan_ids: Sequence[str]) -> dict[str,
     """Per plan and lot: reserved, released and what remains (grams to kg strings), in lot order."""
     rows = conn.execute(
         text(
-            "SELECT r.plan_id, r.lot_id, r.quantity_g AS reserved_g, COALESCE(x.quantity_g, 0) AS released_g "
+            "SELECT r.plan_id, r.lot_id, r.quantity_g AS reserved_g, COALESCE(x.quantity_g, 0) AS released_g, "
+            "COALESCE((SELECT sum(s.consumed_g)::bigint FROM actual_sales s WHERE s.plan_id = r.plan_id AND s.lot_id = "
+            "r.lot_id), 0) "
+            "AS consumed_g, "
+            "COALESCE((SELECT sum(sr.quantity_g)::bigint FROM sale_releases sr WHERE sr.plan_id = r.plan_id AND "
+            "sr.lot_id = r.lot_id), 0) "
+            "AS sale_released_g "
             "FROM plan_reservations r LEFT JOIN plan_releases x ON x.plan_id = r.plan_id AND x.lot_id = r.lot_id "
             "WHERE r.fpo_id = :f AND r.plan_id = ANY(:ids) ORDER BY r.plan_id, r.lot_id"
         ),
@@ -149,7 +155,7 @@ def _lines(conn: Connection, p: Principal, plan_ids: Sequence[str]) -> dict[str,
                 "lot_id": r.lot_id,
                 "reserved_kg": _kg(r.reserved_g),
                 "released_kg": _kg(r.released_g),
-                "remaining_kg": _kg(r.reserved_g - r.released_g),
+                "remaining_kg": _kg(r.reserved_g - r.released_g - r.consumed_g - r.sale_released_g),
             }
         )
     return out

@@ -42,7 +42,7 @@ def id_kind(value: str) -> str:
 
 
 # Slice-local kinds (messaging/v1): same ULID format, not part of the frozen shared/v1 kind list.
-LOCAL_KINDS: frozenset[str] = frozenset({"ins", "att"})
+LOCAL_KINDS: frozenset[str] = frozenset({"ins", "att", "sal", "rpl"})
 
 
 def new_local_id(kind: str) -> str:

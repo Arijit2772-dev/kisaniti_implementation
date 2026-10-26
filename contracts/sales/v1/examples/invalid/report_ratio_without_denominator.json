@@ -1,0 +1,74 @@
+{
+  "contract": "sales.report/v1",
+  "plan_id": "pln_0000000000CXVSX1PRPME6HFNW",
+  "revision_no": 1,
+  "label": "Planned and actual are separate records. Values are gross; transport costs are not recorded.",
+  "lines": [
+    {
+      "lot_id": "lot_0000000000F28PMYXK2HRQXS5G",
+      "mandi_id": "mnd_0000000000RVYXBPA2N4Y8B6PY",
+      "date": "2026-10-20",
+      "planned_kg": "1200.000",
+      "sold_kg": "1200.000",
+      "planned_price_inr_per_quintal": "4415.00",
+      "actual_avg_price_inr_per_quintal": "4458.33",
+      "price_gap_inr_per_quintal": "43.33",
+      "planned_value_inr": "52980.00",
+      "actual_value_inr": "53500.00"
+    },
+    {
+      "lot_id": "lot_00000000006XRVZBMXPGN7YNFZ",
+      "mandi_id": "mnd_0000000000RVYXBPA2N4Y8B6PY",
+      "date": "2026-10-20",
+      "planned_kg": "800.000",
+      "sold_kg": "0.000",
+      "planned_price_inr_per_quintal": "4415.00",
+      "actual_avg_price_inr_per_quintal": null,
+      "price_gap_inr_per_quintal": null,
+      "planned_value_inr": "35320.00",
+      "actual_value_inr": "0.00"
+    }
+  ],
+  "farmers": [
+    {
+      "farmer_id": "mbr_0000000000CANFA56R4Z58R19X",
+      "participating_kg": "1250.000",
+      "planned_kg": "1200.000",
+      "sold_kg": "1200.000",
+      "planned_ratio": {
+        "numerator_kg": "1200.000",
+        "display": "0.960000"
+      },
+      "actual_ratio": {
+        "numerator_kg": "1200.000",
+        "denominator_kg": "1250.000",
+        "display": "0.960000"
+      }
+    },
+    {
+      "farmer_id": "mbr_0000000000RDWC2X8EDHGDFJH9",
+      "participating_kg": "800.000",
+      "planned_kg": "800.000",
+      "sold_kg": "0.000",
+      "planned_ratio": {
+        "numerator_kg": "800.000",
+        "denominator_kg": "800.000",
+        "display": "1.000000"
+      },
+      "actual_ratio": {
+        "numerator_kg": "0.000",
+        "denominator_kg": "800.000",
+        "display": "0.000000"
+      }
+    }
+  ],
+  "totals": {
+    "planned_kg": "2000.000",
+    "sold_kg": "1200.000",
+    "off_plan_kg": "0.000",
+    "planned_value_inr": "88300.00",
+    "actual_value_inr": "53500.00"
+  },
+  "lowest_planned_display": "0.960000",
+  "lowest_actual_display": "0.000000"
+}
