@@ -1,0 +1,11 @@
+{
+  "contract": "messaging.consent_event/v1",
+  "member_id": "mbr_0000000000CANFA56R4Z58R19X",
+  "event_no": 1,
+  "kind": "MARKETING",
+  "action": "GRANTED",
+  "notice_version": "NOTICE-DEMO-0.1",
+  "method": "STAFF_ASSISTED_ORAL",
+  "recorded_by": "usr_0000000000AB5T4Y3QRF0EB7JG",
+  "recorded_at": "2026-10-26T10:05:00.000Z"
+}

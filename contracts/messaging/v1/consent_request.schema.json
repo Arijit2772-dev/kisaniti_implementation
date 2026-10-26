@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kisaniti.invalid/contracts/messaging/v1/consent_request.schema.json",
+  "title": "ConsentRequestV1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "kind",
+    "action",
+    "notice_version",
+    "method"
+  ],
+  "properties": {
+    "kind": {
+      "$ref": "https://kisaniti.invalid/contracts/messaging/v1/common.schema.json#/$defs/consent_kind"
+    },
+    "action": {
+      "$ref": "https://kisaniti.invalid/contracts/messaging/v1/common.schema.json#/$defs/consent_action"
+    },
+    "notice_version": {
+      "$ref": "https://kisaniti.invalid/contracts/messaging/v1/common.schema.json#/$defs/notice_version"
+    },
+    "method": {
+      "$ref": "https://kisaniti.invalid/contracts/messaging/v1/common.schema.json#/$defs/consent_method"
+    }
+  }
+}

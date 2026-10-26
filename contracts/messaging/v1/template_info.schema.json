@@ -1,0 +1,74 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kisaniti.invalid/contracts/messaging/v1/template_info.schema.json",
+  "title": "TemplateInfoV1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract",
+    "id",
+    "version",
+    "languages"
+  ],
+  "properties": {
+    "contract": {
+      "const": "messaging.template/v1"
+    },
+    "id": {
+      "$ref": "https://kisaniti.invalid/contracts/messaging/v1/common.schema.json#/$defs/template_id"
+    },
+    "version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "languages": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 3,
+      "items": {
+        "title": "template language",
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "language",
+          "review_status",
+          "reviewer",
+          "reviewed_at",
+          "text_sha256"
+        ],
+        "properties": {
+          "language": {
+            "$ref": "https://kisaniti.invalid/contracts/messaging/v1/common.schema.json#/$defs/language"
+          },
+          "review_status": {
+            "$ref": "https://kisaniti.invalid/contracts/messaging/v1/common.schema.json#/$defs/review_status"
+          },
+          "reviewer": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 120
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "reviewed_at": {
+            "anyOf": [
+              {
+                "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/business_date"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "text_sha256": {
+            "$ref": "https://kisaniti.invalid/contracts/messaging/v1/common.schema.json#/$defs/sha256"
+          }
+        }
+      }
+    }
+  }
+}

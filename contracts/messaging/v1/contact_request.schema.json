@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kisaniti.invalid/contracts/messaging/v1/contact_request.schema.json",
+  "title": "ContactRequestV1: a phone number as typed; the server normalises it. Nothing else can be sent",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "phone"
+  ],
+  "properties": {
+    "phone": {
+      "type": "string",
+      "minLength": 5,
+      "maxLength": 30
+    }
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "_comment": "prefix -> schema",
+  "contact_": "contact.schema.json",
+  "contactreq_": "contact_request.schema.json",
+  "contactsummary_": "contact_summary.schema.json",
+  "consent_": "consent_event.schema.json",
+  "consentreq_": "consent_request.schema.json",
+  "consentstate_": "consent_state.schema.json",
+  "template_": "template_info.schema.json",
+  "preparereq_": "prepare_request.schema.json",
+  "instruction_": "instruction.schema.json",
+  "sendreq_": "send_request.schema.json",
+  "attempt_": "delivery_attempt.schema.json"
+}

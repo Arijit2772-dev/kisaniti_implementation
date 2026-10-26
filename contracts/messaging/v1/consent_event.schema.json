@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kisaniti.invalid/contracts/messaging/v1/consent_event.schema.json",
+  "title": "ConsentEventV1: one append-only consent event",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract",
+    "member_id",
+    "event_no",
+    "kind",
+    "action",
+    "notice_version",
+    "method",
+    "recorded_by",
+    "recorded_at"
+  ],
+  "properties": {
+    "contract": {
+      "const": "messaging.consent_event/v1"
+    },
+    "member_id": {
+      "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/mbr_id"
+    },
+    "event_no": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "kind": {
+      "$ref": "https://kisaniti.invalid/contracts/messaging/v1/common.schema.json#/$defs/consent_kind"
+    },
+    "action": {
+      "$ref": "https://kisaniti.invalid/contracts/messaging/v1/common.schema.json#/$defs/consent_action"
+    },
+    "notice_version": {
+      "$ref": "https://kisaniti.invalid/contracts/messaging/v1/common.schema.json#/$defs/notice_version"
+    },
+    "method": {
+      "$ref": "https://kisaniti.invalid/contracts/messaging/v1/common.schema.json#/$defs/consent_method"
+    },
+    "recorded_by": {
+      "$ref": "https://kisaniti.invalid/contracts/messaging/v1/common.schema.json#/$defs/usr_id"
+    },
+    "recorded_at": {
+      "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/instant_utc"
+    }
+  }
+}

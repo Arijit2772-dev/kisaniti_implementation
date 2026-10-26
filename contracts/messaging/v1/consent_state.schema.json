@@ -1,0 +1,82 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kisaniti.invalid/contracts/messaging/v1/consent_state.schema.json",
+  "title": "ConsentStateV1: current state per kind and the history",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract",
+    "member_id",
+    "current",
+    "history"
+  ],
+  "properties": {
+    "contract": {
+      "const": "messaging.consent_state/v1"
+    },
+    "member_id": {
+      "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/mbr_id"
+    },
+    "current": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 3,
+      "items": {
+        "title": "current state of one consent kind",
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "kind",
+          "state",
+          "since",
+          "notice_version",
+          "method"
+        ],
+        "properties": {
+          "kind": {
+            "$ref": "https://kisaniti.invalid/contracts/messaging/v1/common.schema.json#/$defs/consent_kind"
+          },
+          "state": {
+            "$ref": "https://kisaniti.invalid/contracts/messaging/v1/common.schema.json#/$defs/consent_state"
+          },
+          "since": {
+            "anyOf": [
+              {
+                "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/instant_utc"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "notice_version": {
+            "anyOf": [
+              {
+                "$ref": "https://kisaniti.invalid/contracts/messaging/v1/common.schema.json#/$defs/notice_version"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "method": {
+            "anyOf": [
+              {
+                "$ref": "https://kisaniti.invalid/contracts/messaging/v1/common.schema.json#/$defs/consent_method"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "history": {
+      "type": "array",
+      "items": {
+        "$ref": "https://kisaniti.invalid/contracts/messaging/v1/consent_event.schema.json"
+      }
+    }
+  }
+}

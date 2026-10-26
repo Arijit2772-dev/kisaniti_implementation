@@ -1,0 +1,175 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kisaniti.invalid/contracts/messaging/v1/delivery_attempt.schema.json",
+  "title": "DeliveryAttemptV1: one attempt on one channel; a preview is never a delivery",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract",
+    "id",
+    "instruction_id",
+    "channel",
+    "status",
+    "issues",
+    "provider_message_id",
+    "simulated",
+    "preview",
+    "attempted_by",
+    "attempted_at"
+  ],
+  "properties": {
+    "contract": {
+      "const": "messaging.delivery_attempt/v1"
+    },
+    "id": {
+      "$ref": "https://kisaniti.invalid/contracts/messaging/v1/common.schema.json#/$defs/att_id"
+    },
+    "instruction_id": {
+      "$ref": "https://kisaniti.invalid/contracts/messaging/v1/common.schema.json#/$defs/ins_id"
+    },
+    "channel": {
+      "enum": [
+        "PREVIEW",
+        "WHATSAPP"
+      ]
+    },
+    "status": {
+      "enum": [
+        "PREVIEWED",
+        "BLOCKED",
+        "QUEUED",
+        "SENT",
+        "DELIVERED",
+        "READ",
+        "FAILED"
+      ]
+    },
+    "issues": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "$ref": "https://kisaniti.invalid/contracts/messaging/v1/common.schema.json#/$defs/issue_code"
+      }
+    },
+    "provider_message_id": {
+      "anyOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "simulated": {
+      "type": "boolean"
+    },
+    "preview": {
+      "anyOf": [
+        {
+          "title": "what a preview shows",
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "recipient",
+            "language",
+            "text",
+            "label"
+          ],
+          "properties": {
+            "recipient": {
+              "$ref": "https://kisaniti.invalid/contracts/messaging/v1/common.schema.json#/$defs/phone_display"
+            },
+            "language": {
+              "$ref": "https://kisaniti.invalid/contracts/messaging/v1/common.schema.json#/$defs/language"
+            },
+            "text": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 2000
+            },
+            "label": {
+              "const": "PREVIEW — nothing was sent"
+            }
+          }
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "attempted_by": {
+      "$ref": "https://kisaniti.invalid/contracts/messaging/v1/common.schema.json#/$defs/usr_id"
+    },
+    "attempted_at": {
+      "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/instant_utc"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "channel": {
+            "const": "PREVIEW"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "simulated": {
+            "const": true
+          },
+          "status": {
+            "enum": [
+              "PREVIEWED",
+              "BLOCKED"
+            ]
+          },
+          "provider_message_id": {
+            "type": "null"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "PREVIEWED"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "preview": {
+            "type": "object"
+          },
+          "issues": {
+            "maxItems": 0
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "BLOCKED"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "preview": {
+            "type": "null"
+          },
+          "issues": {
+            "minItems": 1
+          }
+        }
+      }
+    }
+  ]
+}

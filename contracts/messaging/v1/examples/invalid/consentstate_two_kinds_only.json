@@ -1,0 +1,44 @@
+{
+  "contract": "messaging.consent_state/v1",
+  "member_id": "mbr_0000000000CANFA56R4Z58R19X",
+  "current": [
+    {
+      "kind": "ADVICE",
+      "state": "GRANTED",
+      "since": "2026-10-26T10:04:00.000Z",
+      "notice_version": "NOTICE-DEMO-0.1",
+      "method": "STAFF_ASSISTED_ORAL"
+    },
+    {
+      "kind": "WHATSAPP",
+      "state": "WITHDRAWN",
+      "since": "2026-10-26T11:00:00.000Z",
+      "notice_version": "NOTICE-DEMO-0.1",
+      "method": "STAFF_ASSISTED_ORAL"
+    }
+  ],
+  "history": [
+    {
+      "contract": "messaging.consent_event/v1",
+      "member_id": "mbr_0000000000CANFA56R4Z58R19X",
+      "event_no": 1,
+      "kind": "WHATSAPP",
+      "action": "GRANTED",
+      "notice_version": "NOTICE-DEMO-0.1",
+      "method": "STAFF_ASSISTED_ORAL",
+      "recorded_by": "usr_0000000000AB5T4Y3QRF0EB7JG",
+      "recorded_at": "2026-10-26T10:05:00.000Z"
+    },
+    {
+      "contract": "messaging.consent_event/v1",
+      "member_id": "mbr_0000000000CANFA56R4Z58R19X",
+      "event_no": 2,
+      "kind": "WHATSAPP",
+      "action": "WITHDRAWN",
+      "notice_version": "NOTICE-DEMO-0.1",
+      "method": "STAFF_ASSISTED_ORAL",
+      "recorded_by": "usr_0000000000AB5T4Y3QRF0EB7JG",
+      "recorded_at": "2026-10-26T10:05:00.000Z"
+    }
+  ]
+}

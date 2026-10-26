@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kisaniti.invalid/contracts/messaging/v1/contact.schema.json",
+  "title": "ContactV1: one version of a member's phone number, masked unless the caller may see it",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract",
+    "member_id",
+    "version",
+    "phone",
+    "phone_masked",
+    "source",
+    "recorded_by",
+    "recorded_at"
+  ],
+  "properties": {
+    "contract": {
+      "const": "messaging.contact/v1"
+    },
+    "member_id": {
+      "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/mbr_id"
+    },
+    "version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "phone": {
+      "$ref": "https://kisaniti.invalid/contracts/messaging/v1/common.schema.json#/$defs/phone_display"
+    },
+    "phone_masked": {
+      "type": "boolean"
+    },
+    "source": {
+      "const": "STAFF_ENTERED"
+    },
+    "recorded_by": {
+      "$ref": "https://kisaniti.invalid/contracts/messaging/v1/common.schema.json#/$defs/usr_id"
+    },
+    "recorded_at": {
+      "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/instant_utc"
+    }
+  }
+}

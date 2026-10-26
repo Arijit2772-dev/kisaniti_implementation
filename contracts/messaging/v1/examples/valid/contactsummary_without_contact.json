@@ -1,0 +1,13 @@
+{
+  "contract": "messaging.contact_summary/v1",
+  "member_id": "mbr_0000000000CANFA56R4Z58R19X",
+  "display_name": "Harbans Kaur (fictional)",
+  "language": "en",
+  "active": true,
+  "contact": null,
+  "consents": {
+    "ADVICE": "NONE",
+    "WHATSAPP": "NONE",
+    "RESEARCH": "NONE"
+  }
+}

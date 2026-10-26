@@ -1,0 +1,21 @@
+{
+  "contract": "messaging.contact_summary/v1",
+  "member_id": "mbr_0000000000CANFA56R4Z58R19X",
+  "display_name": "Gurpreet Singh (fictional)",
+  "language": "pa",
+  "active": true,
+  "contact": {
+    "contract": "messaging.contact/v1",
+    "member_id": "mbr_0000000000CANFA56R4Z58R19X",
+    "version": 1,
+    "phone": "+91•••••••001",
+    "phone_masked": true,
+    "source": "STAFF_ENTERED",
+    "recorded_by": "usr_0000000000AB5T4Y3QRF0EB7JG",
+    "recorded_at": "2026-10-26T10:00:00.000Z"
+  },
+  "consents": {
+    "ADVICE": "GRANTED",
+    "WHATSAPP": "GRANTED"
+  }
+}

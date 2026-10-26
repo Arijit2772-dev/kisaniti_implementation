@@ -1,0 +1,66 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kisaniti.invalid/contracts/messaging/v1/contact_summary.schema.json",
+  "title": "ContactSummaryV1: a member with the current contact and consent states",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract",
+    "member_id",
+    "display_name",
+    "language",
+    "active",
+    "contact",
+    "consents"
+  ],
+  "properties": {
+    "contract": {
+      "const": "messaging.contact_summary/v1"
+    },
+    "member_id": {
+      "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/mbr_id"
+    },
+    "display_name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 120
+    },
+    "language": {
+      "$ref": "https://kisaniti.invalid/contracts/messaging/v1/common.schema.json#/$defs/language"
+    },
+    "active": {
+      "type": "boolean"
+    },
+    "contact": {
+      "anyOf": [
+        {
+          "$ref": "https://kisaniti.invalid/contracts/messaging/v1/contact.schema.json"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "consents": {
+      "title": "states",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ADVICE",
+        "WHATSAPP",
+        "RESEARCH"
+      ],
+      "properties": {
+        "ADVICE": {
+          "$ref": "https://kisaniti.invalid/contracts/messaging/v1/common.schema.json#/$defs/consent_state"
+        },
+        "WHATSAPP": {
+          "$ref": "https://kisaniti.invalid/contracts/messaging/v1/common.schema.json#/$defs/consent_state"
+        },
+        "RESEARCH": {
+          "$ref": "https://kisaniti.invalid/contracts/messaging/v1/common.schema.json#/$defs/consent_state"
+        }
+      }
+    }
+  }
+}

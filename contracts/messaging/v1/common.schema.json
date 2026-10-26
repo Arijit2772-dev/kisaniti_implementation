@@ -1,0 +1,149 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kisaniti.invalid/contracts/messaging/v1/common.schema.json",
+  "title": "messaging/v1 shared definitions",
+  "$defs": {
+    "ins_id": {
+      "type": "string",
+      "pattern": "^ins_[0-9A-HJKMNP-TV-Z]{26}$",
+      "description": "slice-local ID kind, same ULID format as shared/v1 section 1"
+    },
+    "att_id": {
+      "type": "string",
+      "pattern": "^att_[0-9A-HJKMNP-TV-Z]{26}$",
+      "description": "slice-local ID kind, same ULID format as shared/v1 section 1"
+    },
+    "pln_id": {
+      "type": "string",
+      "pattern": "^pln_[0-9A-HJKMNP-TV-Z]{26}$"
+    },
+    "usr_id": {
+      "type": "string",
+      "pattern": "^usr_[0-9A-HJKMNP-TV-Z]{26}$"
+    },
+    "revision_no": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 10000
+    },
+    "language": {
+      "enum": [
+        "pa",
+        "hi",
+        "en"
+      ]
+    },
+    "phone_display": {
+      "type": "string",
+      "pattern": "^\\+[0-9•]{8,16}$",
+      "description": "E.164, or masked: first three characters, bullets, last three digits"
+    },
+    "consent_kind": {
+      "enum": [
+        "ADVICE",
+        "WHATSAPP",
+        "RESEARCH"
+      ]
+    },
+    "consent_action": {
+      "enum": [
+        "GRANTED",
+        "WITHDRAWN"
+      ]
+    },
+    "consent_method": {
+      "enum": [
+        "STAFF_ASSISTED_ORAL",
+        "PAPER_FORM",
+        "DIGITAL_FORM"
+      ]
+    },
+    "consent_state": {
+      "enum": [
+        "GRANTED",
+        "WITHDRAWN",
+        "NONE"
+      ]
+    },
+    "notice_version": {
+      "type": "string",
+      "pattern": "^[A-Z0-9][A-Z0-9._-]{2,40}$"
+    },
+    "issue_code": {
+      "enum": [
+        "MEMBER_INACTIVE",
+        "NO_CONTACT",
+        "NO_WHATSAPP_CONSENT",
+        "CONSENT_WITHDRAWN",
+        "TEMPLATE_UNAVAILABLE",
+        "LANGUAGE_CHANGED",
+        "COMMITMENT_NOT_ACTIVE"
+      ]
+    },
+    "template_id": {
+      "enum": [
+        "SALE_INSTRUCTION",
+        "CANCELLATION"
+      ]
+    },
+    "review_status": {
+      "enum": [
+        "UNREVIEWED",
+        "REVIEWED"
+      ]
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "instruction_kind": {
+      "enum": [
+        "SALE_INSTRUCTION",
+        "CANCELLATION"
+      ]
+    },
+    "delivery_state": {
+      "enum": [
+        "NOT_SENT",
+        "PREVIEWED",
+        "QUEUED",
+        "SENT",
+        "DELIVERED",
+        "READ",
+        "FAILED",
+        "BLOCKED"
+      ]
+    },
+    "line": {
+      "title": "one line of an instruction",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "lot_id",
+        "mandi_id",
+        "mandi_name",
+        "date",
+        "quantity_kg"
+      ],
+      "properties": {
+        "lot_id": {
+          "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/lot_id"
+        },
+        "mandi_id": {
+          "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/mnd_id"
+        },
+        "mandi_name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "date": {
+          "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/business_date"
+        },
+        "quantity_kg": {
+          "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/quantity_kg"
+        }
+      }
+    }
+  }
+}

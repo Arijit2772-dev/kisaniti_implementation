@@ -1,0 +1,21 @@
+{
+  "contract": "messaging.template/v1",
+  "id": "SALE_INSTRUCTION",
+  "version": 1,
+  "languages": [
+    {
+      "language": "pa",
+      "review_status": "UNREVIEWED",
+      "reviewer": null,
+      "reviewed_at": null,
+      "text_sha256": "9513229d435978263d82902c59d4e0fb86c941a9bf09b605cd8a6643f40149a8"
+    },
+    {
+      "language": "hi",
+      "review_status": "UNREVIEWED",
+      "reviewer": null,
+      "reviewed_at": null,
+      "text_sha256": "8f434346648f6b96df89dda901c5176b10a6d83961dd3c1ac88b59b2dc327aa4"
+    }
+  ]
+}
