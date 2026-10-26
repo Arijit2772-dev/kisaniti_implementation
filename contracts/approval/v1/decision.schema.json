@@ -1,0 +1,124 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kisaniti.invalid/contracts/approval/v1/decision.schema.json",
+  "title": "PlanDecisionV1: the manager's decision on one revision of one plan; stored once, never changed",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract",
+    "plan_id",
+    "revision_no",
+    "decision",
+    "reason_code",
+    "acknowledged_warnings",
+    "decided_by",
+    "decided_at",
+    "reservation"
+  ],
+  "properties": {
+    "contract": {
+      "const": "approval.decision/v1"
+    },
+    "plan_id": {
+      "$ref": "https://kisaniti.invalid/contracts/approval/v1/common.schema.json#/$defs/pln_id"
+    },
+    "revision_no": {
+      "$ref": "https://kisaniti.invalid/contracts/approval/v1/common.schema.json#/$defs/revision_no"
+    },
+    "decision": {
+      "enum": [
+        "APPROVED",
+        "REJECTED"
+      ]
+    },
+    "reason_code": {
+      "anyOf": [
+        {
+          "$ref": "https://kisaniti.invalid/contracts/approval/v1/common.schema.json#/$defs/reject_reason"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "acknowledged_warnings": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "$ref": "https://kisaniti.invalid/contracts/approval/v1/common.schema.json#/$defs/code"
+      }
+    },
+    "decided_by": {
+      "$ref": "https://kisaniti.invalid/contracts/approval/v1/common.schema.json#/$defs/usr_id"
+    },
+    "decided_at": {
+      "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/instant_utc"
+    },
+    "reservation": {
+      "anyOf": [
+        {
+          "title": "reservation made by an approval",
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "lines"
+          ],
+          "properties": {
+            "lines": {
+              "type": "array",
+              "items": {
+                "$ref": "https://kisaniti.invalid/contracts/approval/v1/common.schema.json#/$defs/reservation_line"
+              }
+            }
+          }
+        },
+        {
+          "type": "null"
+        }
+      ]
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "decision": {
+            "const": "APPROVED"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "reason_code": {
+            "type": "null"
+          },
+          "reservation": {
+            "type": "object"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "decision": {
+            "const": "REJECTED"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "reason_code": {
+            "type": "string"
+          },
+          "reservation": {
+            "type": "null"
+          },
+          "acknowledged_warnings": {
+            "maxItems": 0
+          }
+        }
+      }
+    }
+  ]
+}

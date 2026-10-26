@@ -1,0 +1,11 @@
+{
+  "_comment": "prefix -> schema",
+  "revision_": "revision.schema.json",
+  "revisionreq_": "revision_request.schema.json",
+  "approvereq_": "approve_request.schema.json",
+  "rejectreq_": "reject_request.schema.json",
+  "releasereq_": "release_request.schema.json",
+  "approvalctx_": "approval_context.schema.json",
+  "decision_": "decision.schema.json",
+  "planstate_": "plan_state.schema.json"
+}

@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kisaniti.invalid/contracts/approval/v1/release_request.schema.json",
+  "title": "ReleaseRequestV1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "reason_code"
+  ],
+  "properties": {
+    "reason_code": {
+      "$ref": "https://kisaniti.invalid/contracts/approval/v1/common.schema.json#/$defs/release_reason"
+    }
+  }
+}

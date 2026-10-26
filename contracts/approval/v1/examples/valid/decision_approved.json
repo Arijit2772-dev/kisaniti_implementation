@@ -1,0 +1,29 @@
+{
+  "contract": "approval.decision/v1",
+  "plan_id": "pln_0000000000CXVSX1PRPME6HFNW",
+  "revision_no": 2,
+  "decision": "APPROVED",
+  "reason_code": null,
+  "acknowledged_warnings": [
+    "PRICE_DATASET_UNCHECKED",
+    "SYNTHETIC_DEMO_DATA"
+  ],
+  "decided_by": "usr_0000000000AB5T4Y3QRF0EB7JG",
+  "decided_at": "2026-10-26T14:00:00.000Z",
+  "reservation": {
+    "lines": [
+      {
+        "lot_id": "lot_0000000000F28PMYXK2HRQXS5G",
+        "reserved_kg": "1200.000",
+        "released_kg": "0.000",
+        "remaining_kg": "1200.000"
+      },
+      {
+        "lot_id": "lot_00000000006XRVZBMXPGN7YNFZ",
+        "reserved_kg": "800.000",
+        "released_kg": "0.000",
+        "remaining_kg": "800.000"
+      }
+    ]
+  }
+}

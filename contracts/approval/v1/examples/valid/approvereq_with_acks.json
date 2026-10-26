@@ -1,0 +1,7 @@
+{
+  "revision_no": 1,
+  "acknowledged_warnings": [
+    "PRICE_DATASET_UNCHECKED",
+    "SYNTHETIC_DEMO_DATA"
+  ]
+}

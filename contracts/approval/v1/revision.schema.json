@@ -1,0 +1,125 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kisaniti.invalid/contracts/approval/v1/revision.schema.json",
+  "title": "RevisionV1: one immutable version of the plan's assignments. Revision 1 is the system proposal (id null); later ones are manager edits",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract",
+    "plan_id",
+    "revision_no",
+    "id",
+    "kind",
+    "base_revision_no",
+    "created_by",
+    "created_at",
+    "assignments",
+    "changes",
+    "allocation_result",
+    "validation"
+  ],
+  "properties": {
+    "contract": {
+      "const": "approval.revision/v1"
+    },
+    "plan_id": {
+      "$ref": "https://kisaniti.invalid/contracts/approval/v1/common.schema.json#/$defs/pln_id"
+    },
+    "revision_no": {
+      "$ref": "https://kisaniti.invalid/contracts/approval/v1/common.schema.json#/$defs/revision_no"
+    },
+    "id": {
+      "anyOf": [
+        {
+          "$ref": "https://kisaniti.invalid/contracts/approval/v1/common.schema.json#/$defs/rev_id"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "kind": {
+      "enum": [
+        "SYSTEM_PROPOSAL",
+        "MANAGER_EDIT"
+      ]
+    },
+    "base_revision_no": {
+      "anyOf": [
+        {
+          "$ref": "https://kisaniti.invalid/contracts/approval/v1/common.schema.json#/$defs/revision_no"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "created_by": {
+      "$ref": "https://kisaniti.invalid/contracts/approval/v1/common.schema.json#/$defs/usr_id"
+    },
+    "created_at": {
+      "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/instant_utc"
+    },
+    "assignments": {
+      "type": "array",
+      "maxItems": 500,
+      "items": {
+        "$ref": "https://kisaniti.invalid/contracts/approval/v1/common.schema.json#/$defs/assignment"
+      }
+    },
+    "changes": {
+      "type": "array",
+      "items": {
+        "title": "a changed line",
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "lot_id",
+          "mandi_id",
+          "date",
+          "from_kg",
+          "to_kg"
+        ],
+        "properties": {
+          "lot_id": {
+            "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/lot_id"
+          },
+          "mandi_id": {
+            "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/mnd_id"
+          },
+          "date": {
+            "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/business_date"
+          },
+          "from_kg": {
+            "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/quantity_kg"
+          },
+          "to_kg": {
+            "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/quantity_kg"
+          }
+        }
+      }
+    },
+    "allocation_result": {
+      "type": "object",
+      "required": [
+        "contract"
+      ],
+      "properties": {
+        "contract": {
+          "const": "allocation_result/v1"
+        }
+      }
+    },
+    "validation": {
+      "type": "object",
+      "required": [
+        "contract"
+      ],
+      "properties": {
+        "contract": {
+          "const": "plan_validation/v1"
+        }
+      }
+    }
+  }
+}

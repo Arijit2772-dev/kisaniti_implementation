@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kisaniti.invalid/contracts/approval/v1/approve_request.schema.json",
+  "title": "ApproveRequestV1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "revision_no",
+    "acknowledged_warnings"
+  ],
+  "properties": {
+    "revision_no": {
+      "$ref": "https://kisaniti.invalid/contracts/approval/v1/common.schema.json#/$defs/revision_no"
+    },
+    "acknowledged_warnings": {
+      "type": "array",
+      "uniqueItems": true,
+      "maxItems": 40,
+      "items": {
+        "$ref": "https://kisaniti.invalid/contracts/approval/v1/common.schema.json#/$defs/code"
+      }
+    }
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "contract": "approval.context/v1",
+  "plan_id": "pln_0000000000CXVSX1PRPME6HFNW",
+  "revision_no": 1,
+  "status": "PROPOSED",
+  "lines": [
+    {
+      "lot_id": "lot_0000000000F28PMYXK2HRQXS5G",
+      "assigned_kg": "1200.000",
+      "available_kg": "1250.000",
+      "can_reserve": true
+    },
+    {
+      "lot_id": "lot_00000000006XRVZBMXPGN7YNFZ",
+      "assigned_kg": "800.000",
+      "available_kg": "800.000",
+      "can_reserve": true
+    }
+  ],
+  "context_warnings": [
+    {
+      "code": "STORAGE_CHANGED",
+      "params": {
+        "lot_id": "lot_0000000000F28PMYXK2HRQXS5G",
+        "from": "UNKNOWN",
+        "to": "HIGH"
+      }
+    }
+  ],
+  "required_acknowledgements": [
+    "PRICE_DATASET_UNCHECKED",
+    "STORAGE_CHANGED"
+  ],
+  "blockers": [],
+  "can_approve": true
+}

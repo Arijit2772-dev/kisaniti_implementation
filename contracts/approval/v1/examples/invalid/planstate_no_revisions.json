@@ -1,0 +1,13 @@
+{
+  "contract": "approval.plan_state/v1",
+  "plan_id": "pln_0000000000CXVSX1PRPME6HFNW",
+  "status": "PROPOSED",
+  "current_revision_no": 1,
+  "revisions": [],
+  "decision": null,
+  "reservation": {
+    "state": "NONE",
+    "lines": [],
+    "release": null
+  }
+}

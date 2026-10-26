@@ -1,0 +1,133 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kisaniti.invalid/contracts/approval/v1/plan_state.schema.json",
+  "title": "PlanStateV1: derived state of a plan: status, revisions, the decision and the reservation",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract",
+    "plan_id",
+    "status",
+    "current_revision_no",
+    "revisions",
+    "decision",
+    "reservation"
+  ],
+  "properties": {
+    "contract": {
+      "const": "approval.plan_state/v1"
+    },
+    "plan_id": {
+      "$ref": "https://kisaniti.invalid/contracts/approval/v1/common.schema.json#/$defs/pln_id"
+    },
+    "status": {
+      "$ref": "https://kisaniti.invalid/contracts/approval/v1/common.schema.json#/$defs/status"
+    },
+    "current_revision_no": {
+      "$ref": "https://kisaniti.invalid/contracts/approval/v1/common.schema.json#/$defs/revision_no"
+    },
+    "revisions": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "title": "revision summary",
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "revision_no",
+          "kind",
+          "created_at",
+          "scheduled_kg",
+          "expected_net_return_inr",
+          "superseded"
+        ],
+        "properties": {
+          "revision_no": {
+            "$ref": "https://kisaniti.invalid/contracts/approval/v1/common.schema.json#/$defs/revision_no"
+          },
+          "kind": {
+            "enum": [
+              "SYSTEM_PROPOSAL",
+              "MANAGER_EDIT"
+            ]
+          },
+          "created_at": {
+            "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/instant_utc"
+          },
+          "scheduled_kg": {
+            "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/quantity_kg"
+          },
+          "expected_net_return_inr": {
+            "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/money_inr"
+          },
+          "superseded": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "decision": {
+      "anyOf": [
+        {
+          "$ref": "https://kisaniti.invalid/contracts/approval/v1/decision.schema.json"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "reservation": {
+      "title": "reservation state",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "state",
+        "lines",
+        "release"
+      ],
+      "properties": {
+        "state": {
+          "enum": [
+            "NONE",
+            "ACTIVE",
+            "RELEASED"
+          ]
+        },
+        "lines": {
+          "type": "array",
+          "items": {
+            "$ref": "https://kisaniti.invalid/contracts/approval/v1/common.schema.json#/$defs/reservation_line"
+          }
+        },
+        "release": {
+          "anyOf": [
+            {
+              "title": "release",
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "reason_code",
+                "released_by",
+                "released_at"
+              ],
+              "properties": {
+                "reason_code": {
+                  "$ref": "https://kisaniti.invalid/contracts/approval/v1/common.schema.json#/$defs/release_reason"
+                },
+                "released_by": {
+                  "$ref": "https://kisaniti.invalid/contracts/approval/v1/common.schema.json#/$defs/usr_id"
+                },
+                "released_at": {
+                  "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/instant_utc"
+                }
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
+    }
+  }
+}

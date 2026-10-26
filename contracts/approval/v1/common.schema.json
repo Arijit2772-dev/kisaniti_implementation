@@ -1,0 +1,128 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kisaniti.invalid/contracts/approval/v1/common.schema.json",
+  "title": "approval/v1 shared definitions",
+  "$defs": {
+    "pln_id": {
+      "type": "string",
+      "pattern": "^pln_[0-9A-HJKMNP-TV-Z]{26}$"
+    },
+    "rev_id": {
+      "type": "string",
+      "pattern": "^rev_[0-9A-HJKMNP-TV-Z]{26}$"
+    },
+    "usr_id": {
+      "type": "string",
+      "pattern": "^usr_[0-9A-HJKMNP-TV-Z]{26}$"
+    },
+    "revision_no": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 10000
+    },
+    "status": {
+      "enum": [
+        "NOT_PROPOSED",
+        "PROPOSED",
+        "APPROVED",
+        "REJECTED"
+      ]
+    },
+    "reject_reason": {
+      "enum": [
+        "PRICE_CONCERN",
+        "QUANTITY_CONCERN",
+        "MARKET_CONCERN",
+        "STORAGE_CONCERN",
+        "OTHER"
+      ]
+    },
+    "release_reason": {
+      "enum": [
+        "PLAN_CANCELLED",
+        "STOCK_NEEDED_ELSEWHERE",
+        "MARKET_CHANGED",
+        "OTHER"
+      ]
+    },
+    "code": {
+      "type": "string",
+      "pattern": "^[A-Z][A-Z0-9_]{1,63}$"
+    },
+    "assignment": {
+      "title": "one assignment",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "lot_id",
+        "mandi_id",
+        "date",
+        "quantity_kg"
+      ],
+      "properties": {
+        "lot_id": {
+          "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/lot_id"
+        },
+        "mandi_id": {
+          "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/mnd_id"
+        },
+        "date": {
+          "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/business_date"
+        },
+        "quantity_kg": {
+          "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/quantity_kg"
+        }
+      }
+    },
+    "context_warning": {
+      "title": "context warning",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "code",
+        "params"
+      ],
+      "properties": {
+        "code": {
+          "enum": [
+            "NEWER_PRICE_DATASET",
+            "STORAGE_CHANGED",
+            "STOCK_CHANGED_SINCE_PLAN"
+          ]
+        },
+        "params": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string",
+            "maxLength": 200
+          }
+        }
+      }
+    },
+    "reservation_line": {
+      "title": "reservation line",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "lot_id",
+        "reserved_kg",
+        "released_kg",
+        "remaining_kg"
+      ],
+      "properties": {
+        "lot_id": {
+          "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/lot_id"
+        },
+        "reserved_kg": {
+          "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/quantity_kg"
+        },
+        "released_kg": {
+          "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/quantity_kg"
+        },
+        "remaining_kg": {
+          "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/quantity_kg"
+        }
+      }
+    }
+  }
+}

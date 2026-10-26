@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kisaniti.invalid/contracts/approval/v1/reject_request.schema.json",
+  "title": "RejectRequestV1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "revision_no",
+    "reason_code"
+  ],
+  "properties": {
+    "revision_no": {
+      "$ref": "https://kisaniti.invalid/contracts/approval/v1/common.schema.json#/$defs/revision_no"
+    },
+    "reason_code": {
+      "$ref": "https://kisaniti.invalid/contracts/approval/v1/common.schema.json#/$defs/reject_reason"
+    }
+  }
+}

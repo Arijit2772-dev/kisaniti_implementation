@@ -1,0 +1,18 @@
+{
+  "base_revision_no": 1,
+  "assignments": [
+    {
+      "lot_id": "lot_0000000000F28PMYXK2HRQXS5G",
+      "mandi_id": "mnd_0000000000RVYXBPA2N4Y8B6PY",
+      "date": "2026-10-20",
+      "quantity_kg": "1200.000",
+      "price_inr_per_kg": "99.0000"
+    },
+    {
+      "lot_id": "lot_00000000006XRVZBMXPGN7YNFZ",
+      "mandi_id": "mnd_0000000000RVYXBPA2N4Y8B6PY",
+      "date": "2026-10-26",
+      "quantity_kg": "500.000"
+    }
+  ]
+}

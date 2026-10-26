@@ -1,0 +1,88 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kisaniti.invalid/contracts/approval/v1/approval_context.schema.json",
+  "title": "ApprovalContextV1: what approving the current revision would reserve and what the manager must acknowledge",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract",
+    "plan_id",
+    "revision_no",
+    "status",
+    "lines",
+    "context_warnings",
+    "required_acknowledgements",
+    "blockers",
+    "can_approve"
+  ],
+  "properties": {
+    "contract": {
+      "const": "approval.context/v1"
+    },
+    "plan_id": {
+      "$ref": "https://kisaniti.invalid/contracts/approval/v1/common.schema.json#/$defs/pln_id"
+    },
+    "revision_no": {
+      "$ref": "https://kisaniti.invalid/contracts/approval/v1/common.schema.json#/$defs/revision_no"
+    },
+    "status": {
+      "$ref": "https://kisaniti.invalid/contracts/approval/v1/common.schema.json#/$defs/status"
+    },
+    "lines": {
+      "type": "array",
+      "items": {
+        "title": "line to reserve",
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "lot_id",
+          "assigned_kg",
+          "available_kg",
+          "can_reserve"
+        ],
+        "properties": {
+          "lot_id": {
+            "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/lot_id"
+          },
+          "assigned_kg": {
+            "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/quantity_kg"
+          },
+          "available_kg": {
+            "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/quantity_kg"
+          },
+          "can_reserve": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "context_warnings": {
+      "type": "array",
+      "items": {
+        "$ref": "https://kisaniti.invalid/contracts/approval/v1/common.schema.json#/$defs/context_warning"
+      }
+    },
+    "required_acknowledgements": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "$ref": "https://kisaniti.invalid/contracts/approval/v1/common.schema.json#/$defs/code"
+      }
+    },
+    "blockers": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "PLAN_NOT_PROPOSED",
+          "ALREADY_DECIDED",
+          "NOTHING_TO_RESERVE",
+          "INSUFFICIENT_AVAILABLE"
+        ]
+      }
+    },
+    "can_approve": {
+      "type": "boolean"
+    }
+  }
+}
