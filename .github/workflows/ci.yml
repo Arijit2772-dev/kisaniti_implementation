@@ -122,6 +122,12 @@ jobs:
         run: |
           for i in $(seq 1 20); do docker compose logs assessor | grep -q '"failed": 0' && break; sleep 3; done
           docker compose logs assessor | grep -q '"failed": 0'
+      - name: The whole flow on fictional data (one command), and a sabotaged run that must fail at the ledger audit
+        run: |
+          pip install --quiet jsonschema==4.25.1 "psycopg[binary]==3.2.10"   # the simulator feed runs on the runner
+          python3 scripts/chain.py --report chain_report.json              # seeds the fixture prices on this fresh stack
+          if python3 scripts/chain.py --sabotage ledger --report chain_sabotaged.json; then echo "sabotaged run passed"; exit 1; fi
+          python3 -c "import json,sys; r=json.load(open('chain_sabotaged.json')); sys.exit(0 if r['failure']['step']=='ledger-audit' else 1)"
       - name: Login, two-FPO isolation, lots and stock ledger, market reads against the running stack
         run: |
           SMOKE_SEED_MARKET=1 scripts/smoke_access.sh   # imports a fixture price release (invented numbers) first
