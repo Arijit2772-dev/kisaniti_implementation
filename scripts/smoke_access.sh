@@ -61,7 +61,7 @@ CMD="$(call a GET /api/v1/commodities | field "[0]['id']" 2>/dev/null)" || fail 
 MID="$(call a POST /api/v1/members '{"display_name":"Smoke member (fictional)","preferred_language":"pa"}' | field "['id']")"; [ "$(status)" = 201 ] || fail "create member $(status)"
 call b GET /api/v1/members | grep -q "$MID" && fail "B sees A's member"
 call b GET "/api/v1/members/$MID" >/dev/null; [ "$(status)" = 404 ] || fail "B reading A's member answered $(status), expected 404"
-LOT_BODY="{\"member_id\":\"$MID\",\"commodity_id\":\"$CMD\",\"registered_quantity_kg\":\"1250.000\"}"
+LOT_BODY="{\"member_id\":\"$MID\",\"commodity_id\":\"$CMD\",\"source_variety\":\"1121\",\"registered_quantity_kg\":\"1250.000\"}"
 idem() {  # label key method path json -> body; status in $J/status
   curl -sS -o "$J/body" -w '%{http_code}' -X "$3" -b "$J/$1.jar" -H "X-CSRF-Token: $(cat "$J/$1.csrf")" -H "Idempotency-Key: $2" \
     -H 'Content-Type: application/json' -d "$5" "$API$4" > "$J/status"; cat "$J/body"
@@ -79,6 +79,21 @@ call a POST "/api/v1/lots/$LID/adjustments" '{"quantity_delta_kg":"-2000.000","r
 call a POST "/api/v1/lots/$LID/adjustments" '{"quantity_delta_kg":"-50.000","reason_code":"SPILLAGE"}' >/dev/null; [ "$(status)" = 201 ] || fail "adjustment $(status)"
 call a GET "/api/v1/lots/$LID" | grep -q '"on_hand_kg":"1200.000"' || fail "on hand is not 1200.000 kg after the adjustment"
 call a GET "/api/v1/lots/$LID/events" | grep -q '"ADJUSTED"' || fail "the ledger does not list the adjustment"
+# ---- forecasts, sensor links and a plan proposal (plan/v1)
+call a GET "/api/v1/forecasts?variety=1121" | grep -q '"signal_verdict":"NOT_ASSESSED"' || fail "forecast set missing or not labelled"
+MND="$(call a GET "/api/v1/forecasts?variety=1121" | python3 -c "import json,sys;print(next(c['mandi_id'] for c in json.load(sys.stdin)['candidate_mandis'] if c['status']=='ELIGIBLE'))")"
+PLAN_BODY="{\"variety\":\"1121\",\"horizons_days\":[1,7],\"mandis\":[{\"mandi_id\":\"$MND\",\"transport_inr_per_quintal\":\"10.00\"}],\"increment_kg\":\"100.000\"}"
+PID="$(idem a "smoke-$SUF-plan" POST /api/v1/plans "$PLAN_BODY" | field "['id']")"; [ "$(status)" = 201 ] || fail "create plan $(status)"
+call a GET "/api/v1/plans/$PID" | grep -q '"status":"PROPOSED"' || fail "the plan was not proposed"
+[ "$(idem a "smoke-$SUF-plan" POST /api/v1/plans "$PLAN_BODY" | field "['id']")" = "$PID" ] || fail "an idempotent replay made a second plan"
+call a GET /api/v1/plans | grep -q "$PID" || fail "A does not list its plan"
+call b GET /api/v1/plans | grep -q "$PID" && fail "B lists A's plan"
+call b GET "/api/v1/plans/$PID" >/dev/null; [ "$(status)" = 404 ] || fail "B reading A's plan answered $(status), expected 404"
+call b POST /api/v1/plans "$PLAN_BODY" >/dev/null; [ "$(status)" = 422 ] || fail "B planning without stock answered $(status), expected 422"
+call a GET "/api/v1/lots/$LID" | grep -q '"reserved_kg":"0.000"' || fail "a proposal reserved stock"
+call b POST "/api/v1/lots/$LID/sensor-links" '{"device_id":null}' >/dev/null; [ "$(status)" = 404 ] || fail "B linking A's lot answered $(status), expected 404"
+call a POST "/api/v1/lots/$LID/sensor-links" "{\"device_id\":\"$DID\"}" >/dev/null; [ "$(status)" = 201 ] || fail "link sensor $(status)"
+call a GET /api/v1/sensor-links/current | grep -q "$DID" || fail "current link missing"
 for path in /api/v1/prices/summary /api/v1/msp /api/v1/datasets /api/v1/mandis "/api/v1/prices?limit=5"; do
   call b GET "$path" >/dev/null; [ "$(status)" = 200 ] || fail "market reference data $path answered $(status)"
 done
@@ -88,4 +103,4 @@ call a POST /api/v1/auth/logout >/dev/null; [ "$(status)" = 204 ] || fail "logou
 call a GET /api/v1/auth/me >/dev/null; [ "$(status)" = 401 ] || fail "session still valid after logout ($(status))"
 CODES=""; for i in 1 2 3 4 5 6; do CODES="$CODES$(curl -sS -o /dev/null -w '%{http_code} ' -H 'Content-Type: application/json' -d "{\"username\":\"ghost.$SUF\",\"password\":\"wrong wrong wrong\"}" "$API/api/v1/auth/login")"; done
 [ "$CODES" = "401 401 401 401 401 429 " ] || fail "throttle sequence was: $CODES"
-echo "PASS: login, must-change gate, CSRF, logout, two-FPO isolation (users, devices, members, lots, ledger), idempotency, stock refusal, market reads, throttle"
+echo "PASS: login, must-change gate, CSRF, logout, two-FPO isolation (users, devices, members, lots, ledger), idempotency, stock refusal, market reads, forecast, plan proposal, sensor link, throttle"

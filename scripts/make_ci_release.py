@@ -6,6 +6,7 @@ import csv
 import hashlib
 import json
 import sys
+from datetime import date, timedelta
 from pathlib import Path
 
 COLS = [
@@ -16,15 +17,19 @@ COLS = [
 
 def main(out: Path) -> None:
     out.mkdir(parents=True, exist_ok=True)
-    rows = [
-        {
-            "row_id": f"ci.csv:{i}", "source_file": "ci.csv", "line_no": str(i), "market_raw": "CI Mandi APMC",
-            "variety_raw": "1121", "date": f"2025-11-{10 + i:02d}", "date_inferred": "0", "arrivals_t": "10.000",
-            "arrivals_shared": "0", "min_price": "3000.00", "max_price": "3200.00", "modal_price": "3100.00",
-            "flags": "",
-        }
-        for i in (1, 2, 3)
-    ]  # fmt: skip
+    # 3 mandis x 40 consecutive days of one season: enough index days (10) and recent days (5) for a forecast and a plan
+    rows = []
+    for day in range(40):
+        for k, (mandi, offset) in enumerate(
+            (("CI Mandi A APMC", 50), ("CI Mandi B APMC", -30), ("CI Mandi C APMC", 0))
+        ):
+            n = len(rows) + 1
+            rows.append({
+                "row_id": f"ci.csv:{n}", "source_file": "ci.csv", "line_no": str(n), "market_raw": mandi,
+                "variety_raw": "1121", "date": (date(2025, 9, 10) + timedelta(days=day)).isoformat(),
+                "date_inferred": "0", "arrivals_t": "10.000", "arrivals_shared": "0", "min_price": "",
+                "max_price": "", "modal_price": f"{3000 + day * 5 + offset}.00", "flags": "",
+            })  # fmt: skip
     with open(out / "observations.csv", "w", newline="", encoding="utf-8") as f:
         w = csv.DictWriter(f, fieldnames=COLS, lineterminator="\n")
         w.writeheader()
@@ -43,16 +48,17 @@ def main(out: Path) -> None:
             lineterminator="\n",
         )
         w.writeheader()
-        w.writerow(
-            {
-                "name": "CI Mandi APMC",
-                "town": "CI",
-                "state": "Punjab",
-                "latitude": "",
-                "longitude": "",
-                "coordinate_source": "",
-            }
-        )
+        for mandi in ("CI Mandi A APMC", "CI Mandi B APMC", "CI Mandi C APMC"):
+            w.writerow(
+                {
+                    "name": mandi,
+                    "town": "CI",
+                    "state": "Punjab",
+                    "latitude": "",
+                    "longitude": "",
+                    "coordinate_source": "",
+                }
+            )
     manifest = {
         "release_name": "CI FIXTURE (invented numbers, not real prices)",
         "commodity": "Paddy(Basmati)",

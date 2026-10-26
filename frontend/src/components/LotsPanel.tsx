@@ -20,6 +20,14 @@ export interface LocationRow {
   kind: string;
   village: string | null;
 }
+export interface DeviceRef {
+  device_id: string;
+  active: boolean;
+}
+export interface LinkRow {
+  lot_id: string;
+  device_id: string | null;
+}
 export interface LotRow {
   id: string;
   member_id: string;
@@ -52,6 +60,8 @@ export function LotsPanel({
   initialLocations,
   members,
   commodities,
+  devices,
+  initialLinks,
 }: {
   csrf: string;
   canWrite: boolean;
@@ -61,9 +71,13 @@ export function LotsPanel({
   initialLocations: LocationRow[];
   members: MemberRef[];
   commodities: CommodityRef[];
+  devices: DeviceRef[];
+  initialLinks: LinkRow[];
 }) {
   const [lots, setLots] = useState(initialLots);
   const [locations, setLocations] = useState(initialLocations);
+  const [links, setLinks] = useState(initialLinks);
+  const [pickSensor, setPickSensor] = useState<Record<string, string>>({});
   const [message, setMessage] = useState<FlashMessage | null>(null);
   const [open, setOpen] = useState<{ id: string; what: "adjust" | "history" } | null>(null);
   const [events, setEvents] = useState<StockEvent[]>([]);
@@ -163,6 +177,14 @@ export function LotsPanel({
     else fail(r.problem);
   }
 
+  async function linkSensor(lotId: string, deviceId: string | null) {
+    setMessage(null);
+    const r = await api(`/lots/${lotId}/sensor-links`, { method: "POST", csrf, body: { device_id: deviceId } });
+    if (!r.ok) return fail(r.problem);
+    const cur = await api<LinkRow[]>("/sensor-links/current");
+    if (cur.ok) setLinks(cur.data);
+  }
+
   async function addLocation(e: React.FormEvent) {
     e.preventDefault();
     setMessage(null);
@@ -190,6 +212,7 @@ export function LotsPanel({
               <th>{t.available}</th>
               <th>{t.sold}</th>
               <th>{t.location}</th>
+              <th>{t.sensor}</th>
               <th />
             </tr>
           </thead>
@@ -225,6 +248,24 @@ export function LotsPanel({
                       </span>
                     )}
                   </td>
+                  <td data-label={t.sensor}>
+                    {links.find((x) => x.lot_id === l.id)?.device_id ?? <span className="muted">{t.noSensor}</span>}
+                    {canWrite && devices.length > 0 && (
+                      <span className="inline-move">
+                        <select aria-label={t.sensorHint} value={pickSensor[l.id] ?? ""} onChange={(e) => setPickSensor({ ...pickSensor, [l.id]: e.target.value })}>
+                          <option value="" />
+                          {devices.filter((x) => x.active).map((x) => (
+                            <option key={x.device_id} value={x.device_id}>
+                              {x.device_id}
+                            </option>
+                          ))}
+                        </select>
+                        <button type="button" className="btn secondary" disabled={!pickSensor[l.id]} onClick={() => void linkSensor(l.id, pickSensor[l.id])}>
+                          {t.linkSensor}
+                        </button>
+                      </span>
+                    )}
+                  </td>
                   <td className="row-actions">
                     {canWrite && (
                       <button type="button" className="btn secondary" onClick={() => setOpen(open?.id === l.id && open.what === "adjust" ? null : { id: l.id, what: "adjust" })}>
@@ -238,7 +279,7 @@ export function LotsPanel({
                 </tr>
                 {open?.id === l.id && open.what === "adjust" && (
                   <tr>
-                    <td colSpan={9}>
+                    <td colSpan={10}>
                       <form className="form" noValidate onSubmit={(e) => void applyAdjust(l.id, e)}>
                         <label>
                           {t.delta}
@@ -264,7 +305,7 @@ export function LotsPanel({
                 )}
                 {open?.id === l.id && open.what === "history" && (
                   <tr>
-                    <td colSpan={9}>
+                    <td colSpan={10}>
                       <ul className="plain">
                         {events.map((ev) => (
                           <li key={ev.id}>

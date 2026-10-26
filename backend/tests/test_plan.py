@@ -695,3 +695,35 @@ def test_a_live_mode_refuses_synthetic_input(
     monkeypatch.setenv("KISANITI_MODE", "LIVE")
     r = call(a.admin, "POST", "/plans", req(market))
     assert r.status_code == 422 and r.json()["issues"][0]["code"] == "SYNTHETIC_INPUT_IN_LIVE", r.text
+
+
+def test_the_ci_fixture_release_is_enough_for_a_forecast_and_a_plan(
+    two: tuple[Fpo, Fpo], engine: Engine, tmp_path: Path
+) -> None:
+    """scripts/make_ci_release.py seeds the CI smoke test; this checks that what it writes can be planned on."""
+    import importlib.util
+
+    spec = importlib.util.spec_from_file_location(
+        "make_ci_release", CONTRACTS.parent / "scripts" / "make_ci_release.py"
+    )
+    assert spec is not None and spec.loader is not None
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    mod.main(tmp_path / "ci")
+    imp.import_release(engine, tmp_path / "ci")
+    a, _ = two
+    with engine.connect() as c:
+        cmd = str(c.execute(text("SELECT id FROM commodities")).scalar_one())
+    fs = call(a.admin, "GET", "/forecasts?variety=1121").json()
+    eligible = [c["mandi_id"] for c in fs["candidate_mandis"] if c["status"] == "ELIGIBLE"]
+    assert len(eligible) == 3 and fs["index_days_in_season"] == 40
+    m = member(a)
+    lot(a, m, cmd, "1250.000", source_variety="1121")
+    body = {
+        "variety": "1121",
+        "horizons_days": [1, 7],
+        "mandis": [{"mandi_id": eligible[0], "transport_inr_per_quintal": "10.00"}],
+        "increment_kg": "100.000",
+    }
+    r = call(a.admin, "POST", "/plans", body)
+    assert r.status_code == 201 and r.json()["status"] == "PROPOSED", r.text

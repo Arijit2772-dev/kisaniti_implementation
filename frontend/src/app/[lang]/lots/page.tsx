@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
-import { LotsPanel, type CommodityRef, type LocationRow, type LotRow, type MemberRef } from "@/components/LotsPanel";
+import { LotsPanel, type CommodityRef, type DeviceRef, type LinkRow, type LocationRow, type LotRow, type MemberRef } from "@/components/LotsPanel";
 import { Protected } from "@/components/Protected";
 import { hasLocale } from "@/i18n/config";
 import { getDictionary } from "@/i18n/dictionaries";
@@ -14,11 +14,13 @@ export default async function LotsPage({ params }: { params: Promise<{ lang: str
     <Suspense fallback={<p className="muted loading">{d.common.loading}</p>}>
       <Protected lang={lang}>
         {async (p, dict) => {
-          const [lots, locations, members, commodities] = await Promise.all([
+          const [lots, locations, members, commodities, devices, links] = await Promise.all([
             serverGet<LotRow[]>("/lots"),
             serverGet<LocationRow[]>("/locations"),
             serverGet<MemberRef[]>("/members"),
             serverGet<CommodityRef[]>("/commodities"),
+            serverGet<DeviceRef[]>("/devices"),
+            serverGet<LinkRow[]>("/sensor-links/current"),
           ]);
           return (
             <>
@@ -33,6 +35,8 @@ export default async function LotsPage({ params }: { params: Promise<{ lang: str
                 initialLocations={locations ?? []}
                 members={members ?? []}
                 commodities={commodities ?? []}
+                devices={devices ?? []}
+                initialLinks={links ?? []}
               />
             </>
           );
