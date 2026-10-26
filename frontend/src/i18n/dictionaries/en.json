@@ -92,7 +92,8 @@
     "devices": "Storage sensors",
     "plans": "Plans",
     "contacts": "Contacts",
-    "messages": "Messages"
+    "messages": "Messages",
+    "sales": "Sales"
   },
   "home": {
     "welcome": "Welcome, {name}",
@@ -501,7 +502,7 @@
     "planId": "Plan",
     "reservationStates": {
       "ACTIVE": "stock reserved",
-      "RELEASED": "reservation released"
+      "RELEASED": "no reserved stock remains"
     }
   },
   "review": {
@@ -582,7 +583,7 @@
     "reservationStates": {
       "NONE": "No reservation",
       "ACTIVE": "Stock is reserved",
-      "RELEASED": "Reservation released"
+      "RELEASED": "No reserved stock remains (released or used by sales)"
     },
     "releaseTitle": "Release the reservation",
     "releaseIntro": "Gives the remaining reserved stock back as free stock. The approval stays on record.",
@@ -711,6 +712,103 @@
       "CHANNEL_NOT_AVAILABLE": "This channel is not available yet."
     },
     "noRights": "You can look at the messages. Only a user allowed to send messages can prepare or preview them.",
-    "attempts": "previews"
+    "attempts": "previews",
+    "repliesTitle": "Replies",
+    "replyPlaceholder": "What the farmer wrote",
+    "addReply": "Save the reply",
+    "repliesNote": "A reply is only stored and shown. It is never read as agreement and never changes consent, stock or sales.",
+    "noReplies": "No replies.",
+    "replySource": "entered by staff"
+  },
+  "sales": {
+    "title": "Actual sales",
+    "intro": "Record what was really sold, from the J-form. A sale that follows an approved plan uses up that plan's reserved stock. Planned and actual are kept as separate records.",
+    "lot": "Lot",
+    "planLine": "Follows this plan line (optional)",
+    "noPlan": "Not part of a plan (off-plan)",
+    "mandi": "Mandi where it was sold",
+    "date": "Sale date",
+    "quantity": "Quantity (kg)",
+    "price": "Price (₹ per quintal)",
+    "jform": "J-form number",
+    "submit": "Record the sale",
+    "recording": "Recording…",
+    "amount": "Amount (₹)",
+    "consumed": "Taken from the reservation (kg)",
+    "voided": "Voided",
+    "void": "Void this sale",
+    "voidReason": "Reason",
+    "voidReasons": {
+      "ENTRY_ERROR": "Entry error",
+      "BUYER_CANCELLED": "Buyer cancelled",
+      "OTHER": "Other"
+    },
+    "confirmVoid": "Void this sale? It stays on record; the sold quantity returns to the lot's stock.",
+    "reconcileTitle": "This is more than the free stock",
+    "reconcileIntro": "Say which reservations to give up for this sale. Together they must add up to exactly {kg} kg. The system does not choose for you.",
+    "holds": "Plan {plan} still holds {kg} kg",
+    "release": "Give up (kg)",
+    "resubmit": "Record the sale with these releases",
+    "empty": "No sales recorded yet.",
+    "plan": "Plan",
+    "when": "Recorded",
+    "offPlan": "off-plan",
+    "noWrite": "You can look at sales but not record them.",
+    "issues": {
+      "SALE_DATE_IN_FUTURE": "A sale cannot be dated after today.",
+      "SALE_DATE_INVALID": "That is not a calendar date.",
+      "SALE_BEFORE_HARVEST": "The sale is dated before the lot's harvest.",
+      "UNKNOWN_MANDI": "Choose a mandi from the list.",
+      "ASSIGNMENT_NOT_FOUND": "The plan has no such line for this lot.",
+      "RELEASE_INVALID": "The releases do not add up, or a plan does not hold that much.",
+      "PRICE_INVALID": "Write the price with two decimals, more than zero.",
+      "QUANTITY_INVALID": "Write the quantity with three decimals, more than zero.",
+      "NOT_APPROVED": "That plan is not approved.",
+      "EXCEEDS_RESERVATION": "The plan holds less than this quantity for the lot. Record the extra as a separate off-plan sale.",
+      "EXCEEDS_STOCK": "The lot does not hold that much.",
+      "DUPLICATE_J_FORM": "This J-form number was already recorded for this lot.",
+      "ALREADY_VOIDED": "This sale was already voided."
+    },
+    "outcomesTitle": "Plan price against realised price",
+    "outcomesNote": "This compares what the plan assumed with what was got. It does not test the forecast method. Fictional rows are not evidence.",
+    "real": "Real farmers",
+    "synthetic": "Fictional farmers",
+    "pairs": "Lines compared",
+    "meanError": "Average difference (₹ per quintal; actual minus plan)",
+    "meanAbs": "Average size of the difference",
+    "noneYet": "nothing yet"
+  },
+  "execution": {
+    "title": "What was actually sold",
+    "status": {
+      "NOT_STARTED": "Not started",
+      "PARTIAL": "Partly sold",
+      "COMPLETED": "Sold"
+    },
+    "planned": "Planned (kg)",
+    "sold": "Sold (kg)",
+    "deviation": "More than planned (kg)",
+    "lot": "Lot",
+    "line": "Planned line",
+    "reserved": "Reserved (kg)",
+    "consumed": "Used by sales (kg)",
+    "released": "Released by a person (kg)",
+    "releasedForSale": "Given up for an off-plan sale (kg)",
+    "remaining": "Still reserved (kg)",
+    "offPlanSold": "Sold off-plan (kg)",
+    "reportTitle": "Planned against actual",
+    "reportLabel": "Planned and actual are separate records. Values are gross; transport costs are not recorded.",
+    "planPrice": "Plan price (₹ per quintal)",
+    "actualPrice": "Realised price (₹ per quintal)",
+    "gap": "Difference",
+    "plannedValue": "Planned value (₹)",
+    "actualValue": "Sold for (₹)",
+    "offPlanTotal": "Sold off-plan (kg)",
+    "fairness": "Share of each farmer's stock",
+    "plannedShare": "Planned",
+    "soldShare": "Sold",
+    "lowestPlanned": "Lowest planned share",
+    "lowestActual": "Lowest sold share",
+    "fullySold": "All reserved stock has been used by sales."
   }
 }

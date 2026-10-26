@@ -17,6 +17,11 @@ export interface Instruction {
   text: string | null;
   delivery: { state: string; attempts: number };
 }
+interface Reply {
+  id: string;
+  text: string;
+  recorded_at: string;
+}
 interface Attempt {
   status: string;
   issues: string[];
@@ -49,6 +54,8 @@ export function InstructionsPanel({
   const [attempts, setAttempts] = useState<Record<string, Attempt>>({});
   const [message, setMessage] = useState<FlashMessage | null>(null);
   const [busy, setBusy] = useState(false);
+  const [replies, setReplies] = useState<Record<string, Reply[]>>({});
+  const [draft, setDraft] = useState<Record<string, string>>({});
   const issues: Text = t.issues;
   const errs: Text = t.errors;
   const delivery: Text = t.delivery;
@@ -76,6 +83,21 @@ export function InstructionsPanel({
       if (all.ok) setRows(all.data);
     } else fail(r.problem);
     setBusy(false);
+  }
+
+  async function loadReplies(id: string) {
+    if (!canSend) return;
+    const r = await api<Reply[]>(`/instructions/${id}/replies`);
+    if (r.ok) setReplies((x) => ({ ...x, [id]: r.data }));
+  }
+
+  async function addReply(id: string) {
+    setMessage(null);
+    const r = await api(`/instructions/${id}/replies`, { method: "POST", csrf, body: { text: draft[id] ?? "" } });
+    if (r.ok) {
+      setDraft({ ...draft, [id]: "" });
+      await loadReplies(id);
+    } else fail(r.problem);
   }
 
   return (
@@ -149,6 +171,29 @@ export function InstructionsPanel({
                 </p>
                 <pre className="message-text">{att.preview.text}</pre>
               </div>
+            )}
+            {canSend && (
+              <details onToggle={(e) => (e.currentTarget as HTMLDetailsElement).open && void loadReplies(r.id)}>
+                <summary>{t.repliesTitle}</summary>
+                <p className="muted">{t.repliesNote}</p>
+                {(replies[r.id] ?? []).length === 0 && <p className="muted">{t.noReplies}</p>}
+                <ul className="plain">
+                  {(replies[r.id] ?? []).map((x) => (
+                    <li key={x.id}>
+                      <span className="muted">{x.recorded_at} · {t.replySource}</span>
+                      <br />
+                      {x.text}
+                    </li>
+                  ))}
+                </ul>
+                <label>
+                  {t.replyPlaceholder}
+                  <textarea maxLength={500} value={draft[r.id] ?? ""} onChange={(e) => setDraft({ ...draft, [r.id]: e.target.value })} />
+                </label>
+                <button type="button" className="btn secondary" disabled={!(draft[r.id] ?? "").trim()} onClick={() => void addReply(r.id)}>
+                  {t.addReply}
+                </button>
+              </details>
             )}
             {att && att.status === "BLOCKED" && (
               <ul className="issue">

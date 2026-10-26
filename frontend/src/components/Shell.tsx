@@ -35,6 +35,7 @@ export function Shell({ lang, p, d, limited, children }: { lang: Locale; p: Prin
               <a href={`/${lang}/plans`}>{d.shell.plans}</a>
               <a href={`/${lang}/contacts`}>{d.shell.contacts}</a>
               <a href={`/${lang}/messages`}>{d.shell.messages}</a>
+              <a href={`/${lang}/sales`}>{d.shell.sales}</a>
               <a href={`/${lang}/devices`}>{d.shell.devices}</a>
             </>
           )}

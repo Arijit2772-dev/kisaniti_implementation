@@ -42,6 +42,29 @@ interface Plan {
   explanation: Item[];
   policy_versions: Params;
 }
+interface Execution {
+  status: string;
+  lines: { lot_id: string; mandi_id: string; date: string; planned_kg: string; sold_kg: string; status: string; deviation_kg: string }[];
+  lots: { lot_id: string; reserved_kg: string; consumed_kg: string; released_kg: string; released_for_sale_kg: string; remaining_kg: string; off_plan_sold_kg: string }[];
+}
+interface Report {
+  lines: {
+    lot_id: string;
+    mandi_id: string;
+    date: string;
+    planned_kg: string;
+    sold_kg: string;
+    planned_price_inr_per_quintal: string;
+    actual_avg_price_inr_per_quintal: string | null;
+    price_gap_inr_per_quintal: string | null;
+    planned_value_inr: string;
+    actual_value_inr: string;
+  }[];
+  farmers: { farmer_id: string; planned_ratio: { display: string }; actual_ratio: { display: string } }[];
+  totals: { planned_kg: string; sold_kg: string; off_plan_kg: string; planned_value_inr: string; actual_value_inr: string };
+  lowest_planned_display: string | null;
+  lowest_actual_display: string | null;
+}
 interface Member {
   id: string;
   display_name: string;
@@ -64,7 +87,7 @@ async function PlanContent({ params }: { params: Promise<{ lang: string; id: str
       <Protected lang={lang}>
         {async (p, dict) => {
           const pid = encodeURIComponent(id);
-          const [plan, members, state, revisions, context, users, instructions] = await Promise.all([
+          const [plan, members, state, revisions, context, users, instructions, execution, report] = await Promise.all([
             serverGet<Plan>(`/plans/${pid}`),
             serverGet<Member[]>("/members"),
             serverGet<PlanState>(`/plans/${pid}/state`),
@@ -72,6 +95,8 @@ async function PlanContent({ params }: { params: Promise<{ lang: string; id: str
             serverGet<Context>(`/plans/${pid}/approval-context`),
             p.capabilities.includes("users.manage") ? serverGet<{ id: string; display_name: string }[]>("/users") : Promise.resolve(null),
             serverGet<Instruction[]>(`/plans/${pid}/instructions`),
+            serverGet<Execution>(`/plans/${pid}/execution`),
+            serverGet<Report>(`/plans/${pid}/report`),
           ]);
           if (!plan || !state || !revisions || !context) notFound();
           const t = dict.plans;
@@ -175,6 +200,119 @@ async function PlanContent({ params }: { params: Promise<{ lang: string; id: str
                   memberNames={Object.fromEntries((members ?? []).map((m) => [m.id, m.display_name]))}
                   initial={instructions ?? []}
                 />
+              )}
+
+              {state.status === "APPROVED" && execution && report && (
+                <>
+                  <h2>{dict.execution.title}</h2>
+                  <p>
+                    <strong>{(dict.execution.status as Params)[execution.status]}</strong>
+                    {execution.lots.every((l) => Number(l.remaining_kg) === 0) && <span className="muted"> · {dict.execution.fullySold}</span>}
+                  </p>
+                  <div className="table-wrap">
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>{dict.execution.line}</th>
+                          <th>{dict.execution.planned}</th>
+                          <th>{dict.execution.sold}</th>
+                          <th>{dict.execution.deviation}</th>
+                          <th />
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {execution.lines.map((l) => (
+                          <tr key={`${l.lot_id}${l.mandi_id}${l.date}`}>
+                            <td data-label={dict.execution.line}>
+                              {lotLabel(l.lot_id)} · {mandiName.get(l.mandi_id) ?? l.mandi_id} · {l.date}
+                            </td>
+                            <td data-label={dict.execution.planned}>{l.planned_kg}</td>
+                            <td data-label={dict.execution.sold}>{l.sold_kg}</td>
+                            <td data-label={dict.execution.deviation}>{l.deviation_kg}</td>
+                            <td>{(dict.execution.status as Params)[l.status]}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                  <div className="table-wrap">
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>{dict.execution.lot}</th>
+                          <th>{dict.execution.reserved}</th>
+                          <th>{dict.execution.consumed}</th>
+                          <th>{dict.execution.released}</th>
+                          <th>{dict.execution.releasedForSale}</th>
+                          <th>{dict.execution.remaining}</th>
+                          <th>{dict.execution.offPlanSold}</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {execution.lots.map((l) => (
+                          <tr key={l.lot_id}>
+                            <td data-label={dict.execution.lot}>{lotLabel(l.lot_id)}</td>
+                            <td data-label={dict.execution.reserved}>{l.reserved_kg}</td>
+                            <td data-label={dict.execution.consumed}>{l.consumed_kg}</td>
+                            <td data-label={dict.execution.released}>{l.released_kg}</td>
+                            <td data-label={dict.execution.releasedForSale}>{l.released_for_sale_kg}</td>
+                            <td data-label={dict.execution.remaining}>{l.remaining_kg}</td>
+                            <td data-label={dict.execution.offPlanSold}>{l.off_plan_sold_kg}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                  <h2>{dict.execution.reportTitle}</h2>
+                  <p className="muted">{dict.execution.reportLabel}</p>
+                  <div className="table-wrap">
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>{dict.execution.line}</th>
+                          <th>{dict.execution.planPrice}</th>
+                          <th>{dict.execution.actualPrice}</th>
+                          <th>{dict.execution.gap}</th>
+                          <th>{dict.execution.plannedValue}</th>
+                          <th>{dict.execution.actualValue}</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {report.lines.map((l) => (
+                          <tr key={`${l.lot_id}${l.mandi_id}${l.date}`}>
+                            <td data-label={dict.execution.line}>
+                              {lotLabel(l.lot_id)} · {l.date}
+                            </td>
+                            <td data-label={dict.execution.planPrice}>{l.planned_price_inr_per_quintal}</td>
+                            <td data-label={dict.execution.actualPrice}>{l.actual_avg_price_inr_per_quintal ?? "—"}</td>
+                            <td data-label={dict.execution.gap}>{l.price_gap_inr_per_quintal ?? "—"}</td>
+                            <td data-label={dict.execution.plannedValue}>{l.planned_value_inr}</td>
+                            <td data-label={dict.execution.actualValue}>{l.actual_value_inr}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                  <ul className="plain">
+                    <li>
+                      {dict.execution.plannedValue}: <strong>{report.totals.planned_value_inr}</strong> · {dict.execution.actualValue}: <strong>{report.totals.actual_value_inr}</strong>
+                    </li>
+                    <li>
+                      {dict.execution.offPlanTotal}: <strong>{report.totals.off_plan_kg}</strong>
+                    </li>
+                  </ul>
+                  <h3>{dict.execution.fairness}</h3>
+                  <ul className="plain">
+                    {report.farmers.map((f) => (
+                      <li key={f.farmer_id}>
+                        {memberName.get(f.farmer_id) ?? f.farmer_id}: {dict.execution.plannedShare} <strong>{f.planned_ratio.display}</strong> · {dict.execution.soldShare} <strong>{f.actual_ratio.display}</strong>
+                      </li>
+                    ))}
+                    <li className="muted">
+                      {dict.execution.lowestPlanned}: {report.lowest_planned_display ?? "—"} · {dict.execution.lowestActual}: {report.lowest_actual_display ?? "—"}
+                    </li>
+                  </ul>
+                </>
               )}
 
               <h2>{t.assignments}</h2>
