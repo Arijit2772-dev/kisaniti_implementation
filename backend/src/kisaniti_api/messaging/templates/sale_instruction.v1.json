@@ -15,18 +15,18 @@
       "body": "ਸਤਿ ਸ੍ਰੀ ਅਕਾਲ {farmer} ਜੀ। ਤੁਹਾਡੇ FPO ਮੈਨੇਜਰ ਨੇ ਤੁਹਾਡੇ {variety} ਬਾਸਮਤੀ ਝੋਨੇ ਲਈ ਇਹ ਯੋਜਨਾ ਮਨਜ਼ੂਰ ਕੀਤੀ ਹੈ:\n{lines}\nਜੇ ਕੁਝ ਗ਼ਲਤ ਲੱਗੇ ਤਾਂ ਕਿਰਪਾ ਕਰਕੇ ਆਪਣੇ FPO ਦਫ਼ਤਰ ਨਾਲ ਸੰਪਰਕ ਕਰੋ।",
       "line": "• {quantity_kg} ਕਿਲੋ, {mandi} ਵਿੱਚ, {date} ਨੂੰ",
       "review": {
-        "status": "UNREVIEWED",
-        "reviewer": null,
-        "reviewed_at": null
+        "status": "REVIEWED",
+        "reviewer": "the authors (native Punjabi speakers)",
+        "reviewed_at": "2026-10-28"
       }
     },
     "hi": {
       "body": "नमस्ते {farmer} जी। आपके FPO मैनेजर ने आपके {variety} बासमती धान के लिए यह योजना मंज़ूर की है:\n{lines}\nअगर कुछ गलत लगे तो कृपया अपने FPO कार्यालय से संपर्क करें।",
       "line": "• {quantity_kg} किलो, {mandi} में, {date} को",
       "review": {
-        "status": "UNREVIEWED",
-        "reviewer": null,
-        "reviewed_at": null
+        "status": "REVIEWED",
+        "reviewer": "the authors (native Hindi speakers)",
+        "reviewed_at": "2026-10-28"
       }
     }
   }

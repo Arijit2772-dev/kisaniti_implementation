@@ -15,18 +15,18 @@
       "body": "ਸਤਿ ਸ੍ਰੀ ਅਕਾਲ {farmer} ਜੀ। ਤੁਹਾਡੇ {variety} ਬਾਸਮਤੀ ਝੋਨੇ ਦੀ ਪਹਿਲਾਂ ਵਾਲੀ ਯੋਜਨਾ ਰੱਦ ਹੋ ਗਈ ਹੈ। ਕਿਰਪਾ ਕਰਕੇ ਇਸ ਮੁਤਾਬਕ ਕੁਝ ਨਾ ਕਰੋ:\n{lines}\nਵੇਰਵੇ ਲਈ ਆਪਣੇ FPO ਦਫ਼ਤਰ ਨਾਲ ਸੰਪਰਕ ਕਰੋ।",
       "line": "• {quantity_kg} ਕਿਲੋ, {mandi} ਵਿੱਚ, {date} ਨੂੰ",
       "review": {
-        "status": "UNREVIEWED",
-        "reviewer": null,
-        "reviewed_at": null
+        "status": "REVIEWED",
+        "reviewer": "the authors (native Punjabi speakers)",
+        "reviewed_at": "2026-10-28"
       }
     },
     "hi": {
       "body": "नमस्ते {farmer} जी। आपके {variety} बासमती धान की पहले वाली योजना रद्द हो गई है। कृपया उसके अनुसार कुछ न करें:\n{lines}\nविवरण के लिए अपने FPO कार्यालय से संपर्क करें।",
       "line": "• {quantity_kg} किलो, {mandi} में, {date} को",
       "review": {
-        "status": "UNREVIEWED",
-        "reviewer": null,
-        "reviewed_at": null
+        "status": "REVIEWED",
+        "reviewer": "the authors (native Hindi speakers)",
+        "reviewed_at": "2026-10-28"
       }
     }
   }

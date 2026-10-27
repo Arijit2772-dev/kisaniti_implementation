@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import logging
 import re
+from dataclasses import replace
 from typing import Any
 from urllib.parse import unquote
 
@@ -15,6 +16,8 @@ from sqlalchemy import Engine, text
 from sqlalchemy.exc import DBAPIError
 
 from kisaniti_api.handover.routes import LABEL, link_for
+from kisaniti_api.messaging import templates
+from kisaniti_api.messaging.templates import Template
 from tests.test_access import Fpo, Session, access_env, add_user, as_app, clean_up_access_data, two
 from tests.test_approval import make_plan
 from tests.test_messaging import (
@@ -32,6 +35,29 @@ from tests.test_messaging import (
 )
 from tests.test_org import call
 from tests.test_plan import fresh_market, market, valid
+
+
+@pytest.fixture(autouse=True)
+def pa_hi_unreviewed(monkeypatch: pytest.MonkeyPatch) -> None:
+    """The shipped Punjabi and Hindi texts are REVIEWED (by the authors, 28 Oct 2026). These tests pin down the path a
+    manager takes when a text is not: the preview counts it and the yes needs the acknowledgement. The reviewed state
+    itself is tested in test_handover_reviewed.py."""
+    real = templates._all()
+    fake = {
+        k: Template(
+            t.id,
+            t.version,
+            {
+                lang: replace(v, review_status="UNREVIEWED", reviewer=None, reviewed_at=None)
+                if lang in ("pa", "hi")
+                else v
+                for lang, v in t.variants.items()
+            },
+        )
+        for k, t in real.items()
+    }
+    monkeypatch.setattr(templates, "_all", lambda: fake)
+
 
 DIGITS = {PHONE_A: "919000000001", PHONE_B: "919000000002", PHONE_C: "919000000003"}
 LINK = re.compile(r"^https://wa\.me/(?P<digits>[0-9]{8,15})\?text=(?P<text>[A-Za-z0-9%._~-]+)$")

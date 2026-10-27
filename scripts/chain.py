@@ -801,8 +801,8 @@ def step_messages(r: Run) -> None:
         eq(
             "messages",
             d["template"]["review_status"],
-            "UNREVIEWED",
-            "the translations are labelled unreviewed",
+            "REVIEWED",
+            "the Punjabi and Hindi texts are labelled as read by the authors",
         )
     third = docs[members[2]["id"]]
     eq(
@@ -1003,8 +1003,8 @@ def step_handover(r: Run) -> None:
     eq(
         "handover",
         (pv["recipient_count"], pv["unreviewed_count"], pv["blocked"]),
-        (3, 3, []),
-        "the question: 3 farmers",
+        (3, 1, []),
+        "the question: 3 farmers, of whom 1 (English) has an unreviewed text",
     )
     check("handover", not any(n in json.dumps(pv) for n in phones.values()), "a preview never shows a number", pv)
     v.call("GET", f"/plans/{pid}/handover-preview?kind=SALE_INSTRUCTION", expect=403)

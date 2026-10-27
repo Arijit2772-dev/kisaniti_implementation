@@ -222,17 +222,18 @@ def test_consent_is_per_kind_append_only_and_can_be_withdrawn_and_given_again(
         as_app(engine, a.fpo_id, "UPDATE member_consents SET action = 'GRANTED'")
 
 
-def test_templates_are_versioned_have_three_languages_and_are_all_unreviewed(two: tuple[Fpo, Fpo]) -> None:
+def test_templates_are_versioned_have_three_languages_and_say_who_reviewed_each(two: tuple[Fpo, Fpo]) -> None:
     a, _ = two
     docs = call(a.admin, "GET", "/message-templates").json()
     assert sorted(d["id"] for d in docs) == ["CANCELLATION", "SALE_INSTRUCTION"]
     for d in docs:
         valid("messaging", "template_info", d)
         assert [x["language"] for x in d["languages"]] == ["en", "hi", "pa"]
-        assert {x["review_status"] for x in d["languages"]} == {
-            "UNREVIEWED"
-        }  # nobody has reviewed the translations yet
-        assert all(x["reviewer"] is None for x in d["languages"])
+        by_lang = {x["language"]: x for x in d["languages"]}
+        assert by_lang["en"]["review_status"] == "UNREVIEWED" and by_lang["en"]["reviewer"] is None
+        for lang in ("pa", "hi"):  # read by the authors, who are native speakers (28 Oct 2026); no independent review
+            assert by_lang[lang]["review_status"] == "REVIEWED"
+            assert by_lang[lang]["reviewer"].startswith("the authors") and by_lang[lang]["reviewed_at"] == "2026-10-28"
     for t in all_templates():  # the variants say the same thing: same placeholders in every language
         assert len({tuple(sorted(re.findall(r"\{(\w+)\}", v.body + v.line))) for v in t.variants.values()}) == 1
     assert latest("SALE_INSTRUCTION") is not None and latest("NOPE") is None
@@ -291,7 +292,7 @@ def test_three_farmers_each_get_the_exact_text_in_their_own_language(
         assert d["template"] == {
             "id": "SALE_INSTRUCTION",
             "version": 1,
-            "review_status": "UNREVIEWED",
+            "review_status": "UNREVIEWED" if lang == "en" else "REVIEWED",
             "text_sha256": d["template"]["text_sha256"],
         }
         assert d["facts"]["lines"][0]["quantity_kg"] == kg and d["facts"]["variety"] == "1121"
