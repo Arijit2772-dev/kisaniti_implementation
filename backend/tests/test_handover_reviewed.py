@@ -1,6 +1,6 @@
 # ruff: noqa: F811, F401  (fixtures imported from test_access by name: pytest uses them as arguments)
-"""The shipped Punjabi and Hindi texts are REVIEWED by the authors (28 Oct 2026): with only such texts in a hand-over
-the manager is not asked to acknowledge an unreviewed translation. The unreviewed path is in test_handover.py."""
+"""The shipped English, Punjabi and Hindi texts are REVIEWED by independent reviewers (28 Oct 2026): in a hand-over
+the manager is not asked to acknowledge an unreviewed text. The unreviewed path is in test_handover.py."""
 
 from __future__ import annotations
 

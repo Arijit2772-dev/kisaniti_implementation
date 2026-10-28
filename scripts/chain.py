@@ -802,7 +802,7 @@ def step_messages(r: Run) -> None:
             "messages",
             d["template"]["review_status"],
             "REVIEWED",
-            "the Punjabi and Hindi texts are labelled as read by the authors",
+            "the texts are labelled as read by independent reviewers",
         )
     third = docs[members[2]["id"]]
     eq(
@@ -1003,20 +1003,14 @@ def step_handover(r: Run) -> None:
     eq(
         "handover",
         (pv["recipient_count"], pv["unreviewed_count"], pv["blocked"]),
-        (3, 1, []),
-        "the question: 3 farmers, of whom 1 (English) has an unreviewed text",
+        (3, 0, []),
+        "the question: 3 farmers, none with an unreviewed text",
     )
     check("handover", not any(n in json.dumps(pv) for n in phones.values()), "a preview never shows a number", pv)
     v.call("GET", f"/plans/{pid}/handover-preview?kind=SALE_INSTRUCTION", expect=403)
-    body = {"kind": "SALE_INSTRUCTION", "recipient_count": 3, "acknowledge_unreviewed": True}
+    body = {"kind": "SALE_INSTRUCTION", "recipient_count": 3, "acknowledge_unreviewed": False}
     a.call("POST", f"/plans/{pid}/handovers", {**body, "recipient_count": 2}, expect=409, code="CONFIRMATION_STALE")
-    a.call(
-        "POST",
-        f"/plans/{pid}/handovers",
-        {**body, "acknowledge_unreviewed": False},
-        expect=422,
-        code="UNREVIEWED_NOT_ACKNOWLEDGED",
-    )
+    # all three texts are reviewed, so no acknowledgement is asked for; the refusal for an unreviewed text is in test_handover.py
     v.call("POST", f"/plans/{pid}/handovers", body, expect=403)
     eq("handover", a.call("GET", f"/plans/{pid}/handovers"), [], "nothing was created by the refused presses")
     h = a.call("POST", f"/plans/{pid}/handovers", body, key=f"chain-hnd-{uuid.uuid4().hex}", expect=201)

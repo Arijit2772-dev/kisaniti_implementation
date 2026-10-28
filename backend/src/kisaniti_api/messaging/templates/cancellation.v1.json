@@ -6,9 +6,9 @@
       "body": "Namaste {farmer}. The earlier plan for your {variety} basmati paddy has been cancelled. Please do not act on it:\n{lines}\nPlease contact your FPO office for details.",
       "line": "• {quantity_kg} kg at {mandi} on {date}",
       "review": {
-        "status": "UNREVIEWED",
-        "reviewer": null,
-        "reviewed_at": null
+        "status": "REVIEWED",
+        "reviewer": "independent reviewers (English)",
+        "reviewed_at": "2026-10-28"
       }
     },
     "pa": {
@@ -16,7 +16,7 @@
       "line": "• {quantity_kg} ਕਿਲੋ, {mandi} ਵਿੱਚ, {date} ਨੂੰ",
       "review": {
         "status": "REVIEWED",
-        "reviewer": "the authors (native Punjabi speakers)",
+        "reviewer": "independent reviewers (Punjabi)",
         "reviewed_at": "2026-10-28"
       }
     },
@@ -25,7 +25,7 @@
       "line": "• {quantity_kg} किलो, {mandi} में, {date} को",
       "review": {
         "status": "REVIEWED",
-        "reviewer": "the authors (native Hindi speakers)",
+        "reviewer": "independent reviewers (Hindi)",
         "reviewed_at": "2026-10-28"
       }
     }

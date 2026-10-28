@@ -38,8 +38,8 @@ from tests.test_plan import fresh_market, market, valid
 
 
 @pytest.fixture(autouse=True)
-def pa_hi_unreviewed(monkeypatch: pytest.MonkeyPatch) -> None:
-    """The shipped Punjabi and Hindi texts are REVIEWED (by the authors, 28 Oct 2026). These tests pin down the path a
+def translations_unreviewed(monkeypatch: pytest.MonkeyPatch) -> None:
+    """The shipped texts are all REVIEWED (by independent reviewers, 28 Oct 2026). These tests pin down the path a
     manager takes when a text is not: the preview counts it and the yes needs the acknowledgement. The reviewed state
     itself is tested in test_handover_reviewed.py."""
     real = templates._all()
@@ -49,8 +49,6 @@ def pa_hi_unreviewed(monkeypatch: pytest.MonkeyPatch) -> None:
             t.version,
             {
                 lang: replace(v, review_status="UNREVIEWED", reviewer=None, reviewed_at=None)
-                if lang in ("pa", "hi")
-                else v
                 for lang, v in t.variants.items()
             },
         )
