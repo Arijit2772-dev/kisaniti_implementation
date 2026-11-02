@@ -5,7 +5,7 @@ Updated 24 October 2026. Built so far: shared `core/` (exact values, storage rul
 | Gate | State | Source |
 |---|---|---|
 | Product coding | **OPEN LAYER BY LAYER** (CHAT-28): a layer's code starts after its contracts are frozen; see [master plan](../kisaniti/docs/MASTER_PLAN.md) | [planning blueprint status](../kisaniti/docs/blueprint/00_BLUEPRINT_STATUS.md) |
-| Version control | Git, GitHub `kisaniti_implementation` (private) | [open issues](../kisaniti/docs/OPEN_ISSUES.md) |
+| Version control | Git, GitHub `kisaniti_implementation` (public, CHAT-51) | [open issues](../kisaniti/docs/OPEN_ISSUES.md) |
 | Market-data access | Not available (OI-05; user must register) | [open issues](../kisaniti/docs/OPEN_ISSUES.md) |
 | Hardware | ESP32 + SHT30 decided (CHAT-29); not purchased yet. Firmware and Wokwi twin built (22 Oct) | [hardware](../kisaniti/docs/HARDWARE_CURRENT.md), [build guide](firmware/BUILD_GUIDE.md) |
 
