@@ -9,7 +9,8 @@ cd "$(dirname "$0")"
 mkdir -p certs && cd certs
 case "$HOST" in
   *[!0-9.]*) SAN="DNS:$HOST" ;;
-  *) SAN="IP:$HOST" ;;
+  # The ESP32 mbedTLS 2.28 matches the host only against DNS names, never IP entries (BUG-009): name the IP both ways.
+  *) SAN="IP:$HOST,DNS:$HOST" ;;
 esac
 openssl req -x509 -newkey rsa:2048 -nodes -days 825 -keyout ca.key -out ca.crt -subj "/CN=KisanNiti dev CA"
 openssl req -newkey rsa:2048 -nodes -keyout server.key -out server.csr -subj "/CN=$HOST"

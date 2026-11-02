@@ -71,17 +71,20 @@ echo "== C. receiver conformance over MQTT: the harness is the device, kn-ingest
 
 echo "== D. software node, scenario humid_rise (48 samples), acknowledged by kn-ingest"
 "$PY" -m kisaniti_ingestion.simulator --scenario humid_rise --steps 48 --seed 1 --device-id kn-sim-001 \
-  --host localhost --port 18883 --ca "$CA" --user kn-sim-001 --password "$PW_SIM1" --ack-timeout 5 || FAILED=1
+  --host localhost --port 18883 --ca "$CA" --user kn-sim-001 --password "$PW_SIM1" --ack-timeout 5 > "$WORK/sim.out" || FAILED=1
+cat "$WORK/sim.out"
 
 echo "== E. what PostgreSQL holds"
-"$PY" - "$KN_STORE" <<'PY' || FAILED=1
-import sys
+"$PY" - "$KN_STORE" "$WORK/sim.out" <<'PY' || FAILED=1
+import json, sys
 from kisaniti_ingestion.store import open_store
 s = open_store(sys.argv[1])
-rows = s.readings_for("kn-sim-001")
+boot = json.loads(open(sys.argv[2]).read().strip().splitlines()[-1])["boot_id"]
+# only this run's boot: a reused test database keeps the readings of earlier runs
+rows = [r for r in s.readings_for("kn-sim-001") if r["boot_id"] == boot]
 seqs = sorted(r["seq"] for r in rows)
 print("counts:", s.counts())
-print("kn-sim-001 readings:", len(rows), "seq 0..47 complete:", seqs == list(range(48)))
+print("kn-sim-001 readings of boot", boot + ":", len(rows), "seq 0..47 complete:", seqs == list(range(48)))
 print("origins:", {(r["provenance"]["origin"], r["provenance"]["source_kind"]) for r in rows})
 ok = len(rows) == 48 and seqs == list(range(48)) and all(r["provenance"]["origin"] == "SYNTHETIC" for r in rows)
 sys.exit(0 if ok else 1)

@@ -1,5 +1,7 @@
 # Storage node — build, calibration and test guide
 
+> **31 Oct 2026:** follow `kisaniti/docs/HARDWARE_FINAL_GUIDE.md` for parts, wiring, flashing and connecting to the website (database registry, PostgreSQL). Section H2b below still shows the older stand-alone set-up (`devices.json`, SQLite); H4–H8 are unchanged.
+
 For the person who builds the node (master plan steps H1–H8). Each test ends with something to **record**; put the
 records in `firmware/records/` (photos, `calibration_log.csv`, the `kn-report` output) and tell the team, so the paper
 uses measured values, not the assumptions below.
