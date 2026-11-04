@@ -56,7 +56,9 @@ def main() -> None:
     client.on_connect = on_connect
     client.on_message = on_message
     client.connect(s.mqtt_host, s.mqtt_port, keepalive=30)
-    log.info("devices registered: %s; store: %s", ", ".join(sorted(registry)), s.store)
+    # never the store's address itself: a PostgreSQL address holds the password
+    store_kind = s.store.split("://", 1)[0] if "://" in s.store else s.store
+    log.info("devices registered: %s; store: %s", ", ".join(sorted(registry)), store_kind)
     client.loop_forever()
 
 

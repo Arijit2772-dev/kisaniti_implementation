@@ -21,7 +21,15 @@ uv run pytest                      # 45 tests
 ./e2e/run_local_e2e.sh             # live: Mosquitto (TLS + ACL) in Docker -> worker -> SQLite -> ack
 ```
 
-Real use with the node (laptop on the same hotspot):
+**In the one-command stack (HW-S1):**
+
+```bash
+broker/setup_stack.sh 192.168.43.10     # the address the node uses; "localhost" if no node is involved
+docker compose --profile hardware up --build -d --wait     # from the repository root
+../../scripts/hw_stack_check.sh         # software node over MQTT and TLS through to the website
+```
+
+Without the profile neither `broker` nor `ingest` starts. By hand, outside compose (laptop on the same hotspot):
 
 ```bash
 broker/gen_certs.sh 192.168.43.10      # the laptop's IP on the hotspot; put certs/ca.crt into firmware secrets.h

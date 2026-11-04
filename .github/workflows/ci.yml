@@ -132,7 +132,9 @@ jobs:
         run: |
           SMOKE_SEED_MARKET=1 scripts/smoke_access.sh   # imports a fixture price release (invented numbers) first
           scripts/smoke_access.sh http://localhost:3000   # the same checks through the website's API proxy
+      - name: Hardware profile - software node over MQTT and TLS reaches the website; normal stack unchanged
+        run: scripts/hw_stack_check.sh
       - if: failure()
-        run: docker compose logs
+        run: docker compose --profile hardware logs
       - if: always()
-        run: docker compose down -v
+        run: docker compose --profile hardware down -v

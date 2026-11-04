@@ -66,5 +66,56 @@ services:
     ports:
       - "3000:3000"
 
+  # Real or simulated storage nodes: docker compose --profile hardware up --build -d --wait
+  # First run backend/ingestion/broker/setup_stack.sh <address the node uses>. Without the profile neither service starts.
+  broker:
+    profiles: [hardware]
+    image: eclipse-mosquitto:2.0.20
+    ports:
+      - "8883:8883"   # MQTT over TLS, reached by the node
+    volumes:
+      - ./backend/ingestion/broker:/mosquitto/config:ro
+      - mqttdata:/mosquitto/data
+    healthcheck:
+      test: ["CMD-SHELL", "nc -z localhost 8883"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  ingest:
+    # kn-ingest (contract L3B v1): stores each reading, then acknowledges it. Devices come from the database (CHAT-41).
+    profiles: [hardware]
+    build:
+      context: .
+      dockerfile: backend/ingestion/Dockerfile
+    # set -e: stop with an error if the password file cannot be read, rather than connect without a password
+    command: ["sh", "-c", "set -e; KN_MQTT_PASSWORD=\"$$(cat /run/kn/ingestion.password)\"; export KN_MQTT_PASSWORD; exec python -m kisaniti_ingestion.worker"]
+    environment:
+      KN_REGISTRY: db
+      KN_STORE: postgresql://${POSTGRES_USER:-kisaniti}:${POSTGRES_PASSWORD:-kisaniti-local-only}@db:5432/${POSTGRES_DB:-kisaniti}
+      KN_MQTT_HOST: broker
+      KN_MQTT_PORT: "8883"
+      KN_MQTT_TLS_CA: /run/kn/ca.crt
+      KN_MQTT_USER: ingestion
+    volumes:
+      - type: bind
+        source: ./backend/ingestion/broker/certs/ca.crt
+        target: /run/kn/ca.crt
+        read_only: true
+        bind:
+          create_host_path: false
+      - type: bind
+        source: ./backend/ingestion/broker/ingestion.password
+        target: /run/kn/ingestion.password
+        read_only: true
+        bind:
+          create_host_path: false
+    depends_on:
+      broker:
+        condition: service_healthy
+      backend:   # its start applies the database migrations
+        condition: service_healthy
+
 volumes:
   pgdata:
+  mqttdata:
