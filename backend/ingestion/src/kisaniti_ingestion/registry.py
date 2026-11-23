@@ -52,8 +52,13 @@ class DbRegistry(Mapping[str, Device]):
 
 
 def postgres_fetcher(dsn: str) -> Fetch:
-    """A fetch function on its own autocommit connection (never the store's connection); reconnects after a failure."""
+    """A fetch function on its own autocommit connection (never the store's connection); reconnects after a failure.
+
+    If the database cannot be read after one reconnect, it raises StoreUnavailableError: the reading gets no ack and
+    is resent, rather than being judged against a device list that may be out of date (HW-S3)."""
     import psycopg
+
+    from .store import StoreUnavailableError
 
     state: dict[str, Any] = {"conn": None}
 
@@ -62,15 +67,15 @@ def postgres_fetcher(dsn: str) -> Fetch:
             try:
                 if state["conn"] is None:
                     state["conn"] = psycopg.connect(
-                        dsn.replace("postgresql+psycopg://", "postgresql://", 1), autocommit=True
+                        dsn.replace("postgresql+psycopg://", "postgresql://", 1), autocommit=True, connect_timeout=5
                     )
                 conn = state["conn"]
                 rows = conn.execute("SELECT device_id, source_origin FROM devices WHERE active").fetchall()
                 return [(str(r[0]), str(r[1])) for r in rows]
-            except psycopg.Error:
+            except psycopg.Error as e:
                 state["conn"] = None
                 if attempt == 2:
-                    raise
+                    raise StoreUnavailableError(f"device registry unreadable ({type(e).__name__})") from e
         return []
 
     return fetch

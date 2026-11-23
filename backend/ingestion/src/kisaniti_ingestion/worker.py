@@ -49,7 +49,12 @@ def main() -> None:
 
     def on_message(c: mqtt.Client, _u: Any, msg: mqtt.MQTTMessage) -> None:
         out = handle(msg.topic, msg.payload, datetime.now(UTC), registry, store)
-        log.info("%s %s -> %s", msg.topic, len(msg.payload), out.result)
+        if out.result == "STORE_UNAVAILABLE":
+            log.warning(
+                "%s %s -> STORE_UNAVAILABLE: not stored, no ack; the device resends it", msg.topic, len(msg.payload)
+            )
+        else:
+            log.info("%s %s -> %s", msg.topic, len(msg.payload), out.result)
         if out.ack_topic and out.ack:
             c.publish(out.ack_topic, json.dumps(out.ack, separators=(",", ":")), qos=1)
 

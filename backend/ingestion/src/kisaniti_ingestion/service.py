@@ -9,18 +9,29 @@ from typing import Any
 
 from kisaniti_core.timeutil import format_instant
 
-from .store import ReadingStore, StoreResult
+from .store import ReadingStore, StoreResult, StoreUnavailableError
 from .validate import Device, Rejected, ack_for, to_reading
 
 
 @dataclass(frozen=True, slots=True)
 class Outcome:
-    result: str  # NEW, DUPLICATE, CONFLICT or REJECTED:<reason>
+    result: str  # NEW, DUPLICATE, CONFLICT, REJECTED:<reason> or STORE_UNAVAILABLE (nothing stored, no ack)
     ack_topic: str | None
     ack: dict[str, Any] | None
 
 
 def handle(
+    topic: str, payload: bytes, received_at: datetime, registry: Mapping[str, Device], store: ReadingStore
+) -> Outcome:
+    """Never raises for a database outage: the outcome is STORE_UNAVAILABLE with no ack (contract: ack only after
+    durable storage), and the device resends the reading later."""
+    try:
+        return _handle(topic, payload, received_at, registry, store)
+    except StoreUnavailableError:
+        return Outcome("STORE_UNAVAILABLE", None, None)
+
+
+def _handle(
     topic: str, payload: bytes, received_at: datetime, registry: Mapping[str, Device], store: ReadingStore
 ) -> Outcome:
     r = to_reading(topic, payload, received_at, registry)

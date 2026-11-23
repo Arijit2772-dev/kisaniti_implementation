@@ -89,6 +89,28 @@ CODE="$(curl -sS -o /dev/null -w '%{http_code}' -b "$J/b.jar" "$SITE/api/v1/devi
 [ "$CODE" = 404 ] || fail "another FPO asked for this device's readings and got HTTP $CODE, not 404"
 pass "another FPO gets 404 for this device's readings"
 
+# HW-S3: PostgreSQL restarts under a running worker. The first reading after it gets no ack (not stored yet), the
+# software node resends it, the worker reopens its connection, and every reading is stored exactly once.
+compose restart db >/dev/null 2>&1 || fail "could not restart the database"
+compose up -d --wait --wait-timeout 120 db >/dev/null 2>&1 || fail "the database did not come back"
+compose exec -T ingest $SIM --steps 12 --seed 2 --ack-timeout 10 --password "$DEV_PW" > "$J/sim2.out" \
+  || { cat "$J/sim2.out"; compose ps -a; compose logs ingest | tail -30; fail "after a database restart the software node's run failed"; }
+[ "$(compose ps --status running -q ingest)" ] || { compose logs ingest | tail -30; fail "kn-ingest stopped after the database restart"; }
+ACKS2="$(tail -1 "$J/sim2.out" | field "['acks']")"
+# 12 accepted, and at least one NO_ACK: the reading in flight when the old connection died was resent, not lost
+python3 -c "import ast,sys;a=ast.literal_eval(sys.argv[1]);sys.exit(not(a.get('ACCEPTED')==12 and a.get('NO_ACK',0)>=1 and set(a)<={'ACCEPTED','NO_ACK'}))" "$ACKS2" \
+  || fail "after a database restart expected 12 accepted acks and at least one NO_ACK, got $ACKS2"
+compose logs ingest | grep -q STORE_UNAVAILABLE || fail "the worker did not report the outage as STORE_UNAVAILABLE"
+api a "$SITE/api/v1/devices/$DEV/readings?limit=1000" > "$J/readings2.json"
+python3 - "$J/readings2.json" <<'PY' || fail "readings were lost or doubled across the database restart"
+import json, sys
+rows = json.load(open(sys.argv[1]))
+ids = [r["reading_id"] for r in rows]
+if len(rows) != 24 or len(set(ids)) != 24:
+    sys.exit(f"got {len(rows)} readings, {len(set(ids))} distinct; expected 24")
+print("PASS: database restarted under the worker: 24 readings stored once each, none lost")
+PY
+
 compose logs ingest broker > "$J/logs.txt" 2>&1
 DB_PW="$(compose exec -T ingest sh -c 'echo "${KN_STORE#*://*:}" | cut -d@ -f1')"
 for secret in "$(cat "$BROKER/ingestion.password")" "$DEV_PW" "$DB_PW"; do

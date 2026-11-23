@@ -8,12 +8,14 @@ different measurement content is recorded in reading_conflicts, never silently m
 
 from __future__ import annotations
 
+import contextlib
 import hashlib
 import json
 import sqlite3
-from dataclasses import dataclass
+from collections.abc import Callable
+from dataclasses import dataclass, field
 from enum import StrEnum
-from typing import Any, Protocol
+from typing import Any, Protocol, TypeVar
 
 from .validate import Rejected
 
@@ -67,6 +69,13 @@ class Connection(Protocol):
     def close(self) -> None: ...
 
 
+T = TypeVar("T")
+
+
+class StoreUnavailableError(RuntimeError):
+    """The database could not be reached. Nothing is acknowledged, so the device keeps the reading and resends it."""
+
+
 def content_sha256(doc: dict[str, Any]) -> str:
     body = json.dumps({k: doc.get(k) for k in CONTENT_FIELDS}, sort_keys=True, separators=(",", ":"))
     return hashlib.sha256(body.encode()).hexdigest()
@@ -76,12 +85,39 @@ def content_sha256(doc: dict[str, Any]) -> str:
 class ReadingStore:
     conn: Connection
     placeholder: str = "?"  # "%s" for psycopg
+    # PostgreSQL only: how to open a new connection, and which errors mean the connection is gone (HW-S3).
+    reopen: Callable[[], Connection] | None = None
+    lost_errors: tuple[type[BaseException], ...] = ()
+    _lost: bool = field(default=False, init=False)
 
     def _q(self, sql: str) -> str:
         return sql.replace("?", self.placeholder)
 
+    def _guard(self, op: Callable[[], T]) -> T:
+        """Run one store operation. A lost connection raises StoreUnavailableError (never a guess at the outcome);
+        the next call opens a new connection. No operation is retried here: the device's resend is the retry, and
+        the (device, boot, seq) key makes a resend of an already committed reading a DUPLICATE, not a second row."""
+        if self._lost:
+            if self.reopen is None:
+                raise StoreUnavailableError("the store's connection was lost")
+            try:
+                self.conn = self.reopen()
+            except self.lost_errors as e:
+                raise StoreUnavailableError("the database is still unreachable") from e
+            self._lost = False
+        try:
+            return op()
+        except self.lost_errors as e:
+            self._lost = True
+            with contextlib.suppress(Exception):  # closing a dead connection may fail; it is replaced next call
+                self.conn.close()
+            raise StoreUnavailableError(f"database connection lost ({type(e).__name__})") from e
+
     def put(self, reading: dict[str, Any]) -> StoreResult:
         """Insert once and commit before returning, so an ack sent afterwards means durable storage."""
+        return self._guard(lambda: self._put(reading))
+
+    def _put(self, reading: dict[str, Any]) -> StoreResult:
         csha = content_sha256(reading)
         cur = self.conn.execute(
             self._q(
@@ -119,6 +155,9 @@ class ReadingStore:
         return StoreResult.CONFLICT
 
     def reject(self, topic: str, payload: bytes, received_at: str, r: Rejected) -> None:
+        self._guard(lambda: self._reject(topic, payload, received_at, r))
+
+    def _reject(self, topic: str, payload: bytes, received_at: str, r: Rejected) -> None:
         self.conn.execute(
             self._q(
                 "INSERT INTO sensor_rejected_messages (received_at, topic, reason, detail, device_id, boot_id, seq,"
@@ -163,12 +202,18 @@ def open_store(target: str) -> ReadingStore:
     if target.startswith(("postgresql://", "postgres://", "postgresql+psycopg://")):
         import psycopg  # optional dependency: kisaniti-ingestion[postgres]
 
-        pg = psycopg.connect(target.replace("postgresql+psycopg://", "postgresql://", 1))
+        dsn = target.replace("postgresql+psycopg://", "postgresql://", 1)
+
+        def connect() -> Any:
+            # bounded, so a database that is down cannot hold the MQTT loop past its keepalive
+            return psycopg.connect(dsn, connect_timeout=5)
+
+        pg = connect()
         present = pg.execute("SELECT to_regclass('public.sensor_readings') IS NOT NULL").fetchone()
         if present is None or not present[0]:
             pg.close()
             raise SchemaMissingError("table sensor_readings is missing: run `alembic upgrade head` in backend/ first")
-        return ReadingStore(pg, "%s")
+        return ReadingStore(pg, "%s", reopen=connect, lost_errors=(psycopg.OperationalError, psycopg.InterfaceError))
     conn = sqlite3.connect(target)
     conn.executescript(SQLITE_DDL)
     conn.execute("PRAGMA journal_mode=WAL")

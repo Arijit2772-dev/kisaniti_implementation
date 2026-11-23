@@ -85,6 +85,7 @@ services:
   ingest:
     # kn-ingest (contract L3B v1): stores each reading, then acknowledges it. Devices come from the database (CHAT-41).
     profiles: [hardware]
+    restart: unless-stopped  # backstop only: a database outage no longer stops the worker (HW-S3)
     build:
       context: .
       dockerfile: backend/ingestion/Dockerfile
