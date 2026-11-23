@@ -7,7 +7,13 @@
 #define KN_FIRMWARE_VERSION "kn-fw-1.0.0"
 #endif
 
+#if KN_SENSOR_DHT11
+// Stop-gap sensor (env esp32dev_dht11): DHT11 module, DATA on GPIO 4, VCC on 3V3.
+#define KN_SENSOR_MODEL "DHT11"
+#define KN_DHT_PIN 4
+#else
 #define KN_SENSOR_MODEL "SHT30"
+#endif
 #define KN_I2C_SDA 21
 #define KN_I2C_SCL 22
 #define KN_LED_PIN 2

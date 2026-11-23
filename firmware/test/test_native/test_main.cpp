@@ -2,6 +2,7 @@
 #include <unity.h>
 #include <string.h>
 #include "sht3x_codec.h"
+#include "dht11_codec.h"
 #include "sample_buffer.h"
 #include "telemetry_json.h"
 
@@ -151,8 +152,39 @@ static void test_parse_ack() {
   TEST_ASSERT_FALSE(parse_ack("not json", 8, "3fa9c1e2", &seq));
 }
 
+static void test_dht11_decode_ok() {
+  // 55.0 %RH, 27.3 C, checksum = 55 + 0 + 27 + 3 = 85
+  const uint8_t f[5] = {55, 0, 27, 3, 85};
+  float t, rh;
+  TEST_ASSERT_EQUAL(ReadStatus::OK, dht11_decode(f, &t, &rh));
+  TEST_ASSERT_FLOAT_WITHIN(0.01, 27.3, t);
+  TEST_ASSERT_FLOAT_WITHIN(0.01, 55.0, rh);
+}
+
+static void test_dht11_negative_temperature() {
+  const uint8_t f[5] = {40, 0, 2, 0x85, (uint8_t)(40 + 2 + 0x85)};  // -2.5 C
+  float t, rh;
+  TEST_ASSERT_EQUAL(ReadStatus::OK, dht11_decode(f, &t, &rh));
+  TEST_ASSERT_FLOAT_WITHIN(0.01, -2.5, t);
+}
+
+static void test_dht11_failures_are_not_values() {
+  float t = 99, rh = 99;
+  const uint8_t bad_sum[5] = {55, 0, 27, 3, 86};
+  TEST_ASSERT_EQUAL(ReadStatus::CRC_ERROR, dht11_decode(bad_sum, &t, &rh));
+  const uint8_t zeros[5] = {0, 0, 0, 0, 0};  // checksum matches, but the line was stuck
+  TEST_ASSERT_EQUAL(ReadStatus::CRC_ERROR, dht11_decode(zeros, &t, &rh));
+  const uint8_t over[5] = {120, 0, 20, 0, 140};  // RH above 100 %
+  TEST_ASSERT_EQUAL(ReadStatus::CRC_ERROR, dht11_decode(over, &t, &rh));
+  TEST_ASSERT_FLOAT_WITHIN(0.01, 99, t);  // outputs untouched on failure
+  TEST_ASSERT_FLOAT_WITHIN(0.01, 99, rh);
+}
+
 int main() {
   UNITY_BEGIN();
+  RUN_TEST(test_dht11_decode_ok);
+  RUN_TEST(test_dht11_negative_temperature);
+  RUN_TEST(test_dht11_failures_are_not_values);
   RUN_TEST(test_crc_datasheet_example);
   RUN_TEST(test_decode_ok_and_conversion);
   RUN_TEST(test_decode_extremes);
