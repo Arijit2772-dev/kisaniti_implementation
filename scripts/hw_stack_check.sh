@@ -8,7 +8,7 @@ HERE="$(cd "$(dirname "$0")/.." && pwd)"; cd "$HERE"
 SITE="${SITE:-http://localhost:3000}"
 BROKER="$HERE/backend/ingestion/broker"
 J="$(mktemp -d)"
-SUF="$(date +%s)$$"; DEV="kn-stack-$SUF"; PW="stack check passphrase $SUF"; DEV_PW="$(openssl rand -hex 16)"
+SUF="$(date +%s)$$"; DEV="kn-stack-$SUF"; PW="stack check passphrase $SUF"; DEV_PW=""
 IMG=eclipse-mosquitto:2.0.20
 compose() { docker compose --profile hardware "$@"; }
 passwd_tool() { docker run --rm -u "$(id -u):$(id -g)" -v "$BROKER":/mosquitto/config "$IMG" mosquitto_passwd "$@" > "$J/passwd.out" 2>&1 || { cat "$J/passwd.out" >&2; return 1; }; }
@@ -29,9 +29,13 @@ field() { python3 -c "import json,sys;print(json.load(sys.stdin)$1)"; }
   || fail "the hardware profile's services: $(compose config --services | tr '\n' ' ')"
 pass "normal stack has its 4 services; the hardware profile adds only broker and ingest"
 
-"$BROKER/setup_stack.sh" localhost > "$J/setup.out" 2>&1 || { cat "$J/setup.out"; fail "broker setup failed"; }
-passwd_tool -b /mosquitto/config/passwd "$DEV" "$DEV_PW"
-chmod 644 "$BROKER/passwd"
+# HW-S2: the same provisioning a real node gets (setup, certificate check, broker user, generated secrets.h)
+printf 'fictional-hotspot-password\n' | python3 scripts/provision_node.py --host localhost --device-id "$DEV" \
+  --wifi-ssid fictional-hotspot --wifi-pass-stdin --out "$J/secrets.h" > "$J/provision.out" 2>&1 \
+  || { cat "$J/provision.out"; fail "provisioning failed"; }
+DEV_PW="$(sed -n 's/^#define KN_MQTT_PASS "\(.*\)"$/\1/p' "$J/secrets.h")"
+[ -n "$DEV_PW" ] || fail "no broker password in the generated secrets.h"
+pass "provisioned: certificate check passed, broker user made, secrets.h written"
 compose up --build -d --wait --wait-timeout 300 >/dev/null 2>&1 || { compose ps -a; compose logs broker ingest | tail -40; fail "the stack did not start"; }
 compose kill -s HUP broker >/dev/null 2>&1   # a broker already running must read the new user
 sleep 1
