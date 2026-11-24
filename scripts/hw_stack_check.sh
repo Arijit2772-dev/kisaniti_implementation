@@ -111,6 +111,18 @@ if len(rows) != 24 or len(set(ids)) != 24:
 print("PASS: database restarted under the worker: 24 readings stored once each, none lost")
 PY
 
+# HW-S4: the preflight passes for this working device, and names what is wrong for a device that is not set up
+scripts/hw_preflight.sh --device-id "$DEV" --secrets "$J/secrets.h" --software-node > "$J/pre.out" 2>&1 \
+  || { cat "$J/pre.out"; fail "preflight failed on a working software node"; }
+tail -1 "$J/pre.out" | grep -qx "PREFLIGHT PASS" || { cat "$J/pre.out"; fail "preflight did not end with PREFLIGHT PASS"; }
+if scripts/hw_preflight.sh --device-id kn-not-set-up --software-node > "$J/pre_bad.out" 2>&1; then cat "$J/pre_bad.out"; fail "preflight passed for a device that does not exist"; fi
+for want in "no broker user kn-not-set-up" "is not registered on the website" "no reading stored yet"; do
+  grep -q "FAIL: .*$want" "$J/pre_bad.out" || { cat "$J/pre_bad.out"; fail "preflight did not report: $want"; }
+done
+if scripts/hw_preflight.sh --device-id "$DEV" --secrets "$J/secrets.h" > "$J/pre_loop.out" 2>&1; then fail "preflight accepted localhost for a real node"; fi
+grep -q "FAIL: localhost is this machine's loopback" "$J/pre_loop.out" || { cat "$J/pre_loop.out"; fail "preflight did not refuse loopback for a real node"; }
+pass "preflight: PASS for the working node; names the missing user, registration and readings; refuses loopback for a real node"
+
 compose logs ingest broker > "$J/logs.txt" 2>&1
 DB_PW="$(compose exec -T ingest sh -c 'echo "${KN_STORE#*://*:}" | cut -d@ -f1')"
 for secret in "$(cat "$BROKER/ingestion.password")" "$DEV_PW" "$DB_PW"; do
