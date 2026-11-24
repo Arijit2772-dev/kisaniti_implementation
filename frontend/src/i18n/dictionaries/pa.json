@@ -734,7 +734,8 @@
       "PROVIDER_REFUSED": "WhatsApp ਨੇ ਸੁਨੇਹਾ ਨਾ-ਮਨਜ਼ੂਰ ਕੀਤਾ",
       "PROVIDER_OUTCOME_UNKNOWN": "WhatsApp ਤੋਂ ਸਾਫ਼ ਜਵਾਬ ਨਹੀਂ ਮਿਲਿਆ: ਸੁਨੇਹਾ ਪਹੁੰਚ ਗਿਆ ਹੋ ਸਕਦਾ ਹੈ, ਇਸ ਲਈ ਦੁਬਾਰਾ ਨਹੀਂ ਭੇਜਿਆ ਜਾਵੇਗਾ। ਕਿਸਾਨ ਤੋਂ ਪੁੱਛੋ।"
     },
-    "errorCode": "WhatsApp ਗਲਤੀ ਕੋਡ"
+    "errorCode": "WhatsApp ਗਲਤੀ ਕੋਡ",
+    "replySourceWebhook": "ਕਿਸਾਨ ਵੱਲੋਂ WhatsApp ਉੱਤੇ"
   },
   "sales": {
     "title": "ਅਸਲ ਵਿਕਰੀ",

@@ -20,6 +20,7 @@ export interface Instruction {
 interface Reply {
   id: string;
   text: string;
+  source: string;
   recorded_at: string;
 }
 interface Attempt {
@@ -263,7 +264,7 @@ export function InstructionsPanel({
                   {(replies[r.id] ?? []).map((x) => (
                     <li key={x.id}>
                       <span className="muted">
-                        {x.recorded_at} · {t.replySource}
+                        {x.recorded_at} · {x.source === "WEBHOOK" ? t.replySourceWebhook : t.replySource}
                       </span>
                       <br />
                       {x.text}

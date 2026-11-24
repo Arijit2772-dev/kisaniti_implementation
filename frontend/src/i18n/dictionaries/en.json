@@ -734,7 +734,8 @@
       "PROVIDER_REFUSED": "WhatsApp refused the message",
       "PROVIDER_OUTCOME_UNKNOWN": "No clear answer from WhatsApp: the message may have arrived, so it is not sent again. Check with the farmer."
     },
-    "errorCode": "WhatsApp error code"
+    "errorCode": "WhatsApp error code",
+    "replySourceWebhook": "from the farmer on WhatsApp"
   },
   "sales": {
     "title": "Actual sales",
