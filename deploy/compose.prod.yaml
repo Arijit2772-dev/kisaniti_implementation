@@ -38,6 +38,14 @@ services:
       <<: *backend-env
       KISANITI_COOKIE_SECURE: "true"
       KISANITI_ALLOWED_ORIGINS: https://${KN_APP_HOST:?}
+      # WhatsApp (messaging/v1 amendment A1): optional; empty means the channel answers CHANNEL_NOT_AVAILABLE.
+      # The owner writes these into ~/kisaniti/.env on the server; they are never in git or chat.
+      KN_WA_TOKEN: ${KN_WA_TOKEN:-}
+      KN_WA_PHONE_NUMBER_ID: ${KN_WA_PHONE_NUMBER_ID:-}
+      KN_WA_API_VERSION: ${KN_WA_API_VERSION:-}
+      KN_WA_TEMPLATES: ${KN_WA_TEMPLATES:-}
+      KN_WA_APP_SECRET: ${KN_WA_APP_SECRET:-}
+      KN_WA_VERIFY_TOKEN: ${KN_WA_VERIFY_TOKEN:-}
     depends_on:
       db:
         condition: service_healthy

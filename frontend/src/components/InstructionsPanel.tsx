@@ -25,7 +25,14 @@ interface Reply {
 interface Attempt {
   status: string;
   issues: string[];
-  preview: { recipient: string; language: string; text: string; label: string } | null;
+  failure?: string | null;
+  error_codes?: number[];
+  preview: {
+    recipient: string;
+    language: string;
+    text: string;
+    label: string;
+  } | null;
 }
 
 export function InstructionsPanel({
@@ -60,12 +67,17 @@ export function InstructionsPanel({
   const errs: Text = t.errors;
   const delivery: Text = t.delivery;
 
-  const fail = (p: ApiProblem) => setMessage(flashFrom(errs[p.issueCode ?? ""] ?? problemText(errors, p), p));
+  const fail = (p: ApiProblem) =>
+    setMessage(flashFrom(errs[p.issueCode ?? ""] ?? problemText(errors, p), p));
 
   async function prepare(kind: string) {
     setBusy(true);
     setMessage(null);
-    const r = await api<Instruction[]>(`/plans/${planId}/instructions`, { method: "POST", csrf, body: { kind } });
+    const r = await api<Instruction[]>(`/plans/${planId}/instructions`, {
+      method: "POST",
+      csrf,
+      body: { kind },
+    });
     if (r.ok) {
       const all = await api<Instruction[]>(`/plans/${planId}/instructions`);
       setRows(all.ok ? all.data : r.data);
@@ -76,7 +88,28 @@ export function InstructionsPanel({
   async function preview(id: string) {
     setBusy(true);
     setMessage(null);
-    const r = await api<Attempt>(`/instructions/${id}/send`, { method: "POST", csrf, body: { channel: "PREVIEW" } });
+    const r = await api<Attempt>(`/instructions/${id}/send`, {
+      method: "POST",
+      csrf,
+      body: { channel: "PREVIEW" },
+    });
+    if (r.ok) {
+      setAttempts({ ...attempts, [id]: r.data });
+      const all = await api<Instruction[]>(`/plans/${planId}/instructions`);
+      if (all.ok) setRows(all.data);
+    } else fail(r.problem);
+    setBusy(false);
+  }
+
+  async function sendWhatsapp(id: string) {
+    if (!window.confirm(t.confirmWhatsapp)) return;
+    setBusy(true);
+    setMessage(null);
+    const r = await api<Attempt>(`/instructions/${id}/send`, {
+      method: "POST",
+      csrf,
+      body: { channel: "WHATSAPP" },
+    });
     if (r.ok) {
       setAttempts({ ...attempts, [id]: r.data });
       const all = await api<Instruction[]>(`/plans/${planId}/instructions`);
@@ -93,7 +126,11 @@ export function InstructionsPanel({
 
   async function addReply(id: string) {
     setMessage(null);
-    const r = await api(`/instructions/${id}/replies`, { method: "POST", csrf, body: { text: draft[id] ?? "" } });
+    const r = await api(`/instructions/${id}/replies`, {
+      method: "POST",
+      csrf,
+      body: { text: draft[id] ?? "" },
+    });
     if (r.ok) {
       setDraft({ ...draft, [id]: "" });
       await loadReplies(id);
@@ -107,7 +144,12 @@ export function InstructionsPanel({
       <Flash message={message} referenceLabel={errors.reference} />
       {canSend && reservation === "ACTIVE" && (
         <p>
-          <button type="button" className="btn" disabled={busy} onClick={() => void prepare("SALE_INSTRUCTION")}>
+          <button
+            type="button"
+            className="btn"
+            disabled={busy}
+            onClick={() => void prepare("SALE_INSTRUCTION")}
+          >
             {t.prepare}
           </button>
         </p>
@@ -116,7 +158,12 @@ export function InstructionsPanel({
         <>
           <p className="muted">{t.cancelIntro}</p>
           <p>
-            <button type="button" className="btn" disabled={busy} onClick={() => void prepare("CANCELLATION")}>
+            <button
+              type="button"
+              className="btn"
+              disabled={busy}
+              onClick={() => void prepare("CANCELLATION")}
+            >
               {t.prepareCancel}
             </button>
           </p>
@@ -131,11 +178,14 @@ export function InstructionsPanel({
             <p>
               <strong>{memberNames[r.member_id] ?? r.member_id}</strong>{" "}
               <span className="muted">
-                · {(t.kinds as Text)[r.kind]} · {r.language ? (langs[r.language] ?? r.language) : "—"} · v{r.version}
+                · {(t.kinds as Text)[r.kind]} ·{" "}
+                {r.language ? (langs[r.language] ?? r.language) : "—"} · v
+                {r.version}
               </span>
             </p>
             <p>
-              {t.status}: <strong>{(t.statuses as Text)[r.status]}</strong> · {t.deliveryCol}: <strong>{delivery[r.delivery.state]}</strong>
+              {t.status}: <strong>{(t.statuses as Text)[r.status]}</strong> ·{" "}
+              {t.deliveryCol}: <strong>{delivery[r.delivery.state]}</strong>
               {r.delivery.attempts > 0 && (
                 <span className="muted">
                   {" "}
@@ -152,13 +202,36 @@ export function InstructionsPanel({
             )}
             {r.text && (
               <>
-                <p className="muted">{r.template ? (t.reviewStatus as Text)[r.template.review_status] : ""}</p>
-                <button type="button" className="btn secondary" onClick={() => setOpen({ ...open, [r.id]: !open[r.id] })}>
+                <p className="muted">
+                  {r.template
+                    ? (t.reviewStatus as Text)[r.template.review_status]
+                    : ""}
+                </p>
+                <button
+                  type="button"
+                  className="btn secondary"
+                  onClick={() => setOpen({ ...open, [r.id]: !open[r.id] })}
+                >
                   {open[r.id] ? t.hide : t.show}
                 </button>{" "}
                 {canSend && (
-                  <button type="button" className="btn secondary" disabled={busy} onClick={() => void preview(r.id)}>
+                  <button
+                    type="button"
+                    className="btn secondary"
+                    disabled={busy}
+                    onClick={() => void preview(r.id)}
+                  >
                     {busy ? t.previewing : t.preview}
+                  </button>
+                )}{" "}
+                {canSend && r.status === "PREPARED" && (
+                  <button
+                    type="button"
+                    className="btn"
+                    disabled={busy}
+                    onClick={() => void sendWhatsapp(r.id)}
+                  >
+                    {busy ? t.sendingWhatsapp : t.sendWhatsapp}
                   </button>
                 )}
                 {open[r.id] && <pre className="message-text">{r.text}</pre>}
@@ -167,20 +240,31 @@ export function InstructionsPanel({
             {att && att.status === "PREVIEWED" && att.preview && (
               <div role="status">
                 <p className="muted">
-                  <strong>{att.preview.label}</strong> · {t.recipient}: <code>{att.preview.recipient}</code> · {langs[att.preview.language] ?? att.preview.language}
+                  <strong>{att.preview.label}</strong> · {t.recipient}:{" "}
+                  <code>{att.preview.recipient}</code> ·{" "}
+                  {langs[att.preview.language] ?? att.preview.language}
                 </p>
                 <pre className="message-text">{att.preview.text}</pre>
               </div>
             )}
             {canSend && (
-              <details onToggle={(e) => (e.currentTarget as HTMLDetailsElement).open && void loadReplies(r.id)}>
+              <details
+                onToggle={(e) =>
+                  (e.currentTarget as HTMLDetailsElement).open &&
+                  void loadReplies(r.id)
+                }
+              >
                 <summary>{t.repliesTitle}</summary>
                 <p className="muted">{t.repliesNote}</p>
-                {(replies[r.id] ?? []).length === 0 && <p className="muted">{t.noReplies}</p>}
+                {(replies[r.id] ?? []).length === 0 && (
+                  <p className="muted">{t.noReplies}</p>
+                )}
                 <ul className="plain">
                   {(replies[r.id] ?? []).map((x) => (
                     <li key={x.id}>
-                      <span className="muted">{x.recorded_at} · {t.replySource}</span>
+                      <span className="muted">
+                        {x.recorded_at} · {t.replySource}
+                      </span>
                       <br />
                       {x.text}
                     </li>
@@ -188,12 +272,36 @@ export function InstructionsPanel({
                 </ul>
                 <label>
                   {t.replyPlaceholder}
-                  <textarea maxLength={500} value={draft[r.id] ?? ""} onChange={(e) => setDraft({ ...draft, [r.id]: e.target.value })} />
+                  <textarea
+                    maxLength={500}
+                    value={draft[r.id] ?? ""}
+                    onChange={(e) =>
+                      setDraft({ ...draft, [r.id]: e.target.value })
+                    }
+                  />
                 </label>
-                <button type="button" className="btn secondary" disabled={!(draft[r.id] ?? "").trim()} onClick={() => void addReply(r.id)}>
+                <button
+                  type="button"
+                  className="btn secondary"
+                  disabled={!(draft[r.id] ?? "").trim()}
+                  onClick={() => void addReply(r.id)}
+                >
                   {t.addReply}
                 </button>
               </details>
+            )}
+            {att && att.status === "QUEUED" && (
+              <p className="muted" role="status">
+                {t.whatsappQueued}
+              </p>
+            )}
+            {att && att.status === "FAILED" && att.failure && (
+              <p className="issue" role="alert">
+                <strong>{t.failureTitle}:</strong>{" "}
+                {(t.failures as Text)[att.failure] ?? att.failure}
+                {(att.error_codes ?? []).length > 0 &&
+                  ` (${t.errorCode} ${(att.error_codes ?? []).join(", ")})`}
+              </p>
             )}
             {att && att.status === "BLOCKED" && (
               <ul className="issue">

@@ -110,7 +110,7 @@ def test_message_checks_accept_the_real_texts_and_reject_wrong_ones() -> None:
     from datetime import UTC, datetime
 
     from kisaniti_api.messaging.builder import ConsentFacts, ContactFacts, LineFacts, MemberFacts, build_instruction
-    from kisaniti_api.messaging.templates import latest
+    from kisaniti_api.messaging.templates import in_use
 
     lines = [
         LineFacts("lot_x", "mnd_x", "Mansa APMC", date(2026, 10, 20), "2000.000"),
@@ -130,7 +130,7 @@ def test_message_checks_accept_the_real_texts_and_reject_wrong_ones() -> None:
                 consent=ConsentFacts("GRANTED", 1),
                 variety="1121",
                 lines=lines,
-                template=latest(kind),
+                template=in_use(kind),
                 prepared_by="usr_x",
                 now=datetime(2026, 10, 26, tzinfo=UTC),
             )

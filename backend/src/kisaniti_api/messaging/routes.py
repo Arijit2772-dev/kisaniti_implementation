@@ -6,6 +6,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import logging
 from collections import defaultdict
 from datetime import UTC, date, datetime
 from typing import Annotated, Any, Literal
@@ -22,12 +23,14 @@ from ..access.deps import engine, require, tenant_scope
 from ..access.errors import AccessError
 from ..access.service import Principal, audit, auth_conn
 from ..approval.routes import _lock, _plan, _revisions, _states
+from . import whatsapp
 from .builder import ConsentFacts, ContactFacts, LineFacts, MemberFacts, build_instruction, eligibility
-from .channels import CHANNELS
+from .channels import CHANNELS, ChannelResult
 from .status import effective
-from .templates import all_templates, latest
+from .templates import all_templates, get, in_use
 
 router = APIRouter(prefix="/api/v1")
+log = logging.getLogger("kisaniti_api.messaging")
 Read = Annotated[Principal, Depends(require("data.read"))]
 Write = Annotated[Principal, Depends(require("data.write"))]
 Sender = Annotated[Principal, Depends(require("messages.send"))]
@@ -525,7 +528,7 @@ def prepare(plan_id: str, body: PrepareBody, request: Request, p: Sender) -> lis
                         )
             member_ids = sorted(lines)
             members, cons, consents = _member_inputs(conn, p, member_ids)
-            template = latest(body.kind)
+            template = in_use(body.kind)
             existing = {(r.member_id): r for r in _latest_rows(conn, p, plan_id) if r.kind == body.kind}
             for mid in member_ids:
                 mem = _facts_of(members[mid])
@@ -636,12 +639,14 @@ def _attempt_doc(r: Any, events: list[str] | None = None) -> dict[str, Any]:
         "preview": r.preview,
         "attempted_by": r.attempted_by,
         "attempted_at": format_instant(r.attempted_at),
+        "failure": r.failure,
+        "error_codes": list(r.error_codes),
     }
 
 
 ATT_COLUMNS = (
     "id, instruction_id, channel, status, issues, provider_message_id, simulated, preview, attempted_by, "
-    "attempted_at, request_key, request_sha256"
+    "attempted_at, request_key, request_sha256, failure, error_codes"
 )
 
 
@@ -668,9 +673,10 @@ def instruction_attempts(instruction_id: str, request: Request, p: Read) -> list
 def send(
     instruction_id: str, body: SendBody, request: Request, p: Sender, idempotency_key: IdemKey = None
 ) -> dict[str, Any]:
-    if body.channel not in CHANNELS:
+    wa = whatsapp.settings() if body.channel == "WHATSAPP" else None
+    if body.channel not in CHANNELS and wa is None:
         raise _invalid(
-            "CHANNEL_NOT_AVAILABLE", f"the {body.channel} channel is not available in this version", "/channel"
+            "CHANNEL_NOT_AVAILABLE", f"the {body.channel} channel is not available on this server", "/channel"
         )
     sha = (
         None
@@ -706,8 +712,8 @@ def send(
                 )
             last = conn.execute(
                 text(
-                    "SELECT id, status FROM delivery_attempts WHERE instruction_id = :i AND channel = :c ORDER BY "
-                    "attempted_at DESC, id DESC LIMIT 1"
+                    "SELECT id, status, failure FROM delivery_attempts WHERE instruction_id = :i AND channel = :c "
+                    "ORDER BY attempted_at DESC, id DESC LIMIT 1"
                 ),
                 {"i": instruction_id, "c": body.channel},
             ).first()
@@ -716,6 +722,31 @@ def send(
                 and effective(last.status, _events(conn, p, [last.id]).get(last.id, [])) in SENT_STATUSES
             ):
                 raise _conflict("ALREADY_SENT", "this instruction was already sent on this channel")
+            if last is not None and last.failure == "PROVIDER_OUTCOME_UNKNOWN":
+                raise _conflict(
+                    "OUTCOME_UNKNOWN",
+                    "the last WhatsApp send got no clear answer and may have reached the farmer; it is not repeated",
+                )
+            meta: tuple[str, str] | None = None
+            values: list[str] | None = None
+            if wa is not None:  # amendment A1.2: only a reviewed text, only through its approved Meta template
+                if row.template_review != "REVIEWED":
+                    raise _conflict("TEMPLATE_UNREVIEWED", "this message's text is not reviewed; it is not sent")
+                meta = wa.templates.get(whatsapp.template_key(row.template_id, row.template_version, row.language))
+                if meta is None:
+                    raise _invalid(
+                        "CHANNEL_NOT_AVAILABLE",
+                        f"no approved WhatsApp template is set for {row.template_id} version {row.template_version} "
+                        f"in {row.language}; prepare the messages again with the newest text",
+                        "/channel",
+                    )
+                tpl = get(row.template_id, row.template_version)
+                variant = None if tpl is None else tpl.variants.get(row.language)
+                values = whatsapp.prepare_send(tpl, row.language, row.body or "")
+                if variant is None or variant.text_sha256 != row.template_sha256 or values is None:
+                    raise _conflict(
+                        "TEMPLATE_MISMATCH", "the prepared text does not equal its WhatsApp template; it is not sent"
+                    )
             # the same checks as at preparation, now, plus the two that can only change afterwards
             member = _member(conn, p, row.member_id)
             contact = _current_contacts(conn, p, [row.member_id]).get(row.member_id)
@@ -730,7 +761,14 @@ def send(
                 if plan is None or _states(conn, p, [plan])[0]["reservation"]["state"] != "ACTIVE":
                     issues.append("COMMITMENT_NOT_ACTIVE")
             result = None
-            if not issues:
+            failure: str | None = None
+            codes: list[int] = []
+            if not issues and wa is not None:
+                assert contact is not None and meta is not None and values is not None
+                out = whatsapp.send(wa, to_e164=contact.phone_e164, meta_name=meta[0], meta_lang=meta[1], values=values)
+                result = ChannelResult(out.status, out.provider_message_id, False, None)
+                failure, codes = out.failure, list(out.error_codes)
+            elif not issues:
                 assert contact is not None and row.body is not None
                 result = CHANNELS[body.channel].deliver(
                     text=row.body, language=row.language, recipient_phone=contact.phone_e164
@@ -739,8 +777,9 @@ def send(
                 text(
                     "INSERT INTO delivery_attempts (id, instruction_id, fpo_id, channel, status, issues, "
                     "provider_message_id, simulated, "
-                    "preview, contact_version, attempted_by, request_id, request_key, request_sha256) "
-                    "VALUES (:id, :i, :f, :c, :s, :iss, :pm, :sim, CAST(:pv AS jsonb), :cv, :u, :r, :k, :h) "
+                    "preview, contact_version, attempted_by, request_id, request_key, request_sha256, failure, "
+                    "error_codes) VALUES (:id, :i, :f, :c, :s, :iss, :pm, :sim, CAST(:pv AS jsonb), :cv, :u, :r, :k, "
+                    ":h, :fl, :ec) "
                     f"RETURNING {ATT_COLUMNS}"
                 ),
                 {
@@ -758,8 +797,12 @@ def send(
                     "r": request.state.request_id,
                     "k": idempotency_key,
                     "h": sha,
+                    "fl": failure,
+                    "ec": codes,
                 },
             ).one()
+            if wa is not None and result is not None:
+                log.info(f"WhatsApp attempt {att.id}: {att.status} {att.provider_message_id or failure} {codes}")
     if missing:
         raise _missing(request, p, "instructions", instruction_id, "instruction")
     return _attempt_doc(att)

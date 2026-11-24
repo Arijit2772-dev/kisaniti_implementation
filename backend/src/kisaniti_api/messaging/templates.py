@@ -12,6 +12,7 @@ from pathlib import Path
 from kisaniti_core.messaging import LANGUAGES, check_template
 
 DIRECTORY = Path(__file__).resolve().parent / "templates"
+JOINERS = ("\n", " ; ")
 
 
 @dataclass(frozen=True, slots=True)
@@ -34,6 +35,11 @@ class Template:
     id: str
     version: int
     variants: dict[str, Variant]
+    joiner: str = "\n"  # between the sale lines; " ; " in the WhatsApp versions (amendment A1.2)
+
+    @property
+    def reviewed(self) -> bool:
+        return all(v.review_status == "REVIEWED" for v in self.variants.values())
 
 
 @lru_cache(maxsize=1)
@@ -54,10 +60,13 @@ def _all() -> dict[tuple[str, int], Template]:
                     f"{f.name}/{lang}: a REVIEWED variant needs a reviewer and a date, an UNREVIEWED one neither"
                 )
             variants[lang] = Variant(lang, v["body"], v["line"], r["status"], r["reviewer"], r["reviewed_at"])
+        joiner = raw.get("joiner", "\n")
+        if joiner not in JOINERS:
+            raise ValueError(f"{f.name}: the joiner must be one of {JOINERS}")
         key = (raw["id"], int(raw["version"]))
         if key in out:
             raise ValueError(f"{f.name}: duplicate template {key}")
-        out[key] = Template(raw["id"], int(raw["version"]), variants)
+        out[key] = Template(raw["id"], int(raw["version"]), variants, joiner)
     return out
 
 
@@ -68,3 +77,16 @@ def all_templates() -> list[Template]:
 def latest(template_id: str) -> Template | None:
     versions = [t for (i, _), t in _all().items() if i == template_id]
     return max(versions, key=lambda t: t.version, default=None)
+
+
+def in_use(template_id: str) -> Template | None:
+    """The version messages are prepared with (amendment A1.2): the newest one whose three languages are all REVIEWED;
+    only when no version is fully reviewed, the newest. A new version therefore takes over only after its review."""
+    versions = sorted((t for (i, _), t in _all().items() if i == template_id), key=lambda t: t.version)
+    reviewed = [t for t in versions if t.reviewed]
+    chosen = reviewed or versions
+    return chosen[-1] if chosen else None
+
+
+def get(template_id: str, version: int) -> Template | None:
+    return _all().get((template_id, version))

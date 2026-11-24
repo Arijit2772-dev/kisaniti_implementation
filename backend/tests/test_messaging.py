@@ -14,7 +14,7 @@ from sqlalchemy import Engine, text
 from sqlalchemy.exc import DBAPIError
 
 from kisaniti_api.messaging import channels
-from kisaniti_api.messaging.templates import all_templates, latest
+from kisaniti_api.messaging.templates import all_templates, get, in_use, latest
 from tests.test_access import Fpo, Session, access_env, add_user, as_app, audit_events, clean_up_access_data, two
 from tests.test_approval import acks, approve, make_plan
 from tests.test_org import call
@@ -222,19 +222,35 @@ def test_consent_is_per_kind_append_only_and_can_be_withdrawn_and_given_again(
         as_app(engine, a.fpo_id, "UPDATE member_consents SET action = 'GRANTED'")
 
 
-def test_templates_are_versioned_have_three_languages_and_are_all_reviewed(two: tuple[Fpo, Fpo]) -> None:
+def test_templates_are_versioned_have_three_languages_and_version_1_is_reviewed(two: tuple[Fpo, Fpo]) -> None:
     a, _ = two
     docs = call(a.admin, "GET", "/message-templates").json()
-    assert sorted(d["id"] for d in docs) == ["CANCELLATION", "SALE_INSTRUCTION"]
+    assert sorted((d["id"], d["version"]) for d in docs) == [
+        ("CANCELLATION", 1),
+        ("CANCELLATION", 2),
+        ("SALE_INSTRUCTION", 1),
+        ("SALE_INSTRUCTION", 2),
+    ]
     for d in docs:
         valid("messaging", "template_info", d)
         assert [x["language"] for x in d["languages"]] == ["en", "hi", "pa"]
+        if d["version"] == 2:  # the WhatsApp texts (amendment A1.2) wait for their review; nothing claims one
+            assert all(x["review_status"] == "UNREVIEWED" and x["reviewer"] is None for x in d["languages"])
+            continue
         for x in d["languages"]:  # read by independent reviewers, recorded on 28 Oct 2026 (no names are stored)
             assert x["review_status"] == "REVIEWED" and x["reviewer"].startswith("independent reviewers")
             assert x["reviewed_at"] == "2026-10-28"
     for t in all_templates():  # the variants say the same thing: same placeholders in every language
         assert len({tuple(sorted(re.findall(r"\{(\w+)\}", v.body + v.line))) for v in t.variants.values()}) == 1
     assert latest("SALE_INSTRUCTION") is not None and latest("NOPE") is None
+    for kind in ("SALE_INSTRUCTION", "CANCELLATION"):  # v2 changes only the line joiner, until it is reviewed
+        v1, v2 = get(kind, 1), get(kind, 2)
+        assert v1 is not None and v2 is not None and (v1.joiner, v2.joiner) == ("\n", " ; ")
+        assert all(
+            (v1.variants[k].body, v1.variants[k].line) == (v2.variants[k].body, v2.variants[k].line)
+            for k in v1.variants
+        )
+        assert in_use(kind) is v1 and latest(kind) is v2 and in_use("NOPE") is None
 
 
 # ---- preparing instructions ----
@@ -378,7 +394,7 @@ def test_a_preview_shows_the_exact_text_masks_the_number_and_is_never_a_delivery
     assert reuse.status_code in (409, 422)
 
 
-def test_the_real_whatsapp_channel_does_not_exist_yet(two: tuple[Fpo, Fpo], market: dict[str, Any]) -> None:
+def test_without_settings_the_whatsapp_channel_is_not_available(two: tuple[Fpo, Fpo], market: dict[str, Any]) -> None:
     a, _ = two
     plan, lots = approved_plan(a, market, ("1250.000",))
     ready(a, lots[0]["member_id"], PHONE_A)

@@ -88,6 +88,7 @@ def build_instruction(
             member.name,
             variety,
             [Line(ln.quantity_kg, ln.mandi_name, ln.day) for ln in lines],
+            template.joiner if template is not None else "\n",
         )
     ok = not issues
     return {

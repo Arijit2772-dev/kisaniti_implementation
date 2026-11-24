@@ -105,6 +105,22 @@
     },
     "attempted_at": {
       "$ref": "https://kisaniti.invalid/contracts/shared/v1/common.schema.json#/$defs/instant_utc"
+    },
+    "failure": {
+      "title": "why a FAILED attempt failed (amendment A1.2); null otherwise",
+      "enum": [
+        "PROVIDER_REFUSED",
+        "PROVIDER_OUTCOME_UNKNOWN",
+        null
+      ]
+    },
+    "error_codes": {
+      "title": "the provider's numeric error codes of a refusal, no provider text",
+      "type": "array",
+      "maxItems": 20,
+      "items": {
+        "type": "integer"
+      }
     }
   },
   "allOf": [
@@ -167,6 +183,44 @@
           },
           "issues": {
             "minItems": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "required": [
+          "failure"
+        ],
+        "properties": {
+          "failure": {
+            "type": "string"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "status": {
+            "const": "FAILED"
+          },
+          "provider_message_id": {
+            "type": "null"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "FAILED"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "failure": {
+            "type": "string"
           }
         }
       }

@@ -712,7 +712,10 @@
       "NOTHING_TO_CANCEL": "No farmer was told about this plan, so there is nothing to cancel.",
       "INSTRUCTION_BLOCKED": "This message is blocked. Fix the reason, then prepare the messages again.",
       "ALREADY_SENT": "This message was already sent.",
-      "CHANNEL_NOT_AVAILABLE": "This channel is not available yet."
+      "CHANNEL_NOT_AVAILABLE": "This channel is not available yet.",
+      "TEMPLATE_UNREVIEWED": "This message text has not been reviewed, so it cannot go through WhatsApp.",
+      "TEMPLATE_MISMATCH": "The prepared text no longer matches its WhatsApp template. Prepare the messages again.",
+      "OUTCOME_UNKNOWN": "The last WhatsApp send got no clear answer and may have arrived. It is not repeated."
     },
     "noRights": "You can look at the messages. Only a user allowed to send messages can prepare or preview them.",
     "attempts": "previews",
@@ -721,7 +724,17 @@
     "addReply": "Save the reply",
     "repliesNote": "A reply is only stored and shown. It is never read as agreement and never changes consent, stock or sales.",
     "noReplies": "No replies.",
-    "replySource": "entered by staff"
+    "replySource": "entered by staff",
+    "sendWhatsapp": "Send through WhatsApp",
+    "sendingWhatsapp": "Sending…",
+    "confirmWhatsapp": "Send this message to the farmer on WhatsApp now? It cannot be called back.",
+    "whatsappQueued": "Handed to WhatsApp. The delivery status updates by itself.",
+    "failureTitle": "Not sent",
+    "failures": {
+      "PROVIDER_REFUSED": "WhatsApp refused the message",
+      "PROVIDER_OUTCOME_UNKNOWN": "No clear answer from WhatsApp: the message may have arrived, so it is not sent again. Check with the farmer."
+    },
+    "errorCode": "WhatsApp error code"
   },
   "sales": {
     "title": "Actual sales",

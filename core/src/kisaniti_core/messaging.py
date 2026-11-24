@@ -89,8 +89,11 @@ def check_template(body: str, line: str) -> None:
     _fill(line, {k: "x" for k in LINE_PLACEHOLDERS}, LINE_PLACEHOLDERS)
 
 
-def render(body: str, line: str, language: str, farmer: str, variety: str, lines: Sequence[Line]) -> str:
-    """The exact message. Quantities must be 'N.NNN'; there must be at least one line."""
+def render(
+    body: str, line: str, language: str, farmer: str, variety: str, lines: Sequence[Line], joiner: str = "\n"
+) -> str:
+    """The exact message. Quantities must be 'N.NNN'; there must be at least one line. ``joiner`` goes between the
+    rendered lines: a new line in version 1, " ; " in the WhatsApp versions (Meta allows no line break in a value)."""
     if not lines:
         raise TemplateError("a message needs at least one line")
     rendered = []
@@ -104,4 +107,4 @@ def render(body: str, line: str, language: str, farmer: str, variety: str, lines
                 LINE_PLACEHOLDERS,
             )
         )
-    return _fill(body, {"farmer": farmer, "variety": variety, "lines": "\n".join(rendered)}, BODY_PLACEHOLDERS)
+    return _fill(body, {"farmer": farmer, "variety": variety, "lines": joiner.join(rendered)}, BODY_PLACEHOLDERS)
