@@ -1,0 +1,100 @@
+{
+  "contract": "models.registry/v1",
+  "evidence": {
+    "protocol_commit": "864005d1919f162cd7c9a6ca7c31a3d524387988",
+    "results_commit": "2444beaf35a5ae3cc80782591c10cfa48ed1ce41",
+    "season": "2025-26",
+    "run_at": "2026-10-27T18:18:24+00:00",
+    "file": "rp:results/C0_protocol/test_season_inference.csv",
+    "file_sha256": "0a16b16f7e66f421d7ff8350ee0f3a0585b72e5c2d84d8938d2d541a923b63ce"
+  },
+  "rule": "C0_S8_HOLM_CI_MIN_GAIN",
+  "entries": [
+    {
+      "variety": "1121",
+      "horizon_days": 1,
+      "in_use": "ets",
+      "in_use_reason": "PROMOTED",
+      "models": [
+        {
+          "model": "seasonal_naive",
+          "status": "NOT_PROMOTED",
+          "verdict": "NO_DETECTABLE_DIFFERENCE",
+          "pairs": 68,
+          "relative_change": 1.1066745945677798,
+          "p_holm": 0.00042724508914143185,
+          "ci_low": 0.5649015935916679,
+          "ci_high": 1.8816603929246163,
+          "smallest_gain": 0.133
+        },
+        {
+          "model": "ma5",
+          "status": "NOT_PROMOTED",
+          "verdict": "NO_DETECTABLE_DIFFERENCE",
+          "pairs": 68,
+          "relative_change": -0.1873364870395352,
+          "p_holm": 1.0,
+          "ci_low": -0.3376377437408044,
+          "ci_high": 0.0008582063012973289,
+          "smallest_gain": 0.133
+        },
+        {
+          "model": "ets",
+          "status": "PROMOTED",
+          "verdict": "BETTER",
+          "pairs": 68,
+          "relative_change": -0.10678043087282585,
+          "p_holm": 1.0,
+          "ci_low": -0.2236537469293545,
+          "ci_high": 0.04306791420676072,
+          "smallest_gain": 0.133
+        },
+        {
+          "model": "arima",
+          "status": "NOT_PROMOTED",
+          "verdict": "NO_DETECTABLE_DIFFERENCE",
+          "pairs": 68,
+          "relative_change": -0.0620125063180369,
+          "p_holm": 1.0,
+          "ci_low": -0.18398544379331822,
+          "ci_high": 0.09603748997674376,
+          "smallest_gain": 0.133
+        },
+        {
+          "model": "lightgbm",
+          "status": "NOT_PROMOTED",
+          "verdict": "NO_DETECTABLE_DIFFERENCE",
+          "pairs": 68,
+          "relative_change": -0.058949394280405465,
+          "p_holm": 1.0,
+          "ci_low": -0.19119580578681147,
+          "ci_high": 0.11301369887259456,
+          "smallest_gain": 0.133
+        },
+        {
+          "model": "gru",
+          "status": "NOT_PROMOTED",
+          "verdict": "NO_DETECTABLE_DIFFERENCE",
+          "pairs": 68,
+          "relative_change": -0.2533689714277586,
+          "p_holm": 0.25240153041432256,
+          "ci_low": -0.3849625292030311,
+          "ci_high": -0.08896139827852648,
+          "smallest_gain": 0.133
+        },
+        {
+          "model": "chronos2",
+          "status": "NOT_PROMOTED",
+          "verdict": "NO_DETECTABLE_DIFFERENCE",
+          "pairs": 68,
+          "relative_change": -0.1671832888587439,
+          "p_holm": 1.0,
+          "ci_low": -0.30287569874040865,
+          "ci_high": -0.008857580742932305,
+          "smallest_gain": 0.133
+        }
+      ]
+    }
+  ],
+  "untested_horizons": []
+}

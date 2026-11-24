@@ -13,6 +13,7 @@ from .devices import routes as device_routes
 from .handover import routes as handover_routes
 from .market import routes as market_routes
 from .messaging import routes as messaging_routes
+from .models import routes as model_routes
 from .org import routes as org_routes
 from .plan import routes as plan_routes
 from .sales import routes as sales_routes
@@ -30,6 +31,7 @@ approval_routes.install(app)
 messaging_routes.install(app)
 sales_routes.install(app)
 handover_routes.install(app)
+model_routes.install(app)
 
 
 @app.get("/api/v1/meta")
@@ -50,6 +52,7 @@ def meta() -> dict[str, object]:
             "messaging/v1",
             "sales/v1",
             "handover/v1",
+            "models/v1",
         ],
         "mode": load_settings().mode.value,
     }

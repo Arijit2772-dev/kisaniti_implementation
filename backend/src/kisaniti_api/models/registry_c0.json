@@ -1,0 +1,534 @@
+{
+  "contract": "models.registry/v1",
+  "evidence": {
+    "protocol_commit": "864005d1919f162cd7c9a6ca7c31a3d524387988",
+    "results_commit": "2444beaf35a5ae3cc80782591c10cfa48ed1ce41",
+    "season": "2025-26",
+    "run_at": "2026-10-27T18:18:24+00:00",
+    "file": "rp:results/C0_protocol/test_season_inference.csv",
+    "file_sha256": "0a16b16f7e66f421d7ff8350ee0f3a0585b72e5c2d84d8938d2d541a923b63ce"
+  },
+  "rule": "C0_S8_HOLM_CI_MIN_GAIN",
+  "entries": [
+    {
+      "variety": "1121",
+      "horizon_days": 1,
+      "in_use": "naive",
+      "in_use_reason": "BASELINE_ENOUGH",
+      "models": [
+        {
+          "model": "seasonal_naive",
+          "status": "NOT_PROMOTED",
+          "verdict": "NO_DETECTABLE_DIFFERENCE",
+          "pairs": 68,
+          "relative_change": 1.1066745945677798,
+          "p_holm": 0.00042724508914143185,
+          "ci_low": 0.5649015935916679,
+          "ci_high": 1.8816603929246163,
+          "smallest_gain": 0.133
+        },
+        {
+          "model": "ma5",
+          "status": "NOT_PROMOTED",
+          "verdict": "NO_DETECTABLE_DIFFERENCE",
+          "pairs": 68,
+          "relative_change": -0.1873364870395352,
+          "p_holm": 1.0,
+          "ci_low": -0.3376377437408044,
+          "ci_high": 0.0008582063012973289,
+          "smallest_gain": 0.133
+        },
+        {
+          "model": "ets",
+          "status": "NOT_PROMOTED",
+          "verdict": "NO_DETECTABLE_DIFFERENCE",
+          "pairs": 68,
+          "relative_change": -0.10678043087282585,
+          "p_holm": 1.0,
+          "ci_low": -0.2236537469293545,
+          "ci_high": 0.04306791420676072,
+          "smallest_gain": 0.133
+        },
+        {
+          "model": "arima",
+          "status": "NOT_PROMOTED",
+          "verdict": "NO_DETECTABLE_DIFFERENCE",
+          "pairs": 68,
+          "relative_change": -0.0620125063180369,
+          "p_holm": 1.0,
+          "ci_low": -0.18398544379331822,
+          "ci_high": 0.09603748997674376,
+          "smallest_gain": 0.133
+        },
+        {
+          "model": "lightgbm",
+          "status": "NOT_PROMOTED",
+          "verdict": "NO_DETECTABLE_DIFFERENCE",
+          "pairs": 68,
+          "relative_change": -0.058949394280405465,
+          "p_holm": 1.0,
+          "ci_low": -0.19119580578681147,
+          "ci_high": 0.11301369887259456,
+          "smallest_gain": 0.133
+        },
+        {
+          "model": "gru",
+          "status": "NOT_PROMOTED",
+          "verdict": "NO_DETECTABLE_DIFFERENCE",
+          "pairs": 68,
+          "relative_change": -0.2533689714277586,
+          "p_holm": 0.25240153041432256,
+          "ci_low": -0.3849625292030311,
+          "ci_high": -0.08896139827852648,
+          "smallest_gain": 0.133
+        },
+        {
+          "model": "chronos2",
+          "status": "NOT_PROMOTED",
+          "verdict": "NO_DETECTABLE_DIFFERENCE",
+          "pairs": 68,
+          "relative_change": -0.1671832888587439,
+          "p_holm": 1.0,
+          "ci_low": -0.30287569874040865,
+          "ci_high": -0.008857580742932305,
+          "smallest_gain": 0.133
+        }
+      ]
+    },
+    {
+      "variety": "1121",
+      "horizon_days": 7,
+      "in_use": "naive",
+      "in_use_reason": "BASELINE_ENOUGH",
+      "models": [
+        {
+          "model": "seasonal_naive",
+          "status": "NOT_PROMOTED",
+          "verdict": "NO_DETECTABLE_DIFFERENCE",
+          "pairs": 63,
+          "relative_change": 1.00376786257221,
+          "p_holm": 1.0,
+          "ci_low": 0.1994518481564896,
+          "ci_high": 1.72814355709211,
+          "smallest_gain": 0.133
+        },
+        {
+          "model": "ma5",
+          "status": "NOT_PROMOTED",
+          "verdict": "NO_DETECTABLE_DIFFERENCE",
+          "pairs": 64,
+          "relative_change": 0.03344316357799526,
+          "p_holm": 1.0,
+          "ci_low": -0.08705804108017798,
+          "ci_high": 0.1890086239984122,
+          "smallest_gain": 0.133
+        },
+        {
+          "model": "ets",
+          "status": "NOT_PROMOTED",
+          "verdict": "NO_DETECTABLE_DIFFERENCE",
+          "pairs": 64,
+          "relative_change": 0.010943170187076134,
+          "p_holm": 1.0,
+          "ci_low": -0.09433940616017787,
+          "ci_high": 0.1265556099449314,
+          "smallest_gain": 0.133
+        },
+        {
+          "model": "arima",
+          "status": "NOT_PROMOTED",
+          "verdict": "NO_DETECTABLE_DIFFERENCE",
+          "pairs": 64,
+          "relative_change": 0.13670946231526226,
+          "p_holm": 1.0,
+          "ci_low": -0.0013802691481741062,
+          "ci_high": 0.3441728292905549,
+          "smallest_gain": 0.133
+        },
+        {
+          "model": "lightgbm",
+          "status": "NOT_PROMOTED",
+          "verdict": "NO_DETECTABLE_DIFFERENCE",
+          "pairs": 64,
+          "relative_change": 0.31543667935520503,
+          "p_holm": 1.0,
+          "ci_low": -0.026578446162565147,
+          "ci_high": 0.7079371298822716,
+          "smallest_gain": 0.133
+        },
+        {
+          "model": "gru",
+          "status": "NOT_PROMOTED",
+          "verdict": "NO_DETECTABLE_DIFFERENCE",
+          "pairs": 64,
+          "relative_change": -0.009763368720509424,
+          "p_holm": 1.0,
+          "ci_low": -0.36506011264502103,
+          "ci_high": 0.2946205981440601,
+          "smallest_gain": 0.133
+        },
+        {
+          "model": "chronos2",
+          "status": "NOT_PROMOTED",
+          "verdict": "NO_DETECTABLE_DIFFERENCE",
+          "pairs": 64,
+          "relative_change": 0.14584032682994685,
+          "p_holm": 1.0,
+          "ci_low": -0.011366487625396104,
+          "ci_high": 0.3947372991896861,
+          "smallest_gain": 0.133
+        }
+      ]
+    },
+    {
+      "variety": "1121",
+      "horizon_days": 14,
+      "in_use": "naive",
+      "in_use_reason": "BASELINE_ENOUGH",
+      "models": [
+        {
+          "model": "seasonal_naive",
+          "status": "NOT_PROMOTED",
+          "verdict": "NO_DETECTABLE_DIFFERENCE",
+          "pairs": 60,
+          "relative_change": 0.3480279323133981,
+          "p_holm": 1.0,
+          "ci_low": -0.2302167991999517,
+          "ci_high": 0.7825336060076241,
+          "smallest_gain": 0.133
+        },
+        {
+          "model": "ma5",
+          "status": "NOT_PROMOTED",
+          "verdict": "NO_DETECTABLE_DIFFERENCE",
+          "pairs": 60,
+          "relative_change": 0.11242466388502548,
+          "p_holm": 1.0,
+          "ci_low": -0.01777014659814049,
+          "ci_high": 0.18851749059811995,
+          "smallest_gain": 0.133
+        },
+        {
+          "model": "ets",
+          "status": "NOT_PROMOTED",
+          "verdict": "NO_DETECTABLE_DIFFERENCE",
+          "pairs": 60,
+          "relative_change": 0.10250948926173575,
+          "p_holm": 1.0,
+          "ci_low": 0.003127077229929049,
+          "ci_high": 0.1495554426402539,
+          "smallest_gain": 0.133
+        },
+        {
+          "model": "arima",
+          "status": "NOT_PROMOTED",
+          "verdict": "NO_DETECTABLE_DIFFERENCE",
+          "pairs": 60,
+          "relative_change": 0.23630464560991715,
+          "p_holm": 1.0,
+          "ci_low": 0.06077511631687533,
+          "ci_high": 0.3876505142553861,
+          "smallest_gain": 0.133
+        },
+        {
+          "model": "lightgbm",
+          "status": "NOT_PROMOTED",
+          "verdict": "NO_DETECTABLE_DIFFERENCE",
+          "pairs": 60,
+          "relative_change": 0.8371817932124401,
+          "p_holm": 1.0,
+          "ci_low": 0.1333117705291391,
+          "ci_high": 1.2103296341256775,
+          "smallest_gain": 0.133
+        },
+        {
+          "model": "gru",
+          "status": "NOT_PROMOTED",
+          "verdict": "NO_DETECTABLE_DIFFERENCE",
+          "pairs": 60,
+          "relative_change": 0.16978677120351082,
+          "p_holm": 1.0,
+          "ci_low": -0.28277746482951266,
+          "ci_high": 0.4653713907456006,
+          "smallest_gain": 0.133
+        },
+        {
+          "model": "chronos2",
+          "status": "NOT_PROMOTED",
+          "verdict": "NO_DETECTABLE_DIFFERENCE",
+          "pairs": 60,
+          "relative_change": 0.2921319328240901,
+          "p_holm": 1.0,
+          "ci_low": 0.08712077151232589,
+          "ci_high": 0.6261964603412888,
+          "smallest_gain": 0.133
+        }
+      ]
+    },
+    {
+      "variety": "Basmati 1509",
+      "horizon_days": 1,
+      "in_use": "naive",
+      "in_use_reason": "BASELINE_ENOUGH",
+      "models": [
+        {
+          "model": "seasonal_naive",
+          "status": "NOT_PROMOTED",
+          "verdict": "NO_DETECTABLE_DIFFERENCE",
+          "pairs": 62,
+          "relative_change": 2.9667183666270707,
+          "p_holm": 8.25487657185531e-15,
+          "ci_low": 2.144294052251251,
+          "ci_high": 4.104318515063222,
+          "smallest_gain": 0.172
+        },
+        {
+          "model": "ma5",
+          "status": "NOT_PROMOTED",
+          "verdict": "NO_DETECTABLE_DIFFERENCE",
+          "pairs": 62,
+          "relative_change": 0.30452902027710493,
+          "p_holm": 0.6979018442430723,
+          "ci_low": 0.04583927929077679,
+          "ci_high": 0.6305963108781063,
+          "smallest_gain": 0.172
+        },
+        {
+          "model": "ets",
+          "status": "NOT_PROMOTED",
+          "verdict": "NO_DETECTABLE_DIFFERENCE",
+          "pairs": 62,
+          "relative_change": -0.010063549843465358,
+          "p_holm": 1.0,
+          "ci_low": -0.03468139932146726,
+          "ci_high": 0.016407346797602387,
+          "smallest_gain": 0.172
+        },
+        {
+          "model": "arima",
+          "status": "NOT_PROMOTED",
+          "verdict": "NO_DETECTABLE_DIFFERENCE",
+          "pairs": 62,
+          "relative_change": 0.03853573379841824,
+          "p_holm": 1.0,
+          "ci_low": -0.032377518163676546,
+          "ci_high": 0.1355178651498905,
+          "smallest_gain": 0.172
+        },
+        {
+          "model": "lightgbm",
+          "status": "NOT_PROMOTED",
+          "verdict": "NO_DETECTABLE_DIFFERENCE",
+          "pairs": 62,
+          "relative_change": 0.14264498577359275,
+          "p_holm": 1.0,
+          "ci_low": -0.014245452138069907,
+          "ci_high": 0.34645253310726437,
+          "smallest_gain": 0.172
+        },
+        {
+          "model": "gru",
+          "status": "NOT_PROMOTED",
+          "verdict": "NO_DETECTABLE_DIFFERENCE",
+          "pairs": 62,
+          "relative_change": 0.22713573017143895,
+          "p_holm": 1.0,
+          "ci_low": -0.008640041758208388,
+          "ci_high": 0.5326160737082319,
+          "smallest_gain": 0.172
+        },
+        {
+          "model": "chronos2",
+          "status": "NOT_PROMOTED",
+          "verdict": "NO_DETECTABLE_DIFFERENCE",
+          "pairs": 62,
+          "relative_change": 0.04582044329663093,
+          "p_holm": 1.0,
+          "ci_low": -0.028296148361650352,
+          "ci_high": 0.13161599354092068,
+          "smallest_gain": 0.172
+        }
+      ]
+    },
+    {
+      "variety": "Basmati 1509",
+      "horizon_days": 7,
+      "in_use": "naive",
+      "in_use_reason": "BASELINE_ENOUGH",
+      "models": [
+        {
+          "model": "seasonal_naive",
+          "status": "NOT_PROMOTED",
+          "verdict": "NO_DETECTABLE_DIFFERENCE",
+          "pairs": 57,
+          "relative_change": 1.1353284707967033,
+          "p_holm": 0.044455127866088885,
+          "ci_low": 0.4411865636489989,
+          "ci_high": 1.6995123294796115,
+          "smallest_gain": 0.172
+        },
+        {
+          "model": "ma5",
+          "status": "NOT_PROMOTED",
+          "verdict": "NO_DETECTABLE_DIFFERENCE",
+          "pairs": 57,
+          "relative_change": -0.12659649473086554,
+          "p_holm": 1.0,
+          "ci_low": -0.2645329575860241,
+          "ci_high": 0.02027342302183613,
+          "smallest_gain": 0.172
+        },
+        {
+          "model": "ets",
+          "status": "NOT_PROMOTED",
+          "verdict": "NO_DETECTABLE_DIFFERENCE",
+          "pairs": 57,
+          "relative_change": -0.017236557191885216,
+          "p_holm": 1.0,
+          "ci_low": -0.05285549484945357,
+          "ci_high": 0.0011988146802292428,
+          "smallest_gain": 0.172
+        },
+        {
+          "model": "arima",
+          "status": "NOT_PROMOTED",
+          "verdict": "NO_DETECTABLE_DIFFERENCE",
+          "pairs": 57,
+          "relative_change": 0.022608068209328147,
+          "p_holm": 1.0,
+          "ci_low": -0.03907989176606264,
+          "ci_high": 0.12412284919617006,
+          "smallest_gain": 0.172
+        },
+        {
+          "model": "lightgbm",
+          "status": "NOT_PROMOTED",
+          "verdict": "NO_DETECTABLE_DIFFERENCE",
+          "pairs": 57,
+          "relative_change": 0.09440630774773107,
+          "p_holm": 1.0,
+          "ci_low": -0.09505565445295143,
+          "ci_high": 0.2597268684907892,
+          "smallest_gain": 0.172
+        },
+        {
+          "model": "gru",
+          "status": "NOT_PROMOTED",
+          "verdict": "NO_DETECTABLE_DIFFERENCE",
+          "pairs": 57,
+          "relative_change": -0.07297862877393013,
+          "p_holm": 1.0,
+          "ci_low": -0.2509792344746756,
+          "ci_high": 0.0731342167038565,
+          "smallest_gain": 0.172
+        },
+        {
+          "model": "chronos2",
+          "status": "NOT_PROMOTED",
+          "verdict": "NO_DETECTABLE_DIFFERENCE",
+          "pairs": 57,
+          "relative_change": 0.11403672519164565,
+          "p_holm": 1.0,
+          "ci_low": -0.12025253245278707,
+          "ci_high": 0.37367840232878985,
+          "smallest_gain": 0.172
+        }
+      ]
+    },
+    {
+      "variety": "Basmati 1509",
+      "horizon_days": 14,
+      "in_use": "naive",
+      "in_use_reason": "BASELINE_ENOUGH",
+      "models": [
+        {
+          "model": "seasonal_naive",
+          "status": "NOT_PROMOTED",
+          "verdict": "NO_DETECTABLE_DIFFERENCE",
+          "pairs": 51,
+          "relative_change": 0.5055208985629018,
+          "p_holm": 1.0,
+          "ci_low": -0.007322487887828568,
+          "ci_high": 1.2035574371983202,
+          "smallest_gain": 0.172
+        },
+        {
+          "model": "ma5",
+          "status": "NOT_PROMOTED",
+          "verdict": "NO_DETECTABLE_DIFFERENCE",
+          "pairs": 51,
+          "relative_change": 0.07587107070290755,
+          "p_holm": 1.0,
+          "ci_low": -0.05248621000346325,
+          "ci_high": 0.18027949529107865,
+          "smallest_gain": 0.172
+        },
+        {
+          "model": "ets",
+          "status": "NOT_PROMOTED",
+          "verdict": "NO_DETECTABLE_DIFFERENCE",
+          "pairs": 51,
+          "relative_change": -0.002356656755467812,
+          "p_holm": 1.0,
+          "ci_low": -0.005710259960627458,
+          "ci_high": 0.0025273447208916796,
+          "smallest_gain": 0.172
+        },
+        {
+          "model": "arima",
+          "status": "NOT_PROMOTED",
+          "verdict": "NO_DETECTABLE_DIFFERENCE",
+          "pairs": 51,
+          "relative_change": 0.09054187437174033,
+          "p_holm": 1.0,
+          "ci_low": 0.0,
+          "ci_high": 0.2179543878177804,
+          "smallest_gain": 0.172
+        },
+        {
+          "model": "lightgbm",
+          "status": "NOT_PROMOTED",
+          "verdict": "NO_DETECTABLE_DIFFERENCE",
+          "pairs": 51,
+          "relative_change": -0.007873580358608745,
+          "p_holm": 1.0,
+          "ci_low": -0.26156811857834916,
+          "ci_high": 0.10960581186642647,
+          "smallest_gain": 0.172
+        },
+        {
+          "model": "gru",
+          "status": "NOT_PROMOTED",
+          "verdict": "NO_DETECTABLE_DIFFERENCE",
+          "pairs": 51,
+          "relative_change": 0.12425158758666499,
+          "p_holm": 1.0,
+          "ci_low": -0.12521315136597752,
+          "ci_high": 0.37765041642698083,
+          "smallest_gain": 0.172
+        },
+        {
+          "model": "chronos2",
+          "status": "NOT_PROMOTED",
+          "verdict": "NO_DETECTABLE_DIFFERENCE",
+          "pairs": 51,
+          "relative_change": 0.1477261042106761,
+          "p_holm": 1.0,
+          "ci_low": -0.02206704238510496,
+          "ci_high": 0.28861390337614407,
+          "smallest_gain": 0.172
+        }
+      ]
+    }
+  ],
+  "untested_horizons": [
+    {
+      "horizon_days": 28,
+      "treatment": "SECONDARY"
+    },
+    {
+      "horizon_days": 60,
+      "treatment": "DESCRIPTIVE"
+    }
+  ]
+}

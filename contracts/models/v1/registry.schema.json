@@ -1,0 +1,73 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kisaniti.invalid/contracts/models/v1/registry.schema.json",
+  "title": "ModelRegistryV1: which forecasting model the product uses per variety and horizon, and the frozen evidence why (L3a, protocol C.0 section 9)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["contract", "evidence", "rule", "entries", "untested_horizons"],
+  "properties": {
+    "contract": {"const": "models.registry/v1"},
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["protocol_commit", "results_commit", "season", "run_at", "file", "file_sha256"],
+      "properties": {
+        "protocol_commit": {"$ref": "#/$defs/commit"},
+        "results_commit": {"$ref": "#/$defs/commit"},
+        "season": {"type": "string", "pattern": "^[0-9]{4}-[0-9]{2}$"},
+        "run_at": {"type": "string", "format": "date-time"},
+        "file": {"type": "string", "pattern": "^rp:results/"},
+        "file_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+      }
+    },
+    "rule": {"const": "C0_S8_HOLM_CI_MIN_GAIN"},
+    "entries": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/entry"}},
+    "untested_horizons": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["horizon_days", "treatment"],
+        "properties": {
+          "horizon_days": {"type": "integer", "minimum": 1},
+          "treatment": {"enum": ["SECONDARY", "DESCRIPTIVE"]}
+        }
+      }
+    }
+  },
+  "$defs": {
+    "commit": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+    "entry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["variety", "horizon_days", "in_use", "in_use_reason", "models"],
+      "properties": {
+        "variety": {"type": "string", "minLength": 1},
+        "horizon_days": {"type": "integer", "minimum": 1},
+        "in_use": {"type": "string", "minLength": 1},
+        "in_use_reason": {"enum": ["BASELINE_ENOUGH", "PROMOTED"]},
+        "models": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/model"}}
+      }
+    },
+    "model": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["model", "status", "verdict", "pairs", "relative_change", "p_holm", "ci_low", "ci_high", "smallest_gain"],
+      "properties": {
+        "model": {"type": "string", "minLength": 1},
+        "status": {"enum": ["PROMOTED", "NOT_PROMOTED"]},
+        "verdict": {"enum": ["BETTER", "NO_DETECTABLE_DIFFERENCE"]},
+        "pairs": {"type": "integer", "minimum": 1},
+        "relative_change": {"type": "number"},
+        "p_holm": {"type": "number", "minimum": 0, "maximum": 1},
+        "ci_low": {"type": "number"},
+        "ci_high": {"type": "number"},
+        "smallest_gain": {"type": "number", "exclusiveMinimum": 0}
+      },
+      "allOf": [
+        {"if": {"properties": {"verdict": {"const": "BETTER"}}}, "then": {"properties": {"status": {"const": "PROMOTED"}}}},
+        {"if": {"properties": {"verdict": {"const": "NO_DETECTABLE_DIFFERENCE"}}}, "then": {"properties": {"status": {"const": "NOT_PROMOTED"}}}}
+      ]
+    }
+  }
+}

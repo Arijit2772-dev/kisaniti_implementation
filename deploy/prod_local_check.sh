@@ -73,6 +73,13 @@ CODE="$(curl -sS --cacert "$T/root.crt" -o /dev/null -w '%{http_code}' -b "$T/ja
   https://app.localhost/api/v1/auth/change-password)"
 [ "$CODE" = 403 ] || fail "a signed-in change from another origin got HTTP $CODE, not 403"
 pass "sign-in over HTTPS gives a Secure cookie; a signed-in change from another origin is refused (403)"
+NEWPW="prod check passphrase long enough"
+$C -o /dev/null -b "$T/jar" -H "X-CSRF-Token: $CSRF" -H 'Origin: https://app.localhost' -H 'Content-Type: application/json' \
+  -d "{\"current_password\":\"$TEMP\",\"new_password\":\"$NEWPW\"}" https://app.localhost/api/v1/auth/change-password || fail "password change"
+$C -b "$T/jar" https://app.localhost/en/models > "$T/models.html" || fail "forecast models page"
+[ "$(grep -o 'data-status="NOT_PROMOTED"' "$T/models.html" | wc -l | tr -d ' ')" = 42 ] || fail "the models page does not list 42 not-promoted models"
+grep -q "Naive (last price)" "$T/models.html" || fail "the models page does not name the model in use"
+pass "forecast models page over HTTPS: 42 comparisons, none promoted, naive in use"
 
 (export COMPOSE_FILE="$T/compose.yaml" CURL_CA_BUNDLE="$T/root.crt"; SMOKE_SEED_MARKET=1 scripts/smoke_access.sh https://app.localhost) \
   > "$T/smoke.out" 2>&1 || { cat "$T/smoke.out"; fail "smoke_access.sh through Caddy"; }
@@ -95,7 +102,7 @@ if (cd "$T" && KN_YES=1 sh restore.sh backups/not-a-backup.dump) > /dev/null 2>&
 (cd "$T" && KN_YES=1 sh restore.sh "$B") > "$T/restore.out" 2>&1 || { cat "$T/restore.out"; fail "restore"; }
 [ "$(DBC "select count(*) from users where username='$U2'")" = 0 ] || fail "after the restore, the later FPO is still there"
 [ "$(DBC "select count(*) from users where username='$U'")" = 1 ] || fail "after the restore, the earlier user is missing"
-$C -o /dev/null -H 'Content-Type: application/json' -d "{\"username\":\"$U\",\"password\":\"$TEMP\"}" https://app.localhost/api/v1/auth/login \
+$C -o /dev/null -H 'Content-Type: application/json' -d "{\"username\":\"$U\",\"password\":\"$NEWPW\"}" https://app.localhost/api/v1/auth/login \
   || fail "sign-in after the restore"
 pass "restore.sh brought the live database back to the backup: later FPO gone, earlier user signs in over HTTPS"
 

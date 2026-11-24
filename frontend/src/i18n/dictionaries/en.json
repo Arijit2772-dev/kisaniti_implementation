@@ -94,7 +94,8 @@
     "plans": "Plans",
     "contacts": "Contacts",
     "messages": "Messages",
-    "sales": "Sales"
+    "sales": "Sales",
+    "models": "Forecast models"
   },
   "home": {
     "welcome": "Welcome, {name}",
@@ -855,6 +856,50 @@
       "NOT_RELEASED": "The reservation has not been released.",
       "ITEM_NOT_ISSUED": "No link was made for this farmer.",
       "NO_CHANGE": "This is already the reported state."
+    }
+  },
+  "models": {
+    "title": "Forecast models",
+    "intro": "Which price forecast the plans use, and why. Each model was compared once with the naive forecast (last known price) on the 2025-26 test season, under a protocol fixed before the test. A model is used only if it is clearly better; otherwise the naive forecast is kept.",
+    "unavailable": "The model registry could not be loaded.",
+    "evidenceTitle": "Evidence",
+    "season": "Test season",
+    "runAt": "Run on",
+    "protocol": "Protocol (frozen)",
+    "results": "Results commit",
+    "file": "Result file",
+    "rule": "Rule: better than naive only if the Holm-adjusted p is below 0.05, the 95% interval is entirely below zero, and the error falls by at least the smallest detectable gain.",
+    "entryTitle": "{variety}, {days} days ahead",
+    "inUse": "In use",
+    "model": "Model",
+    "statusLabel": "Status",
+    "change": "Change in error vs naive",
+    "interval": "95% interval",
+    "pHolm": "Holm p",
+    "pairs": "Pairs",
+    "gainNeeded": "Smallest gain that would count: {gain}% less error than naive. Negative change = less error.",
+    "untestedTitle": "Horizons without a test",
+    "names": {
+      "naive": "Naive (last price)",
+      "seasonal_naive": "Seasonal naive",
+      "ma5": "Moving average (5)",
+      "ets": "ETS",
+      "arima": "ARIMA",
+      "lightgbm": "LightGBM",
+      "gru": "GRU",
+      "chronos2": "Chronos-2"
+    },
+    "status": {
+      "PROMOTED": "Promoted",
+      "NOT_PROMOTED": "Not promoted"
+    },
+    "reason": {
+      "BASELINE_ENOUGH": "no model was clearly better; the baseline is enough",
+      "PROMOTED": "clearly better than naive"
+    },
+    "treatment": {
+      "SECONDARY": "{days} days: secondary, not part of the tested comparisons",
+      "DESCRIPTIVE": "{days} days: descriptive only, too few pairs; no claims"
     }
   }
 }
