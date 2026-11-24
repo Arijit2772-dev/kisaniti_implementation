@@ -175,6 +175,7 @@ jobs:
           context: ${{ matrix.context }}
           file: ${{ matrix.file }}
           push: true
+          build-args: KN_BUILD_COMMIT=${{ github.sha }}
           tags: ghcr.io/arijit2772-dev/${{ matrix.image }}:${{ github.sha }}
           labels: |
             org.opencontainers.image.source=https://github.com/${{ github.repository }}

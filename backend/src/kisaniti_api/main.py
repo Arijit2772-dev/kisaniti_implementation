@@ -5,7 +5,7 @@ from __future__ import annotations
 from fastapi import FastAPI
 from kisaniti_core import __version__ as core_version
 
-from . import __version__, health, problems
+from . import __version__, health, logs, problems
 from .access import routes as access_routes
 from .approval import routes as approval_routes
 from .config import load_settings
@@ -17,6 +17,7 @@ from .org import routes as org_routes
 from .plan import routes as plan_routes
 from .sales import routes as sales_routes
 
+logs.configure()
 app = FastAPI(title="KisanNiti API", version=__version__)
 problems.install(app)
 app.include_router(health.router)
@@ -36,6 +37,7 @@ def meta() -> dict[str, object]:
     """Versions and mode, so the UI can show the DEMO banner and the paper can cite exact versions."""
     return {
         "api_version": __version__,
+        "build_commit": logs.build_commit(),
         "core_version": core_version,
         "contracts": [
             "shared/v1",

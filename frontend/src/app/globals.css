@@ -84,3 +84,10 @@ code.temp { font-size: 1.1rem; user-select: all; padding: 0.2rem 0.4rem; border:
 .category { font-weight: 700; }
 .category.HIGH { color: var(--bad); }
 .message-text { white-space: pre-wrap; padding: 0.75rem; border: 1px dashed var(--muted); border-radius: 6px; font-family: inherit; }
+
+/* build identity on every page (P1 logging and build identity) */
+footer.build {
+  padding: 1rem;
+  font-size: 0.8rem;
+  text-align: center;
+}

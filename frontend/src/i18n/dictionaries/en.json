@@ -2,6 +2,7 @@
   "app": {
     "name": "KisanNiti",
     "tagline": "Fair selling plans for Farmer Producer Organizations",
+    "build": "Build {commit}",
     "description": "Decision support for FPO post-harvest selling"
   },
   "lang": {
@@ -13,7 +14,7 @@
     "unreachable": "System status: API unreachable",
     "checkedAt": "Checked (UTC)",
     "demoBanner": "{mode} — fictional FPO data; not real farmers",
-    "versions": "API {api} · core {core} · contracts {contracts}",
+    "versions": "API {api} · core {core} · contracts {contracts} · build {build}",
     "state": {
       "READY": "Ready",
       "READY_WITH_WARNINGS": "Ready with warnings",

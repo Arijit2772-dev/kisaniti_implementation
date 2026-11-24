@@ -22,6 +22,7 @@ export interface Readiness {
 
 export interface Meta {
   api_version: string;
+  build_commit: string;
   core_version: string;
   contracts: string[];
   mode: "RESEARCH" | "DEMO" | "LIVE";

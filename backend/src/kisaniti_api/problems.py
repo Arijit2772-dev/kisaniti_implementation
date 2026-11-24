@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import logging
+import time
 import uuid
 from typing import Any
 
@@ -12,7 +13,10 @@ from fastapi.responses import JSONResponse
 from kisaniti_core.errors import HTTP_STATUS, ContractError, ErrorCode
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
+from .logs import REQUEST_ID
+
 log = logging.getLogger("kisaniti_api")
+access = logging.getLogger("kisaniti_api.access_log")
 
 _HTTP_TO_CODE = {
     400: ErrorCode.INVALID_REQUEST,
@@ -53,10 +57,29 @@ def _pointer(loc: tuple[Any, ...]) -> str:
 def install(app: FastAPI) -> None:
     @app.middleware("http")
     async def request_id(request: Request, call_next: Any) -> Any:
-        request.state.request_id = request.headers.get("X-Request-ID") or uuid.uuid4().hex
-        response = await call_next(request)
-        response.headers["X-Request-ID"] = request.state.request_id
-        return response
+        # the website's proxy sends one ID per browser request; anything not shaped like an ID is replaced, so a
+        # client cannot write arbitrary text into the logs or the audit trail
+        given = request.headers.get("X-Request-ID", "")
+        request.state.request_id = given if REQUEST_ID.match(given) else uuid.uuid4().hex
+        start = time.perf_counter()
+        status = 500
+        try:
+            response = await call_next(request)
+            status = response.status_code
+            response.headers["X-Request-ID"] = request.state.request_id
+            return response
+        finally:
+            if not (request.url.path.startswith("/health/") and status < 400):  # container probes every few seconds
+                access.info(
+                    "request",
+                    extra={
+                        "request_id": request.state.request_id,
+                        "method": request.method,
+                        "path": request.url.path,  # never the query string: it can hold search text
+                        "status": status,
+                        "duration_ms": round((time.perf_counter() - start) * 1000, 1),
+                    },
+                )
 
     @app.exception_handler(ContractError)
     async def contract_error(request: Request, exc: ContractError) -> JSONResponse:

@@ -45,10 +45,10 @@ def test_contract_error_is_problem(client: TestClient) -> None:
     def boom() -> None:
         raise ContractError(ErrorCode.PRECISION_EXCEEDED, "too many digits", "/quantity_kg")
 
-    r = client.get("/_test/contract-error", headers={"X-Request-ID": "req-1"})
+    r = client.get("/_test/contract-error", headers={"X-Request-ID": "req-00000001"})
     body = r.json()
     contract_validator("problem.schema.json").validate(body)
-    assert r.status_code == 422 and body["code"] == "PRECISION_EXCEEDED" and body["request_id"] == "req-1"
+    assert r.status_code == 422 and body["code"] == "PRECISION_EXCEEDED" and body["request_id"] == "req-00000001"
     assert body["issues"][0]["path"] == "/quantity_kg"
 
 

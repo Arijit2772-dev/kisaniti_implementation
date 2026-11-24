@@ -14,5 +14,8 @@ COPY backend/ingestion/src /app/backend/ingestion/src
 RUN uv sync --frozen --no-dev --extra postgres
 ENV PATH=/app/backend/ingestion/.venv/bin:$PATH
 RUN useradd --create-home --uid 10001 app
+# build identity, shown in /api/v1/meta and the website footer; CI passes the commit, local builds say "unknown"
+ARG KN_BUILD_COMMIT=unknown
+ENV KN_BUILD_COMMIT=$KN_BUILD_COMMIT
 USER app
 CMD ["python", "-m", "kisaniti_ingestion.worker"]

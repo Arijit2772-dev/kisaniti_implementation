@@ -21,9 +21,17 @@ export default async function RootLayout({
 }: Readonly<{ children: React.ReactNode; params: Promise<{ lang: string }> }>) {
   const { lang } = await params;
   if (!hasLocale(lang)) notFound();
+  const d = await getDictionary(lang);
+  // build identity: the commit CI built this image from (KN_BUILD_COMMIT build argument); "unknown" on local builds
+  const commit = process.env.KN_BUILD_COMMIT || "unknown";
   return (
     <html lang={lang}>
-      <body>{children}</body>
+      <body>
+        {children}
+        <footer className="build muted" data-build-commit={commit}>
+          {d.app.build.replace("{commit}", commit.slice(0, 7))}
+        </footer>
+      </body>
     </html>
   );
 }

@@ -48,6 +48,7 @@ export async function StatusCard({ d }: { d: Dictionary }) {
               api: meta.data.api_version,
               core: meta.data.core_version,
               contracts: meta.data.contracts.join(", "),
+              build: meta.data.build_commit.slice(0, 7),
             })}
           </p>
         )}

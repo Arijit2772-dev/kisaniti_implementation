@@ -60,6 +60,9 @@ done
 [ "$ok" = 1 ] || { record FAILED "website not reachable over HTTPS"; fail "https://$APP/en/status did not answer"; }
 docker compose exec -T backend python -c "import json,sys,urllib.request as u;sys.exit(json.load(u.urlopen('http://127.0.0.1:8000/health/ready'))['status']!='READY')" \
   || { record FAILED "API not READY"; fail "the API is not READY"; }
+# the API that answers must be this exact commit's build (CI writes the commit into the image)
+RUNNING="$(docker compose exec -T backend python -c "import json,urllib.request as u;print(json.load(u.urlopen('http://127.0.0.1:8000/api/v1/meta'))['build_commit'])")"
+[ "$RUNNING" = "$SHA" ] || { record FAILED "running build $RUNNING"; fail "the API reports build $RUNNING, not $SHA"; }
 
 if grep -q '^KN_TAG=' .env; then sed -i.bak "s/^KN_TAG=.*/KN_TAG=$SHA/" .env && rm -f .env.bak; else echo "KN_TAG=$SHA" >> .env; fi
 # nightly backup at 22:00 UTC (03:30 in India), installed once; KN_CRON=0 skips it (local checks)

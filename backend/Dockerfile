@@ -12,8 +12,11 @@ COPY backend /app/backend
 RUN uv sync --frozen --no-dev
 ENV PATH=/app/backend/.venv/bin:$PATH
 RUN useradd --create-home --uid 10001 app
+# build identity, shown in /api/v1/meta and the website footer; CI passes the commit, local builds say "unknown"
+ARG KN_BUILD_COMMIT=unknown
+ENV KN_BUILD_COMMIT=$KN_BUILD_COMMIT
 USER app
 EXPOSE 8000
 HEALTHCHECK --interval=10s --timeout=3s --retries=12 \
   CMD python -c "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://127.0.0.1:8000/health/live').status==200 else 1)"
-CMD ["sh", "-c", "alembic upgrade head && exec uvicorn kisaniti_api.main:app --host 0.0.0.0 --port 8000"]
+CMD ["sh", "-c", "alembic upgrade head && exec uvicorn kisaniti_api.main:app --host 0.0.0.0 --port 8000 --no-access-log"]

@@ -15,8 +15,8 @@ dc() { (cd "$T" && docker compose "$@"); }
 cleanup() { dc down -v >/dev/null 2>&1 || true; rm -rf "$T"; }
 trap cleanup EXIT
 
-docker build -q -t "kn-local/kisaniti-backend:$SHA" -f backend/Dockerfile . >/dev/null
-docker build -q -t "kn-local/kisaniti-frontend:$SHA" frontend >/dev/null
+docker build -q --build-arg KN_BUILD_COMMIT="$SHA" -t "kn-local/kisaniti-backend:$SHA" -f backend/Dockerfile . >/dev/null
+docker build -q --build-arg KN_BUILD_COMMIT="$SHA" -t "kn-local/kisaniti-frontend:$SHA" frontend >/dev/null
 pass "images built for $SHA"
 cp deploy/compose.prod.yaml "$T/compose.yaml"; cp deploy/Caddyfile deploy/release.sh deploy/backup.sh deploy/restore.sh "$T/"
 
@@ -53,6 +53,11 @@ $C "https://app.localhost/pa/status" | grep -q "ਸਿਸਟਮ ਦੀ ਸਥਿ
   || fail "the bare domain does not redirect to the app"
 $C -D - -o /dev/null "https://app.localhost/en/status" | grep -qi '^strict-transport-security: max-age=31536000' || fail "no HSTS header"
 $C "https://mqtt.localhost/" | grep -q "MQTT over TLS" || fail "the broker host name has no certificate"
+$C "https://app.localhost/en/sign-in" | grep -q "data-build-commit=\"$SHA\"" || fail "the footer does not show build $SHA"
+$C "https://app.localhost/api/v1/meta" | grep -q "\"build_commit\":\"$SHA\"" || fail "/api/v1/meta does not report build $SHA"
+RID="$($C -D - -o /dev/null "https://app.localhost/api/v1/meta" | sed -n 's/^x-request-id: *\([0-9a-f]*\).*/\1/ip' | tr -d '\r')"
+[ -n "$RID" ] && dc logs backend | grep "\"request_id\": \"$RID\"" | grep -q '"path": "/api/v1/meta"' || fail "no JSON log line for request $RID"
+pass "footer and /api/v1/meta show build $SHA; a browser request's ID appears in the API's JSON log"
 pass "HTTPS for app, mqtt and bare domain; HTTP and the bare domain redirect; HSTS set; Punjabi page served"
 
 U="prod.check.$(date +%s)"
