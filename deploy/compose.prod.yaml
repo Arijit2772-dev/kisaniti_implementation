@@ -1,0 +1,100 @@
+# Production stack on the server (CHAT-54). deploy/release.sh copies this file to ~/kisaniti/compose.yaml.
+# Images come from GitHub's container registry, built by CI for one exact commit (KN_TAG); nothing is built here.
+# Only Caddy is reachable from outside (80/443). PostgreSQL, the API and the website have no published ports.
+# The storage broker (8883) is added in P3-2, once mqtt.<domain> has its public certificate.
+# All values come from ~/kisaniti/.env on the server, which is never committed. Missing values stop compose at once.
+name: kisaniti
+
+x-logging: &logging
+  driver: json-file
+  options: {max-size: "10m", max-file: "3"}   # at most 30 MB of logs per service, so the disk cannot fill
+
+x-backend-env: &backend-env
+  DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:?}:${POSTGRES_PASSWORD:?}@db:5432/${POSTGRES_DB:?}
+  KISANITI_MODE: ${KISANITI_MODE:?}
+
+services:
+  db:
+    image: postgres:17.6
+    restart: unless-stopped
+    logging: *logging
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:?}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?}
+      POSTGRES_DB: ${POSTGRES_DB:?}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  backend:
+    image: ${KN_REGISTRY:?}/kisaniti-backend:${KN_TAG:?}
+    restart: unless-stopped
+    logging: *logging
+    environment:
+      <<: *backend-env
+      KISANITI_COOKIE_SECURE: "true"
+      KISANITI_ALLOWED_ORIGINS: https://${KN_APP_HOST:?}
+    depends_on:
+      db:
+        condition: service_healthy
+
+  assessor:
+    image: ${KN_REGISTRY:?}/kisaniti-backend:${KN_TAG:?}
+    restart: unless-stopped
+    logging: *logging
+    command: ["python", "-m", "kisaniti_api.devices.assess_job", "--every", "3600"]
+    environment: *backend-env
+    healthcheck:
+      test: ["CMD-SHELL", "find /tmp/assessor.heartbeat -mmin -130 | grep -q ."]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 40s
+    depends_on:
+      backend:
+        condition: service_healthy
+
+  frontend:
+    image: ${KN_REGISTRY:?}/kisaniti-frontend:${KN_TAG:?}
+    restart: unless-stopped
+    logging: *logging
+    environment:
+      KISANITI_API_URL: http://backend:8000
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3000/en/status').then(r=>process.exit(r.ok?0:1),()=>process.exit(1))"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+    depends_on:
+      backend:
+        condition: service_healthy
+
+  caddy:
+    # Automatic HTTPS (Let's Encrypt) for the website and the broker's host name; see deploy/Caddyfile
+    image: caddy:2.10.2-alpine
+    restart: unless-stopped
+    logging: *logging
+    environment:
+      KN_DOMAIN: ${KN_DOMAIN:?}
+      KN_APP_HOST: ${KN_APP_HOST:?}
+      KN_MQTT_HOST: ${KN_MQTT_HOST:?}
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      frontend:
+        condition: service_healthy
+
+volumes:
+  pgdata:
+  caddy_data:
+  caddy_config:

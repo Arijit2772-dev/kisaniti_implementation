@@ -1,0 +1,24 @@
+# KisanNiti public entry point (CHAT-54). Host names come from the server's .env through compose.
+# Caddy gets and renews the certificates itself. No contact e-mail is sent to the certificate authority.
+# On a local test the names end in .localhost and Caddy uses its own local CA instead.
+
+{$KN_APP_HOST} {
+	encode zstd gzip
+	header {
+		Strict-Transport-Security "max-age=31536000"
+		X-Content-Type-Options nosniff
+		Referrer-Policy strict-origin-when-cross-origin
+		-Server
+	}
+	# The website serves the pages and forwards /api/v1/* to the API, which is not reachable from outside
+	reverse_proxy frontend:3000
+}
+
+# Only so this name gets a public certificate, which the storage broker uses on port 8883 (P3-2)
+{$KN_MQTT_HOST} {
+	respond "KisanNiti storage broker: MQTT over TLS on port 8883" 200
+}
+
+{$KN_DOMAIN} {
+	redir https://{$KN_APP_HOST}{uri} 308
+}
