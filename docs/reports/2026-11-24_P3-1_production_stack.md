@@ -38,7 +38,7 @@ access/v1 checks the Origin only on **signed-in** unsafe requests (CSRF). The si
 - Broker on 8883 with the public certificate, and re-provisioning the node: P3-2.
 - Nightly backup with a restore test, uptime check, and the public demo FPO with nightly reset: later P3 items.
 - Memory on the 887 MB server: not yet measured, to be measured at the first real deploy.
-- The GHCR packages are new; if they are created private, the owner makes them public once (one click per package), or the server cannot pull them anonymously. This will be checked after the first publish.
+- GHCR visibility, checked after the first publish (CI run 45331500821, all 9 jobs green): the server pulled all three images for `de54129` **anonymously**, so the packages are public and nothing is needed from the owner. Server at that time: 887 MB RAM (544 MB available), 56 GB disk free.
 
 ## Rollback of this change
 `git revert` of this commit removes the deploy files and the two CI jobs; nothing else depends on them.
