@@ -87,13 +87,15 @@ pass "smoke_access.sh (login, two-FPO isolation, lots, stock ledger, prices) pas
 
 # P3-3 backups: dump, restore test in a throwaway database, retention, and one real restore of the live database
 export KN_KEEP=2
+VOLS="$(docker volume ls -q | wc -l | tr -d ' ')"
 for n in 1 2 3; do sh "$T/backup.sh" > "$T/backup$n.out" 2>&1 || { cat "$T/backup$n.out"; fail "backup run $n"; }; sleep 1; done
 [ "$(grep -c ' OK ' "$T/backups/backup.log")" = 3 ] || fail "backup.log should have 3 OK runs"
 [ "$(ls "$T"/backups/kisaniti-*.dump | wc -l | tr -d ' ')" = 2 ] || fail "retention should keep exactly 2 backups"
 [ "$(stat -c %a "$T/backups" 2>/dev/null || stat -f %Lp "$T/backups")" = 700 ] || fail "the backups folder is not private"
 B="$(cd "$T" && ls backups/kisaniti-*.dump | sort | tail -1)"
 [ "$(stat -c %a "$T/$B" 2>/dev/null || stat -f %Lp "$T/$B")" = 600 ] || fail "the backup file is not private"
-pass "3 backups each passed a restore test (same tables, revision, row counts); 2 newest kept; files private"
+[ "$(docker volume ls -q | wc -l | tr -d ' ')" = "$VOLS" ] || fail "backups left Docker volumes behind (the restore-test database must be removed with its data)"
+pass "3 backups each passed a restore test (same tables, revision, row counts); 2 newest kept; files private; no volumes left behind"
 U2="after.backup.$(date +%s)"
 dc exec -T backend python -m kisaniti_api.access.cli create-fpo --name "After backup (fictional)" --admin-username "$U2" --synthetic >/dev/null
 DBC() { dc exec -T db sh -c "psql -U \"\$POSTGRES_USER\" -d \"\$POSTGRES_DB\" -tAc \"$1\""; }

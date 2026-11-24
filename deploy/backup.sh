@@ -16,7 +16,7 @@ F="backups/kisaniti-$STAMP.dump"
 LOG=backups/backup.log
 SCRATCH="kn-restore-test-$STAMP"
 fail() { echo "$(date -u +%Y-%m-%dT%H:%M:%SZ) $F FAILED $*" >> "$LOG"; [ -f "$F" ] && mv "$F" "$F.FAILED"; echo "FAIL: $*" >&2; exit 1; }
-cleanup() { docker rm -f "$SCRATCH" >/dev/null 2>&1 || true; }
+cleanup() { docker rm -f -v "$SCRATCH" >/dev/null 2>&1 || true; }  # -v: also its anonymous data volume
 trap cleanup EXIT
 q() { docker compose exec -T db sh -c "psql -v ON_ERROR_STOP=1 -U \"\$POSTGRES_USER\" -d \"\$POSTGRES_DB\" -tAc \"$1\""; }
 # one line per table: name|exact row count (a function, so one query counts every table)
