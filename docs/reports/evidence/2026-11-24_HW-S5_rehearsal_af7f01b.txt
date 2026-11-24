@@ -1,0 +1,12 @@
+rehearsal of af7f01b5aa6184b59df33e04354dcdedd9bcafab from a fresh clone, 2026-11-24T07:18:10Z
+PASS: tools (4 s)
+PASS: broker-setup (2 s)
+PASS: stack-up (64 s)
+PASS: health (0 s)
+PASS: chain (22 s)
+PASS: chain-sabotage-fails (11 s)
+PASS: smoke-api (11 s)
+PASS: smoke-website (10 s)
+PASS: software-node-mqtt (121 s)
+PASS: browser-tests (91 s)
+REHEARSAL PASS for af7f01b5aa6184b59df33e04354dcdedd9bcafab
