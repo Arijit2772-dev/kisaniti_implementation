@@ -24,6 +24,7 @@ from ..access.service import Principal, audit, auth_conn
 from ..approval.routes import _lock, _plan, _revisions, _states
 from .builder import ConsentFacts, ContactFacts, LineFacts, MemberFacts, build_instruction, eligibility
 from .channels import CHANNELS
+from .status import effective
 from .templates import all_templates, latest
 
 router = APIRouter(prefix="/api/v1")
@@ -345,17 +346,35 @@ INS_COLUMNS = (
 )
 
 
+def _events(conn: Connection, p: Principal, attempt_ids: list[str]) -> dict[str, list[str]]:
+    """Provider events per attempt (amendment A1.1); the effective status is the attempt's own status raised by them."""
+    out: dict[str, list[str]] = defaultdict(list)
+    if attempt_ids:
+        for r in conn.execute(
+            text("SELECT attempt_id, status FROM delivery_events WHERE fpo_id = :f AND attempt_id = ANY(:ids)"),
+            {"f": p.fpo_id, "ids": attempt_ids},
+        ):
+            out[r.attempt_id].append(r.status)
+    return out
+
+
 def _deliveries(conn: Connection, p: Principal, ids: list[str]) -> dict[str, dict[str, Any]]:
     rows = conn.execute(
         text(
             "SELECT instruction_id, count(*) AS n, max(attempted_at) AS last_at, "
-            "(array_agg(status ORDER BY attempted_at DESC, id DESC))[1] AS last_status "
+            "(array_agg(status ORDER BY attempted_at DESC, id DESC))[1] AS last_status, "
+            "(array_agg(id ORDER BY attempted_at DESC, id DESC))[1] AS last_id "
             "FROM delivery_attempts WHERE fpo_id = :f AND instruction_id = ANY(:ids) GROUP BY instruction_id"
         ),
         {"f": p.fpo_id, "ids": ids},
     ).all()
+    ev = _events(conn, p, [r.last_id for r in rows])
     return {
-        r.instruction_id: {"state": r.last_status, "attempts": r.n, "last_attempt_at": format_instant(r.last_at)}
+        r.instruction_id: {
+            "state": effective(r.last_status, ev.get(r.last_id, [])),
+            "attempts": r.n,
+            "last_attempt_at": format_instant(r.last_at),
+        }
         for r in rows
     }
 
@@ -604,13 +623,13 @@ def get_instruction(instruction_id: str, request: Request, p: Read) -> dict[str,
     return doc
 
 
-def _attempt_doc(r: Any) -> dict[str, Any]:
+def _attempt_doc(r: Any, events: list[str] | None = None) -> dict[str, Any]:
     return {
         "contract": "messaging.delivery_attempt/v1",
         "id": r.id,
         "instruction_id": r.instruction_id,
         "channel": r.channel,
-        "status": r.status,
+        "status": effective(r.status, events or []),
         "issues": list(r.issues),
         "provider_message_id": r.provider_message_id,
         "simulated": r.simulated,
@@ -639,9 +658,10 @@ def instruction_attempts(instruction_id: str, request: Request, p: Read) -> list
             ),
             {"i": instruction_id, "f": p.fpo_id},
         ).all()
+        ev = _events(conn, p, [r.id for r in rows])
     if not found:
         raise _missing(request, p, "instructions", instruction_id, "instruction")
-    return [_attempt_doc(r) for r in rows]
+    return [_attempt_doc(r, ev.get(r.id)) for r in rows]
 
 
 @router.post("/instructions/{instruction_id}/send", status_code=201)
@@ -686,12 +706,15 @@ def send(
                 )
             last = conn.execute(
                 text(
-                    "SELECT status FROM delivery_attempts WHERE instruction_id = :i AND channel = :c ORDER BY "
+                    "SELECT id, status FROM delivery_attempts WHERE instruction_id = :i AND channel = :c ORDER BY "
                     "attempted_at DESC, id DESC LIMIT 1"
                 ),
                 {"i": instruction_id, "c": body.channel},
             ).first()
-            if last is not None and last.status in SENT_STATUSES:
+            if (
+                last is not None
+                and effective(last.status, _events(conn, p, [last.id]).get(last.id, [])) in SENT_STATUSES
+            ):
                 raise _conflict("ALREADY_SENT", "this instruction was already sent on this channel")
             # the same checks as at preparation, now, plus the two that can only change afterwards
             member = _member(conn, p, row.member_id)

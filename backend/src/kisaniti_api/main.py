@@ -13,6 +13,7 @@ from .devices import routes as device_routes
 from .handover import routes as handover_routes
 from .market import routes as market_routes
 from .messaging import routes as messaging_routes
+from .messaging import webhook as whatsapp_webhook
 from .models import routes as model_routes
 from .org import routes as org_routes
 from .plan import routes as plan_routes
@@ -32,6 +33,7 @@ messaging_routes.install(app)
 sales_routes.install(app)
 handover_routes.install(app)
 model_routes.install(app)
+whatsapp_webhook.install(app)
 
 
 @app.get("/api/v1/meta")
