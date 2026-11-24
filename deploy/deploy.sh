@@ -3,7 +3,7 @@
 # Usage: deploy/deploy.sh <commit>       deploy that commit (its CI run must have passed and published images)
 #        deploy/deploy.sh --previous     roll back to the last commit released OK before the current one
 # KN_SERVER (default kisaniti@172.128.33.73) and KN_SSH_KEY (default ~/.ssh/kisaniti_azure) choose the server.
-# The compose file, Caddyfile and release.sh are taken from that same commit, so a rollback also rolls back config.
+# The compose file, Caddyfile and the release, backup and restore scripts are taken from that same commit, so a rollback also rolls back config.
 # First deploy only: KN_DOMAIN=kisaniti.in deploy/deploy.sh <commit> creates the server's .env.
 set -eu
 cd "$(dirname "$0")/.."
@@ -28,10 +28,10 @@ else
 fi
 
 T="$(mktemp -d)"; trap 'rm -rf "$T"' EXIT
-for f in compose.prod.yaml Caddyfile release.sh; do
+for f in compose.prod.yaml Caddyfile release.sh backup.sh restore.sh; do
   git show "$SHA:deploy/$f" > "$T/$f" 2>/dev/null || fail "commit $SHA has no deploy/$f (older than the deploy files)"
 done
 mv "$T/compose.prod.yaml" "$T/compose.yaml"
 remote "mkdir -p $DIR"
-scp -q -i "$KEY" -o BatchMode=yes "$T/compose.yaml" "$T/Caddyfile" "$T/release.sh" "$SERVER:$DIR/"
+scp -q -i "$KEY" -o BatchMode=yes "$T/compose.yaml" "$T/Caddyfile" "$T/release.sh" "$T/backup.sh" "$T/restore.sh" "$SERVER:$DIR/"
 remote "cd $DIR && KN_DOMAIN='${KN_DOMAIN:-}' sh release.sh $SHA"

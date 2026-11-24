@@ -7,7 +7,7 @@ set -eu
 HERE="$(cd "$(dirname "$0")/.." && pwd)"; cd "$HERE"
 T="$(mktemp -d)"
 SHA="$(git rev-parse HEAD)"
-export KN_DIR="$T" COMPOSE_PROJECT_NAME=kn-prodtest KN_PULL=0 KN_REGISTRY=kn-local
+export KN_DIR="$T" COMPOSE_PROJECT_NAME=kn-prodtest KN_PULL=0 KN_REGISTRY=kn-local KN_CRON=0
 export KN_DOMAIN=localhost KN_APP_HOST=app.localhost KN_MQTT_HOST=mqtt.localhost
 fail() { echo "FAIL: $*" >&2; exit 1; }
 pass() { echo "PASS: $*"; }
@@ -18,7 +18,7 @@ trap cleanup EXIT
 docker build -q -t "kn-local/kisaniti-backend:$SHA" -f backend/Dockerfile . >/dev/null
 docker build -q -t "kn-local/kisaniti-frontend:$SHA" frontend >/dev/null
 pass "images built for $SHA"
-cp deploy/compose.prod.yaml "$T/compose.yaml"; cp deploy/Caddyfile deploy/release.sh "$T/"
+cp deploy/compose.prod.yaml "$T/compose.yaml"; cp deploy/Caddyfile deploy/release.sh deploy/backup.sh deploy/restore.sh "$T/"
 
 # Caddy makes its local CA on first start; the release's own HTTPS check needs it, so the first run trusts nothing
 # and is expected to fail only at that check. Take the CA out, then release again.
@@ -72,6 +72,27 @@ pass "sign-in over HTTPS gives a Secure cookie; a signed-in change from another 
 (export COMPOSE_FILE="$T/compose.yaml" CURL_CA_BUNDLE="$T/root.crt"; SMOKE_SEED_MARKET=1 scripts/smoke_access.sh https://app.localhost) \
   > "$T/smoke.out" 2>&1 || { cat "$T/smoke.out"; fail "smoke_access.sh through Caddy"; }
 pass "smoke_access.sh (login, two-FPO isolation, lots, stock ledger, prices) passes through Caddy over HTTPS"
+
+# P3-3 backups: dump, restore test in a throwaway database, retention, and one real restore of the live database
+export KN_KEEP=2
+for n in 1 2 3; do sh "$T/backup.sh" > "$T/backup$n.out" 2>&1 || { cat "$T/backup$n.out"; fail "backup run $n"; }; sleep 1; done
+[ "$(grep -c ' OK ' "$T/backups/backup.log")" = 3 ] || fail "backup.log should have 3 OK runs"
+[ "$(ls "$T"/backups/kisaniti-*.dump | wc -l | tr -d ' ')" = 2 ] || fail "retention should keep exactly 2 backups"
+[ "$(stat -c %a "$T/backups" 2>/dev/null || stat -f %Lp "$T/backups")" = 700 ] || fail "the backups folder is not private"
+B="$(cd "$T" && ls backups/kisaniti-*.dump | sort | tail -1)"
+[ "$(stat -c %a "$T/$B" 2>/dev/null || stat -f %Lp "$T/$B")" = 600 ] || fail "the backup file is not private"
+pass "3 backups each passed a restore test (same tables, revision, row counts); 2 newest kept; files private"
+U2="after.backup.$(date +%s)"
+dc exec -T backend python -m kisaniti_api.access.cli create-fpo --name "After backup (fictional)" --admin-username "$U2" --synthetic >/dev/null
+DBC() { dc exec -T db sh -c "psql -U \"\$POSTGRES_USER\" -d \"\$POSTGRES_DB\" -tAc \"$1\""; }
+[ "$(DBC "select count(*) from users where username='$U2'")" = 1 ] || fail "the FPO made after the backup is missing"
+if (cd "$T" && KN_YES=1 sh restore.sh backups/not-a-backup.dump) > /dev/null 2>&1; then fail "restore accepted a file that is not a passed backup"; fi
+(cd "$T" && KN_YES=1 sh restore.sh "$B") > "$T/restore.out" 2>&1 || { cat "$T/restore.out"; fail "restore"; }
+[ "$(DBC "select count(*) from users where username='$U2'")" = 0 ] || fail "after the restore, the later FPO is still there"
+[ "$(DBC "select count(*) from users where username='$U'")" = 1 ] || fail "after the restore, the earlier user is missing"
+$C -o /dev/null -H 'Content-Type: application/json' -d "{\"username\":\"$U\",\"password\":\"$TEMP\"}" https://app.localhost/api/v1/auth/login \
+  || fail "sign-in after the restore"
+pass "restore.sh brought the live database back to the backup: later FPO gone, earlier user signs in over HTTPS"
 
 # Rollback guard: a database at a migration the target commit does not know must be refused, and nothing changed
 DBQ() { dc exec -T db sh -c "psql -U \"\$POSTGRES_USER\" -d \"\$POSTGRES_DB\" -tAc \"$1\""; }

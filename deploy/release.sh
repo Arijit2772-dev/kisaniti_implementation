@@ -62,5 +62,10 @@ docker compose exec -T backend python -c "import json,sys,urllib.request as u;sy
   || { record FAILED "API not READY"; fail "the API is not READY"; }
 
 if grep -q '^KN_TAG=' .env; then sed -i.bak "s/^KN_TAG=.*/KN_TAG=$SHA/" .env && rm -f .env.bak; else echo "KN_TAG=$SHA" >> .env; fi
+# nightly backup at 22:00 UTC (03:30 in India), installed once; KN_CRON=0 skips it (local checks)
+if [ "${KN_CRON:-1}" = 1 ]; then
+  ( crontab -l 2>/dev/null | grep -v '# kisaniti-backup$' || true
+    echo "0 22 * * * cd $PWD && sh backup.sh >> backup_cron.out 2>&1 # kisaniti-backup" ) | crontab -
+fi
 record OK
 echo "released $SHA at https://$APP"
