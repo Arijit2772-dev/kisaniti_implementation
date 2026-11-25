@@ -1,0 +1,37 @@
+HW-C first connected run, DHT22 node kn-node-001 (CHAT-56), 25 Nov 2026
+Firmware: env esp32dev_dht22, commit bf71ab9; provisioned with scripts/provision_node.py (host 10.167.130.106, phone hotspot)
+Server: local compose stack, hardware profile (broker TLS 8883 + kn-ingest, registry from the database) on the owner's Mac
+Website: device registered as DEVICE, placement AMBIENT (sensor on the desk, not in grain), crop PADDY, 300 s
+
+--- serial (115200) ---
+[kn] KisanNiti node kn-node-001 firmware kn-fw-1.0.0 origin DEVICE boot_id 7b1d38c9 interval 300s app_ack 1
+[kn] DHT22 found on GPIO 4 (T=24.8C RH=46.9%)
+[kn] sample seq=0 T=24.90C RH=46.50% time=UNSYNCED buffered=1
+[kn] wifi connecting to Some Random dude
+[kn] clock synced 2026-11-25T10:52:40.912Z; back-filled 1 earlier samples
+[kn] mqtt connecting to 10.167.130.106:8883 as kn-node-001-7b1d38c9
+[kn] mqtt connected
+TX kisaniti/v1/devices/kn-node-001/telemetry {"schema":"kisaniti.device_telemetry.v1","device_id":"kn-node-001","boot_id":"7b1d38c9","seq":0,"measured_at":"2026-11-25T10:52:24.070Z","time_quality":"UPTIME_BACKFILLED","uptime_ms":4540,"temperature_c":24.90,"humidity_pct":46.50,"read_status":"OK","sensor_model":"DHT22","firmware_version":"kn-fw-1.0.0","source_origin":"DEVICE","sample_interval_s":300,"resent":false,"dropped_since_boot":0}
+[kn] ack seq=0 buffered=0
+
+--- kn-ingest ---
+2026-11-25 10:52:42,642 INFO kisaniti/v1/devices/kn-node-001/telemetry 394 -> NEW
+
+--- scripts/hw_preflight.sh --device-id kn-node-001 --host 10.167.130.106 ---
+PASS: service db is running healthy
+PASS: service backend is running healthy
+PASS: service broker is running healthy
+PASS: service ingest is running 
+PASS: secrets file is for kn-node-001
+PASS: secrets file uses host 10.167.130.106
+PASS: secrets file holds this broker's CA
+PASS: 10.167.130.106 is an address of this machine (10.167.130.106)
+PASS: broker gives TLS on 8883, certificate valid for 10.167.130.106, 825 days left
+PASS: broker user kn-node-001 exists
+PASS: kn-ingest connected and subscribed
+PASS: kn-ingest has not restarted
+PASS: device kn-node-001 is registered, active and assigned
+PASS: newest reading for kn-node-001 is 0 min old (ACCEPTED), 1 stored
+PREFLIGHT PASS
+
+Not checked here: kn-conformance run (HW-D), outage test, salt check, placement in grain.
