@@ -1,0 +1,41 @@
+HW-E (partial) broker outage, real DHT22 node kn-node-001, 25 Nov 2026 - INCOMPLETE, not a pass
+Broker stopped at 11:57:47Z (docker compose stop broker). The Mac then left the hotspot (new address 172.16.104.90),
+so the node could not reach the broker at 10.167.130.106 after it was restarted; the test was stopped at about 12:03Z.
+Shown: during the outage the node keeps samples (buffered 1 -> 2, dropped=0) and backs off reconnects 2-4-8-16-32-60 s.
+Not shown: reconnect and resend with original times after the broker returns. Database and ingest restarts not run.
+Note: opening the serial port reset the board (new boot_id ab35457a), so the outage began right after boot.
+Serial times are local (IST); node times are UTC.
+
+17:27:28 [kn] KisanNiti node kn-node-001 firmware kn-fw-1.0.0 origin DEVICE boot_id ab35457a interval 300s app_ack 1
+17:27:30 [kn] DHT22 found on GPIO 4 (T=24.5C RH=56.8%)
+17:27:35 [kn] sample seq=0 T=24.50C RH=56.80% time=UNSYNCED buffered=1
+17:27:35 [kn] wifi connecting to Some Random dude
+17:28:28 [kn] health wifi=1 mqtt=0 clock=0 buffered=1 dropped=0 published=0 acked=0
+17:28:34 [kn] clock synced 2026-11-25T11:58:34.354Z; back-filled 1 earlier samples
+17:28:34 [kn] mqtt connecting to 10.167.130.106:8883 as kn-node-001-ab35457a
+17:28:34 [kn] mqtt connect failed (lastError=-3 returnCode=0), retry in 2s
+17:28:38 [kn] mqtt connecting to 10.167.130.106:8883 as kn-node-001-ab35457a
+17:28:38 [kn] mqtt connect failed (lastError=-3 returnCode=0), retry in 4s
+17:28:46 [kn] mqtt connecting to 10.167.130.106:8883 as kn-node-001-ab35457a
+17:28:46 [kn] mqtt connect failed (lastError=-3 returnCode=0), retry in 8s
+17:29:02 [kn] mqtt connecting to 10.167.130.106:8883 as kn-node-001-ab35457a
+17:29:02 [kn] mqtt connect failed (lastError=-3 returnCode=0), retry in 16s
+17:29:28 [kn] health wifi=1 mqtt=0 clock=1 buffered=1 dropped=0 published=0 acked=0
+17:29:34 [kn] mqtt connecting to 10.167.130.106:8883 as kn-node-001-ab35457a
+17:29:34 [kn] mqtt connect failed (lastError=-3 returnCode=0), retry in 32s
+17:30:28 [kn] health wifi=1 mqtt=0 clock=1 buffered=1 dropped=0 published=0 acked=0
+17:30:34 [kn] mqtt connecting to 10.167.130.106:8883 as kn-node-001-ab35457a
+17:30:34 [kn] mqtt connect failed (lastError=-3 returnCode=0), retry in 60s
+17:31:28 [kn] health wifi=1 mqtt=0 clock=1 buffered=1 dropped=0 published=0 acked=0
+17:31:34 [kn] mqtt connecting to 10.167.130.106:8883 as kn-node-001-ab35457a
+17:31:34 [kn] mqtt connect failed (lastError=-3 returnCode=0), retry in 60s
+17:32:28 [kn] health wifi=1 mqtt=0 clock=1 buffered=1 dropped=0 published=0 acked=0
+17:32:32 [kn] sample seq=1 T=24.60C RH=57.00% time=NTP_SYNCED buffered=2
+17:32:34 [kn] mqtt connecting to 10.167.130.106:8883 as kn-node-001-ab35457a
+17:32:34 [kn] mqtt connect failed (lastError=-3 returnCode=0), retry in 60s
+17:33:28 [kn] health wifi=1 mqtt=0 clock=1 buffered=2 dropped=0 published=0 acked=0
+17:33:34 [kn] mqtt connecting to 10.167.130.106:8883 as kn-node-001-ab35457a
+17:33:52 [kn] mqtt connect failed (lastError=-3 returnCode=0), retry in 60s
+
+Also 25 Nov: fictional member and 1 kg lot (1121 paddy) in demo.patiala, linked to kn-node-001 (lot_01M899F896TGHZ4VDSVQKZHMGV);
+assessment job stored category UNKNOWN for kn-node-001 from 11 REAL readings, placement AMBIENT (correct until the sensor is in grain).
