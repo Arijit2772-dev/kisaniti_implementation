@@ -1,0 +1,15 @@
+HW-B bench check, DHT22 / AM2302 module on ESP32 DevKit V1 (CHAT-56), 25 Nov 2026
+Board: ESP32-D0WD-V3 (revision v3.1), 40 MHz crystal, uploaded by auto-reset (no BOOT press)
+Firmware: env esp32dev_dht22, commit bf71ab9, kn-fw-1.0.0
+Wiring: DHT22 + -> 3V3, out -> GPIO 4 (D4), - -> GND; module's own pull-up, no extra resistors
+Settings file: leftover test secrets.h (device kn-prov-test, placeholder Wi-Fi), so Wi-Fi not expected to connect
+Serial output (115200), copied from the owner's terminal:
+
+[kn] KisanNiti node kn-prov-test firmware kn-fw-1.0.0 origin DEVICE boot_id 8d6696a7 interval 300s app_ack 1
+[kn] DHT22 found on GPIO 4 (T=24.3C RH=47.7%)
+[kn] sample seq=0 T=24.30C RH=49.00% time=UNSYNCED buffered=1
+[kn] wifi connecting to Fictional Hotspot
+[kn] wifi connecting to Fictional Hotspot
+
+Result: PASS for sensor reading on the real board (room values plausible).
+Not checked here: accuracy (salt test), Wi-Fi/TLS/ack path, breath response.
