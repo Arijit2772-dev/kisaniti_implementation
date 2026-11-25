@@ -1,0 +1,51 @@
+HW-D publisher conformance, real DHT22 node kn-node-001 (CHAT-56), 25 Nov 2026
+Firmware: env esp32dev_dht22, commit bf71ab9. Node on the phone hotspot; broker on the owner's Mac at 10.167.130.106:8883 (TLS, IP certificate)
+Method: kn-ingest stopped; kisaniti_ingestion.conformance publisher played the backend with the ingestion broker user
+  (same rights as kn-ingest, no ACL change), --origin DEVICE --seconds 960 --withhold 2; node reset just after start for a fresh boot.
+Side effect: the harness acks without storing, so readings seq 0-3 of boot bc6985cd are not in the database.
+An earlier attempt the same day was void: the board was unplugged and the Mac changed network mid-run (no result, not counted).
+
+--- harness result ---
+{"messages": 6, "fail": 0, "warn": 0}
+
+--- serial (115200), whole run ---
+[kn] KisanNiti node kn-node-001 firmware kn-fw-1.0.0 origin DEVICE boot_id bc6985cd interval 300s app_ack 1
+[kn] DHT22 found on GPIO 4 (T=24.0C RH=57.4%)
+[kn] sample seq=0 T=24.00C RH=57.40% time=UNSYNCED buffered=1
+[kn] wifi connecting to Some Random dude
+[kn] clock synced 2026-11-25T11:25:23.073Z; back-filled 1 earlier samples
+[kn] mqtt connecting to 10.167.130.106:8883 as kn-node-001-bc6985cd
+[kn] mqtt connected
+TX kisaniti/v1/devices/kn-node-001/telemetry {"schema":"kisaniti.device_telemetry.v1","device_id":"kn-node-001","boot_id":"bc6985cd","seq":0,"measured_at":"2026-11-25T11:25:18.318Z","time_quality":"UPTIME_BACKFILLED","uptime_ms":4541,"temperature_c":24.00,"humidity_pct":57.40,"read_status":"OK","sensor_model":"DHT22","firmware_version":"kn-fw-1.0.0","source_origin":"DEVICE","sample_interval_s":300,"resent":false,"dropped_since_boot":0}
+[kn] health wifi=1 mqtt=1 clock=1 buffered=1 dropped=0 published=1 acked=0
+TX kisaniti/v1/devices/kn-node-001/telemetry {"schema":"kisaniti.device_telemetry.v1","device_id":"kn-node-001","boot_id":"bc6985cd","seq":0,"measured_at":"2026-11-25T11:25:18.318Z","time_quality":"UPTIME_BACKFILLED","uptime_ms":4541,"temperature_c":24.00,"humidity_pct":57.40,"read_status":"OK","sensor_model":"DHT22","firmware_version":"kn-fw-1.0.0","source_origin":"DEVICE","sample_interval_s":300,"resent":true,"dropped_since_boot":0}
+[kn] health wifi=1 mqtt=1 clock=1 buffered=1 dropped=0 published=2 acked=0
+TX kisaniti/v1/devices/kn-node-001/telemetry {"schema":"kisaniti.device_telemetry.v1","device_id":"kn-node-001","boot_id":"bc6985cd","seq":0,"measured_at":"2026-11-25T11:25:18.318Z","time_quality":"UPTIME_BACKFILLED","uptime_ms":4541,"temperature_c":24.00,"humidity_pct":57.40,"read_status":"OK","sensor_model":"DHT22","firmware_version":"kn-fw-1.0.0","source_origin":"DEVICE","sample_interval_s":300,"resent":true,"dropped_since_boot":0}
+[kn] ack seq=0 buffered=0
+[kn] health wifi=1 mqtt=1 clock=1 buffered=0 dropped=0 published=3 acked=1
+[kn] health wifi=1 mqtt=1 clock=1 buffered=0 dropped=0 published=3 acked=1
+[kn] health wifi=1 mqtt=1 clock=1 buffered=0 dropped=0 published=3 acked=1
+[kn] sample seq=1 T=24.10C RH=57.50% time=NTP_SYNCED buffered=1
+TX kisaniti/v1/devices/kn-node-001/telemetry {"schema":"kisaniti.device_telemetry.v1","device_id":"kn-node-001","boot_id":"bc6985cd","seq":1,"measured_at":"2026-11-25T11:30:20.433Z","time_quality":"NTP_SYNCED","uptime_ms":304543,"temperature_c":24.10,"humidity_pct":57.50,"read_status":"OK","sensor_model":"DHT22","firmware_version":"kn-fw-1.0.0","source_origin":"DEVICE","sample_interval_s":300,"resent":false,"dropped_since_boot":0}
+[kn] ack seq=1 buffered=0
+[kn] health wifi=1 mqtt=1 clock=1 buffered=0 dropped=0 published=4 acked=2
+[kn] health wifi=1 mqtt=1 clock=1 buffered=0 dropped=0 published=4 acked=2
+[kn] health wifi=1 mqtt=1 clock=1 buffered=0 dropped=0 published=4 acked=2
+[kn] health wifi=1 mqtt=1 clock=1 buffered=0 dropped=0 published=4 acked=2
+[kn] health wifi=1 mqtt=1 clock=1 buffered=0 dropped=0 published=4 acked=2
+[kn] sample seq=2 T=24.20C RH=57.70% time=NTP_SYNCED buffered=1
+TX kisaniti/v1/devices/kn-node-001/telemetry {"schema":"kisaniti.device_telemetry.v1","device_id":"kn-node-001","boot_id":"bc6985cd","seq":2,"measured_at":"2026-11-25T11:35:18.327Z","time_quality":"NTP_SYNCED","uptime_ms":604544,"temperature_c":24.20,"humidity_pct":57.70,"read_status":"OK","sensor_model":"DHT22","firmware_version":"kn-fw-1.0.0","source_origin":"DEVICE","sample_interval_s":300,"resent":false,"dropped_since_boot":0}
+[kn] ack seq=2 buffered=0
+[kn] health wifi=1 mqtt=1 clock=1 buffered=0 dropped=0 published=5 acked=3
+[kn] health wifi=1 mqtt=1 clock=1 buffered=0 dropped=0 published=5 acked=3
+[kn] health wifi=1 mqtt=1 clock=1 buffered=0 dropped=0 published=5 acked=3
+[kn] health wifi=1 mqtt=1 clock=1 buffered=0 dropped=0 published=5 acked=3
+[kn] health wifi=1 mqtt=1 clock=1 buffered=0 dropped=0 published=5 acked=3
+[kn] sample seq=3 T=24.30C RH=56.90% time=NTP_SYNCED buffered=1
+TX kisaniti/v1/devices/kn-node-001/telemetry {"schema":"kisaniti.device_telemetry.v1","device_id":"kn-node-001","boot_id":"bc6985cd","seq":3,"measured_at":"2026-11-25T11:40:18.326Z","time_quality":"NTP_SYNCED","uptime_ms":904543,"temperature_c":24.30,"humidity_pct":56.90,"read_status":"OK","sensor_model":"DHT22","firmware_version":"kn-fw-1.0.0","source_origin":"DEVICE","sample_interval_s":300,"resent":false,"dropped_since_boot":0}
+[kn] ack seq=3 buffered=0
+[kn] health wifi=1 mqtt=1 clock=1 buffered=0 dropped=0 published=6 acked=4
+
+Reading: the first two deliveries of seq 0 were deliberately not acked; the node resent (published=1,2 acked=0) and
+deleted seq 0 only after the ack (published=3 acked=1), as contract L3B v1 requires. 4 samples in 16 min, 0 read failures.
+Also confirms BUG-009 fix on the real chip: the ESP32 accepted the broker certificate for an IP address over TLS.
