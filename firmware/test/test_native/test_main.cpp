@@ -3,6 +3,7 @@
 #include <string.h>
 #include "sht3x_codec.h"
 #include "dht11_codec.h"
+#include "dht22_codec.h"
 #include "sample_buffer.h"
 #include "telemetry_json.h"
 
@@ -180,11 +181,53 @@ static void test_dht11_failures_are_not_values() {
   TEST_ASSERT_FLOAT_WITHIN(0.01, 99, rh);
 }
 
+static void test_dht22_decode_ok() {
+  // 65.2 %RH = 0x028C, 35.1 C = 0x015F; checksum = 0x02 + 0x8C + 0x01 + 0x5F = 0xEE (datasheet example)
+  const uint8_t f[5] = {0x02, 0x8C, 0x01, 0x5F, 0xEE};
+  float t, rh;
+  TEST_ASSERT_EQUAL(ReadStatus::OK, dht22_decode(f, &t, &rh));
+  TEST_ASSERT_FLOAT_WITHIN(0.01, 35.1, t);
+  TEST_ASSERT_FLOAT_WITHIN(0.01, 65.2, rh);
+}
+
+static void test_dht22_negative_temperature() {
+  const uint8_t f[5] = {0x01, 0xF4, 0x80, 0x65, (uint8_t)(0x01 + 0xF4 + 0x80 + 0x65)};  // 50.0 %RH, -10.1 C
+  float t, rh;
+  TEST_ASSERT_EQUAL(ReadStatus::OK, dht22_decode(f, &t, &rh));
+  TEST_ASSERT_FLOAT_WITHIN(0.01, -10.1, t);
+  TEST_ASSERT_FLOAT_WITHIN(0.01, 50.0, rh);
+}
+
+static void test_dht22_failures_are_not_values() {
+  float t = 99, rh = 99;
+  const uint8_t bad_sum[5] = {0x02, 0x8C, 0x01, 0x5F, 0xEF};
+  TEST_ASSERT_EQUAL(ReadStatus::CRC_ERROR, dht22_decode(bad_sum, &t, &rh));
+  const uint8_t zeros[5] = {0, 0, 0, 0, 0};
+  TEST_ASSERT_EQUAL(ReadStatus::CRC_ERROR, dht22_decode(zeros, &t, &rh));
+  const uint8_t over_rh[5] = {0x03, 0xF2, 0x00, 0xC8, (uint8_t)(0x03 + 0xF2 + 0x00 + 0xC8)};  // 101.0 %RH
+  TEST_ASSERT_EQUAL(ReadStatus::CRC_ERROR, dht22_decode(over_rh, &t, &rh));
+  const uint8_t hot[5] = {0x01, 0xF4, 0x03, 0x84, (uint8_t)(0x01 + 0xF4 + 0x03 + 0x84)};  // 90.0 C
+  TEST_ASSERT_EQUAL(ReadStatus::CRC_ERROR, dht22_decode(hot, &t, &rh));
+  TEST_ASSERT_FLOAT_WITHIN(0.01, 99, t);  // outputs untouched on failure
+  TEST_ASSERT_FLOAT_WITHIN(0.01, 99, rh);
+}
+
+static void test_dht11_frame_is_not_read_as_dht22() {
+  // A DHT11 frame (55 %RH, 27.3 C) through the DHT22 decoder would give 1408 %RH: rejected, not a value.
+  const uint8_t f[5] = {55, 0, 27, 3, 85};
+  float t = 99, rh = 99;
+  TEST_ASSERT_EQUAL(ReadStatus::CRC_ERROR, dht22_decode(f, &t, &rh));
+}
+
 int main() {
   UNITY_BEGIN();
   RUN_TEST(test_dht11_decode_ok);
   RUN_TEST(test_dht11_negative_temperature);
   RUN_TEST(test_dht11_failures_are_not_values);
+  RUN_TEST(test_dht22_decode_ok);
+  RUN_TEST(test_dht22_negative_temperature);
+  RUN_TEST(test_dht22_failures_are_not_values);
+  RUN_TEST(test_dht11_frame_is_not_read_as_dht22);
   RUN_TEST(test_crc_datasheet_example);
   RUN_TEST(test_decode_ok_and_conversion);
   RUN_TEST(test_decode_extremes);

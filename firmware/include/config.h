@@ -11,6 +11,10 @@
 // Stop-gap sensor (env esp32dev_dht11): DHT11 module, DATA on GPIO 4, VCC on 3V3.
 #define KN_SENSOR_MODEL "DHT11"
 #define KN_DHT_PIN 4
+#elif KN_SENSOR_DHT22
+// DHT22 / AM2302 module (env esp32dev_dht22, CHAT-56): DATA on GPIO 4, VCC on 3V3.
+#define KN_SENSOR_MODEL "DHT22"
+#define KN_DHT_PIN 4
 #else
 #define KN_SENSOR_MODEL "SHT30"
 #endif

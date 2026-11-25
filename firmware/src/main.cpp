@@ -13,8 +13,25 @@
 #include "config.h"
 #include "sht3x_codec.h"
 #include "dht11_codec.h"
+#include "dht22_codec.h"
 #include "sample_buffer.h"
 #include "telemetry_json.h"
+
+// DHT family (single-wire): DHT11 stop-gap or DHT22 (CHAT-56). Same driver, per-model timing and decoding.
+#if KN_SENSOR_DHT11 && KN_SENSOR_DHT22
+#error "choose one sensor: KN_SENSOR_DHT11 or KN_SENSOR_DHT22"
+#endif
+#if KN_SENSOR_DHT22
+#define KN_SENSOR_DHT 1
+#define KN_DHT_START_LOW_MS kn::DHT22_START_LOW_MS
+#define KN_DHT_MIN_INTERVAL_MS kn::DHT22_MIN_INTERVAL_MS
+#define KN_DHT_DECODE kn::dht22_decode
+#elif KN_SENSOR_DHT11
+#define KN_SENSOR_DHT 1
+#define KN_DHT_START_LOW_MS kn::DHT11_START_LOW_MS
+#define KN_DHT_MIN_INTERVAL_MS kn::DHT11_MIN_INTERVAL_MS
+#define KN_DHT_DECODE kn::dht11_decode
+#endif
 
 #if KN_MQTT_TLS
 #include <WiFiClientSecure.h>
@@ -83,8 +100,8 @@ static kn::ReadStatus sht3x_measure_once(float *t, float *rh) {
   return st;
 }
 
-#if KN_SENSOR_DHT11
-// ---------- DHT11 stop-gap (single-wire, bit-banged; frame decoding in dht11_codec.h) ----------
+#if KN_SENSOR_DHT
+// ---------- DHT11 / DHT22 (single-wire, bit-banged; frame decoding in dht11_codec.h / dht22_codec.h) ----------
 
 static portMUX_TYPE dht_mux = portMUX_INITIALIZER_UNLOCKED;
 
@@ -96,11 +113,11 @@ static bool dht_wait_level(int level, uint32_t timeout_us) {
   return true;
 }
 
-static kn::ReadStatus dht11_measure_once(float *t, float *rh) {
+static kn::ReadStatus dht_measure_once(float *t, float *rh) {
   uint8_t f[5] = {0, 0, 0, 0, 0};
   pinMode(KN_DHT_PIN, OUTPUT);
   digitalWrite(KN_DHT_PIN, LOW);
-  delay(kn::DHT11_START_LOW_MS);
+  delay(KN_DHT_START_LOW_MS);
   kn::ReadStatus st = kn::ReadStatus::OK;
   portENTER_CRITICAL(&dht_mux);  // the 40 bits take ~4 ms; keep interrupts from skewing pulse widths
   digitalWrite(KN_DHT_PIN, HIGH);
@@ -121,14 +138,14 @@ static kn::ReadStatus dht11_measure_once(float *t, float *rh) {
   }
   portEXIT_CRITICAL(&dht_mux);
   if (st != kn::ReadStatus::OK) return st;
-  return kn::dht11_decode(f, t, rh);
+  return KN_DHT_DECODE(f, t, rh);
 }
 
 static kn::ReadStatus sensor_measure(float *t, float *rh) {
-  kn::ReadStatus st = dht11_measure_once(t, rh);
+  kn::ReadStatus st = dht_measure_once(t, rh);
   if (st != kn::ReadStatus::OK) {
-    delay(kn::DHT11_MIN_INTERVAL_MS);  // DHT11 needs >= 1 s between reads
-    st = dht11_measure_once(t, rh);    // one retry
+    delay(KN_DHT_MIN_INTERVAL_MS);  // DHT11 needs >= 1 s, DHT22 >= 2 s between reads
+    st = dht_measure_once(t, rh);    // one retry
   }
   return st;
 }
@@ -301,19 +318,19 @@ void setup() {
                 KN_DEVICE_ID, KN_FIRMWARE_VERSION, KN_SOURCE_ORIGIN, device.boot_id,
                 (unsigned long)KN_SAMPLE_INTERVAL_S, KN_APP_ACK);
 
-#if KN_SENSOR_DHT11
+#if KN_SENSOR_DHT
   pinMode(KN_DHT_PIN, INPUT_PULLUP);
-  delay(kn::DHT11_MIN_INTERVAL_MS);  // DHT11 is not readable for ~1 s after power-up
+  delay(KN_DHT_MIN_INTERVAL_MS);  // the sensor is not readable for 1-2 s after power-up
   {
     float t0 = 0, rh0 = 0;
-    kn::ReadStatus st0 = dht11_measure_once(&t0, &rh0);
+    kn::ReadStatus st0 = dht_measure_once(&t0, &rh0);
     if (st0 == kn::ReadStatus::OK) {
-      Serial.printf("[kn] DHT11 found on GPIO %d (T=%.1fC RH=%.1f%%)\n", KN_DHT_PIN, t0, rh0);
+      Serial.printf("[kn] %s found on GPIO %d (T=%.1fC RH=%.1f%%)\n", KN_SENSOR_MODEL, KN_DHT_PIN, t0, rh0);
     } else {
-      Serial.printf("[kn] DHT11 not answering on GPIO %d (%s): check wiring\n", KN_DHT_PIN,
+      Serial.printf("[kn] %s not answering on GPIO %d (%s): check wiring\n", KN_SENSOR_MODEL, KN_DHT_PIN,
                     kn::read_status_name(st0));
     }
-    delay(kn::DHT11_MIN_INTERVAL_MS);
+    delay(KN_DHT_MIN_INTERVAL_MS);
   }
 #else
   Wire.begin(KN_I2C_SDA, KN_I2C_SCL);
