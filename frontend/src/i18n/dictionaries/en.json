@@ -321,6 +321,8 @@
     },
     "interval": "Seconds between readings",
     "apply": "Save placement",
+    "saving": "Saving…",
+    "placedOk": "Saved: {placement} · {crop} · every {interval} s.",
     "current": "Placed",
     "none": "Not placed yet",
     "lastReading": "Last reading",

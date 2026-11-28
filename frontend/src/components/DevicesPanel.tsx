@@ -89,6 +89,9 @@ export function DevicesPanel({
   const [message, setMessage] = useState<FlashMessage | null>(null);
   const [reg, setReg] = useState({ device_id: "", source_origin: "SIMULATOR" });
   const [asg, setAsg] = useState<Record<string, { placement: string; crop: string; interval: string }>>({});
+  // BUG-012: one save per click (the button waits for the answer) and a visible confirmation of what was saved
+  const [saving, setSaving] = useState<string | null>(null);
+  const [placed, setPlaced] = useState<Record<string, string>>({});
   const origins: Text = t.origins;
   const placements: Text = t.placements;
   const crops: Text = t.crops;
@@ -134,17 +137,36 @@ export function DevicesPanel({
     } else fail(r.problem);
   }
 
-  async function assign(id: string, e: React.FormEvent) {
+  async function assign(id: string, a: { placement: string; crop: string; interval: string }, e: React.FormEvent) {
     e.preventDefault();
+    if (saving) return;
+    setSaving(id);
     setMessage(null);
-    const a = asg[id] ?? { placement: "IN_GRAIN", crop: "PADDY", interval: "300" };
-    const r = await api(`/devices/${id}/assignments`, {
-      method: "POST",
-      csrf,
-      body: { placement: a.placement, crop: a.crop, sample_interval_s: Number(a.interval) },
-    });
-    if (r.ok) await reload();
-    else fail(r.problem);
+    setPlaced((p) => ({ ...p, [id]: "" }));
+    try {
+      const r = await api(`/devices/${id}/assignments`, {
+        method: "POST",
+        csrf,
+        body: { placement: a.placement, crop: a.crop, sample_interval_s: Number(a.interval) },
+      });
+      if (r.ok) {
+        setAsg((m) => {
+          const rest = { ...m };
+          delete rest[id];
+          return rest;
+        });
+        setPlaced((p) => ({
+          ...p,
+          [id]: t.placedOk
+            .replace("{placement}", placements[a.placement] ?? a.placement)
+            .replace("{crop}", crops[a.crop] ?? a.crop)
+            .replace("{interval}", a.interval),
+        }));
+        await reload();
+      } else fail(r.problem);
+    } finally {
+      setSaving(null);
+    }
   }
 
   async function deactivate(id: string) {
@@ -161,7 +183,13 @@ export function DevicesPanel({
       {devices.map((d) => {
         const det = detail[d.device_id];
         const a = det?.assessment ?? null;
-        const form = asg[d.device_id] ?? { placement: "IN_GRAIN", crop: "PADDY", interval: "300" };
+        // the form starts from the current placement, so saving without a change never moves the sensor (BUG-012)
+        const cur = d.current_assignment;
+        const form = asg[d.device_id] ?? {
+          placement: cur?.placement ?? "IN_GRAIN",
+          crop: cur?.crop ?? "PADDY",
+          interval: String(cur?.sample_interval_s ?? 300),
+        };
         const synthetic = d.source_origin !== "DEVICE";
         return (
           <section key={d.device_id} className="card">
@@ -232,7 +260,7 @@ export function DevicesPanel({
             {det && det.readings.length === 0 && <p className="muted">{t.noReadings}</p>}
             {det && <Trend readings={det.readings} now={det.fetchedAt} label={t.trend} limits={t.limits} />}
             {canWrite && d.active && (
-              <form className="form" noValidate onSubmit={(e) => void assign(d.device_id, e)}>
+              <form className="form" noValidate onSubmit={(e) => void assign(d.device_id, form, e)}>
                 <strong>{t.assign}</strong>
                 <label>
                   {t.placement}
@@ -258,9 +286,10 @@ export function DevicesPanel({
                   {t.interval}
                   <input inputMode="numeric" value={form.interval} onChange={(e) => setAsg({ ...asg, [d.device_id]: { ...form, interval: e.target.value.replace(/\D/g, "") } })} />
                 </label>
-                <button type="submit" className="btn" disabled={!form.interval}>
-                  {t.apply}
+                <button type="submit" className="btn" disabled={saving !== null || !form.interval}>
+                  {saving === d.device_id ? t.saving : t.apply}
                 </button>
+                {placed[d.device_id] && <p role="status">{placed[d.device_id]}</p>}
               </form>
             )}
             {canManage && d.active && (

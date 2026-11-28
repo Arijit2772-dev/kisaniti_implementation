@@ -321,6 +321,8 @@
     },
     "interval": "ਪੜ੍ਹਤਾਂ ਵਿਚਕਾਰ ਸਕਿੰਟ",
     "apply": "ਥਾਂ ਸੰਭਾਲੋ",
+    "saving": "ਸੰਭਾਲਿਆ ਜਾ ਰਿਹਾ ਹੈ…",
+    "placedOk": "ਸੰਭਾਲ ਲਿਆ: {placement} · {crop} · ਹਰ {interval} ਸਕਿੰਟ।",
     "current": "ਰੱਖਿਆ",
     "none": "ਹਾਲੇ ਕਿਤੇ ਨਹੀਂ ਰੱਖਿਆ",
     "lastReading": "ਆਖ਼ਰੀ ਪੜ੍ਹਤ",

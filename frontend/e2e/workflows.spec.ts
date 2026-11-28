@@ -85,3 +85,32 @@ test("the new password works for the next sign-in", async ({ page }) => {
   await signIn(page, username, NEW_PASSWORD);
   await expect(page.getByRole("heading", { level: 1 })).toContainText("Welcome");
 });
+
+test("placing a sensor saves once per click, says what was saved, and the form keeps the current placement (BUG-012)", async ({ page }) => {
+  await firstSignIn(page, "place");
+  const id = `kn-e2e-${Date.now() % 10000000}`;
+  await page.goto("/en/devices");
+  await page.getByLabel(t.devices.deviceId).fill(id);
+  await page.getByRole("button", { name: t.devices.submit }).click();
+  const card = page.locator("section.card").filter({ has: page.getByRole("heading", { name: id }) });
+  await expect(card).toBeVisible();
+
+  let posts = 0;
+  page.on("request", (r) => {
+    if (r.method() === "POST" && r.url().endsWith(`/devices/${id}/assignments`)) posts += 1;
+  });
+  await card.getByLabel(t.devices.placement).selectOption("AMBIENT");
+  await card.getByRole("button", { name: t.devices.apply }).dblclick();
+  const saved = t.devices.placedOk
+    .replace("{placement}", t.devices.placements.AMBIENT)
+    .replace("{crop}", t.devices.crops.PADDY)
+    .replace("{interval}", "300");
+  await expect(card.getByRole("status")).toHaveText(saved);
+  expect(posts).toBe(1);
+  await expect(card).toContainText(t.devices.placements.AMBIENT);
+
+  await page.reload();
+  const again = page.locator("section.card").filter({ has: page.getByRole("heading", { name: id }) });
+  await expect(again.getByLabel(t.devices.placement)).toHaveValue("AMBIENT");
+  await expectNoSidewaysScroll(page);
+});
