@@ -32,6 +32,17 @@ for f in compose.prod.yaml Caddyfile release.sh backup.sh restore.sh; do
   git show "$SHA:deploy/$f" > "$T/$f" 2>/dev/null || fail "commit $SHA has no deploy/$f (older than the deploy files)"
 done
 mv "$T/compose.prod.yaml" "$T/compose.yaml"
-remote "mkdir -p $DIR"
-scp -q -i "$KEY" -o BatchMode=yes "$T/compose.yaml" "$T/Caddyfile" "$T/release.sh" "$T/backup.sh" "$T/restore.sh" "$SERVER:$DIR/"
+# P3-2 broker files, from the same commit; older commits have no broker and copy none
+EXTRA=""
+for f in deploy/broker_user.sh deploy/broker_cert.sh; do
+  git show "$SHA:$f" > "$T/$(basename "$f")" 2>/dev/null && EXTRA="$EXTRA $T/$(basename "$f")"
+done
+mkdir -p "$T/broker"
+for f in deploy/broker/mosquitto.conf deploy/broker/brokercert.sh backend/ingestion/broker/acl; do
+  git show "$SHA:$f" > "$T/broker/$(basename "$f")" 2>/dev/null || rm -f "$T/broker/$(basename "$f")"
+done
+remote "mkdir -p $DIR/broker && chmod 700 $DIR/broker"
+# shellcheck disable=SC2086
+scp -q -i "$KEY" -o BatchMode=yes "$T/compose.yaml" "$T/Caddyfile" "$T/release.sh" "$T/backup.sh" "$T/restore.sh" $EXTRA "$SERVER:$DIR/"
+if [ -n "$(ls "$T/broker")" ]; then scp -q -i "$KEY" -o BatchMode=yes "$T"/broker/* "$SERVER:$DIR/broker/"; fi
 remote "cd $DIR && KN_DOMAIN='${KN_DOMAIN:-}' sh release.sh $SHA"

@@ -157,3 +157,52 @@ def test_a_failed_step_does_not_show_its_command_line() -> None:
     with pytest.raises(pn.ProvisionError) as e:
         pn.run_step("the step", [sys.executable, "-c", code, "the-secret-argument"])
     assert "the-secret-argument" not in str(e.value)
+
+
+CA2 = "-----BEGIN CERTIFICATE-----\nWFla\n-----END CERTIFICATE-----\n"
+
+
+def test_a_bundle_of_certificates_reaches_the_firmware_without_comments(tmp_path: Path) -> None:
+    """P3-2: the public broker's trust anchors are two roots; # lines in the file are dropped."""
+    header = pn.render_secrets_h(
+        ssid="s",
+        wifi_pass="password",
+        host="mqtt.example.in",
+        port=8883,
+        device_id="kn-node-001",
+        mqtt_pass="ab12",
+        ca_pem="# two roots\n" + CA + "\n# second\n" + CA2,
+    )
+    assert compiled_values(tmp_path, header)[-1] == CA + CA2
+
+
+@pytest.mark.parametrize(
+    "pem",
+    [
+        CA + "junk between\n" + CA2,
+        CA + "-----BEGIN CERTIFICATE-----\nWFla\n",  # second certificate not closed
+        "-----BEGIN CERTIFICATE-----\n-----END CERTIFICATE-----\n",  # empty body
+        "-----BEGIN CERTIFICATE-----\nnot base64!\n-----END CERTIFICATE-----\n",
+        "# only a comment\n",
+    ],
+)
+def test_a_malformed_bundle_is_refused(pem: str) -> None:
+    with pytest.raises(pn.ProvisionError):
+        pn.pem_bundle_lines(pem)
+
+
+def test_the_public_broker_roots_file_is_the_two_isrg_roots() -> None:
+    lines = pn.pem_bundle_lines(pn.PUBLIC_ROOTS.read_text(encoding="ascii"))
+    assert lines.count("-----BEGIN CERTIFICATE-----") == 2
+    text = pn.PUBLIC_ROOTS.read_text(encoding="ascii")
+    assert "96BCEC06264976F37460779ACF28C5A7CFE8A3C0AAE11A8FFCEE05C0BDDF08C6" in text  # ISRG Root X1
+    assert "69729B8E15A86EFC177A57AFB7171DFC64ADD28C2FCA8CF1507E34453CCB1470" in text  # ISRG Root X2
+
+
+@pytest.mark.parametrize("server", ["", "host-only", "user@", "a b@host", "user@host;rm"])
+def test_a_bad_server_target_is_refused_before_anything_runs(server: str, tmp_path: Path) -> None:
+    with pytest.raises(pn.ProvisionError):
+        pn.provision_public(
+            server, tmp_path / "key", "mqtt.example.in", "kn-node-001", "s", "password", tmp_path / "s.h"
+        )
+    assert not (tmp_path / "s.h").exists()

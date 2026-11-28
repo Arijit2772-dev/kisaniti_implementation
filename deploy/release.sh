@@ -29,6 +29,21 @@ if [ ! -f .env ]; then
   echo "created .env for $KN_DOMAIN"
 fi
 val() { sed -n "s/^$1=//p" .env | tail -1; }
+
+# P3-2 storage broker, when this commit's stack has one: its users exist only on this server. The ingestion worker's
+# password is made once here and never printed. broker/ is private to this account; inside it, auth/passwd (hashes)
+# and ingestion.password are readable by the containers' own users (mosquitto 1883, ingest 10001) through mounts.
+if grep -q '^  broker:' compose.yaml; then
+  mkdir -p broker/auth && chmod 700 broker && chmod 755 broker/auth
+  if [ ! -s broker/ingestion.password ]; then
+    ( umask 077; od -An -N24 -tx1 /dev/urandom | tr -d ' \n' > broker/ingestion.password )
+    docker run --rm -u "$(id -u):$(id -g)" -v "$PWD/broker/auth:/a" eclipse-mosquitto:2.0.20 \
+      mosquitto_passwd -b -c /a/passwd ingestion "$(cat broker/ingestion.password)" >/dev/null \
+      || { record FAILED "broker users"; fail "could not create the broker's ingestion user"; }
+    echo "created the broker's ingestion user"
+  fi
+  chmod 644 broker/ingestion.password broker/auth/passwd
+fi
 APP="$(val KN_APP_HOST)"
 export KN_TAG="$SHA"   # the shell value wins over .env; .env is updated only after the release is healthy
 
@@ -64,11 +79,28 @@ docker compose exec -T backend python -c "import json,sys,urllib.request as u;sy
 RUNNING="$(docker compose exec -T backend python -c "import json,urllib.request as u;print(json.load(u.urlopen('http://127.0.0.1:8000/api/v1/meta'))['build_commit'])")"
 [ "$RUNNING" = "$SHA" ] || { record FAILED "running build $RUNNING"; fail "the API reports build $RUNNING, not $SHA"; }
 
+# P3-2: the worker must be connected to the broker through TLS and subscribed before the release counts
+if grep -q '^  broker:' compose.yaml; then
+  ok=0
+  for i in $(seq 1 30); do
+    docker compose logs ingest 2>/dev/null | grep -q "subscribing kisaniti/v1/devices/+/telemetry" && { ok=1; break; }
+    sleep 2
+  done
+  [ "$ok" = 1 ] || { docker compose logs --tail 20 ingest broker; record FAILED "ingest not subscribed"; fail "kn-ingest did not subscribe through the broker"; }
+  # the certificate copy the broker serves now; broker_cert.sh restarts it when brokercert copies a renewal
+  docker compose restart broker >/dev/null && docker compose exec -T brokercert cat /tls/serial > broker/served.serial
+fi
+
 if grep -q '^KN_TAG=' .env; then sed -i.bak "s/^KN_TAG=.*/KN_TAG=$SHA/" .env && rm -f .env.bak; else echo "KN_TAG=$SHA" >> .env; fi
 # nightly backup at 22:00 UTC (03:30 in India), installed once; KN_CRON=0 skips it (local checks)
 if [ "${KN_CRON:-1}" = 1 ]; then
   ( crontab -l 2>/dev/null | grep -v '# kisaniti-backup$' || true
     echo "0 22 * * * cd $PWD && sh backup.sh >> backup_cron.out 2>&1 # kisaniti-backup" ) | crontab -
+  # P3-2: daily at 21:30 UTC, restart the broker only if a renewed certificate was copied after it started
+  if grep -q '^  broker:' compose.yaml; then
+    ( crontab -l 2>/dev/null | grep -v '# kisaniti-broker-cert$' || true
+      echo "30 21 * * * cd $PWD && sh broker_cert.sh >> broker_cert.out 2>&1 # kisaniti-broker-cert" ) | crontab -
+  fi
 fi
 record OK
 echo "released $SHA at https://$APP"

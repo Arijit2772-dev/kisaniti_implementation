@@ -41,3 +41,5 @@ experiments/**/artifacts/
 experiments/EXP-03_paper_v1/
 chain_report.json
 chain_sabotaged.json
+# public trust anchors for the public broker (P3-2): certificates only, no keys
+!firmware/certs/public_broker_roots.pem

@@ -14,7 +14,7 @@
 	reverse_proxy frontend:3000
 }
 
-# Only so this name gets a public certificate, which the storage broker uses on port 8883 (P3-2)
+# Only so this name gets a public certificate, which the storage broker serves on port 8883 (P3-2, brokercert)
 {$KN_MQTT_HOST} {
 	respond "KisanNiti storage broker: MQTT over TLS on port 8883" 200
 }

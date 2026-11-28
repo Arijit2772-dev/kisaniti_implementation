@@ -1,7 +1,7 @@
 # Production stack on the server (CHAT-54). deploy/release.sh copies this file to ~/kisaniti/compose.yaml.
 # Images come from GitHub's container registry, built by CI for one exact commit (KN_TAG); nothing is built here.
-# Only Caddy is reachable from outside (80/443). PostgreSQL, the API and the website have no published ports.
-# The storage broker (8883) is added in P3-2, once mqtt.<domain> has its public certificate.
+# Only Caddy (80/443) and the storage broker (8883, MQTT over TLS, P3-2) are reachable from outside. PostgreSQL, the
+# API, the website and the ingestion worker have no published ports.
 # All values come from ~/kisaniti/.env on the server, which is never committed. Missing values stop compose at once.
 name: kisaniti
 
@@ -102,7 +102,80 @@ services:
       frontend:
         condition: service_healthy
 
+  # ---- storage broker (P3-2): MQTT over TLS on 8883 with the public certificate of mqtt.<domain> ----
+  brokercert:
+    # copies Caddy's certificate for the broker's host name into mqtt_tls, readable by the broker only; see the script
+    image: caddy:2.10.2-alpine
+    restart: unless-stopped
+    logging: *logging
+    entrypoint: ["sh", "/brokercert.sh"]
+    environment:
+      KN_MQTT_HOST: ${KN_MQTT_HOST:?}
+    volumes:
+      - ./broker/brokercert.sh:/brokercert.sh:ro
+      - caddy_data:/data:ro
+      - mqtt_tls:/tls
+    healthcheck:
+      test: ["CMD", "test", "-s", "/tls/key.pem"]
+      interval: 5s
+      timeout: 3s
+      retries: 60
+    depends_on:
+      caddy:
+        condition: service_started
+
+  broker:
+    image: eclipse-mosquitto:2.0.20
+    restart: unless-stopped
+    logging: *logging
+    ports:
+      - "8883:8883"
+    networks:
+      default:
+        # inside the stack the worker reaches the broker by its public name, so the certificate's name matches
+        aliases: ["${KN_MQTT_HOST:?}"]
+    volumes:
+      - ./broker/mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
+      - ./broker/acl:/mosquitto/config/acl:ro
+      - ./broker/auth:/mosquitto/auth:ro      # passwd: server only, made by release.sh and broker_user.sh
+      - mqtt_tls:/mosquitto/tls:ro
+      - mqttdata:/mosquitto/data
+    healthcheck:
+      test: ["CMD-SHELL", "nc -z localhost 8883"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    depends_on:
+      brokercert:
+        condition: service_healthy
+
+  ingest:
+    # kn-ingest (contract L3B v1): stores each reading, then acknowledges it; devices come from the database
+    image: ${KN_REGISTRY:?}/kisaniti-ingest:${KN_TAG:?}
+    restart: unless-stopped
+    logging: *logging
+    # set -e: stop with an error if the password file cannot be read, rather than connect without a password
+    command: ["sh", "-c", "set -e; KN_MQTT_PASSWORD=\"$$(cat /run/kn/ingestion.password)\"; export KN_MQTT_PASSWORD; exec python -m kisaniti_ingestion.worker"]
+    environment:
+      KN_REGISTRY: db
+      KN_STORE: postgresql://${POSTGRES_USER:?}:${POSTGRES_PASSWORD:?}@db:5432/${POSTGRES_DB:?}
+      KN_MQTT_HOST: ${KN_MQTT_HOST:?}
+      KN_MQTT_PORT: "8883"
+      # public roots on the server; the local check points this at Caddy's local CA (KN_INGEST_CA in .env)
+      KN_MQTT_TLS_CA: ${KN_INGEST_CA:-/etc/ssl/certs/ca-certificates.crt}
+      KN_MQTT_USER: ingestion
+    volumes:
+      - ./broker/ingestion.password:/run/kn/ingestion.password:ro
+      - mqtt_tls:/run/kn/tls:ro
+    depends_on:
+      broker:
+        condition: service_healthy
+      backend:   # its start applies the database migrations
+        condition: service_healthy
+
 volumes:
   pgdata:
   caddy_data:
   caddy_config:
+  mqtt_tls:
+  mqttdata:

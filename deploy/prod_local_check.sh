@@ -2,23 +2,30 @@
 # P3-1 check: the production stack exactly as the server runs it, on this machine with fictional data.
 # Builds the three images locally, releases them with deploy/release.sh into a temporary folder laid out like the
 # server's, with host names under .localhost (Caddy then uses its own local CA instead of Let's Encrypt).
-# Needs ports 80 and 443 free. Prints PASS or FAIL per check; removes the test stack and its data at the end.
+# Needs ports 80, 443 and 8883 free. Prints PASS or FAIL per check; removes the test stack and its data at the end.
 set -eu
 HERE="$(cd "$(dirname "$0")/.." && pwd)"; cd "$HERE"
 T="$(mktemp -d)"
 SHA="$(git rev-parse HEAD)"
 export KN_DIR="$T" COMPOSE_PROJECT_NAME=kn-prodtest KN_PULL=0 KN_REGISTRY=kn-local KN_CRON=0
 export KN_DOMAIN=localhost KN_APP_HOST=app.localhost KN_MQTT_HOST=mqtt.localhost
+export KN_INGEST_CA=/run/kn/tls/local-root.crt   # the worker trusts Caddy's local CA here; public roots on the server
 fail() { echo "FAIL: $*" >&2; exit 1; }
 pass() { echo "PASS: $*"; }
 dc() { (cd "$T" && docker compose "$@"); }
 cleanup() { dc down -v >/dev/null 2>&1 || true; rm -rf "$T"; }
 trap cleanup EXIT
+for port in 80 443 8883; do
+  if nc -z 127.0.0.1 "$port" 2>/dev/null; then fail "port $port is in use (stop the local stack: docker compose --profile hardware down)"; fi
+done
 
 docker build -q --build-arg KN_BUILD_COMMIT="$SHA" -t "kn-local/kisaniti-backend:$SHA" -f backend/Dockerfile . >/dev/null
 docker build -q --build-arg KN_BUILD_COMMIT="$SHA" -t "kn-local/kisaniti-frontend:$SHA" frontend >/dev/null
+docker build -q --build-arg KN_BUILD_COMMIT="$SHA" -t "kn-local/kisaniti-ingest:$SHA" -f backend/ingestion/Dockerfile . >/dev/null
 pass "images built for $SHA"
-cp deploy/compose.prod.yaml "$T/compose.yaml"; cp deploy/Caddyfile deploy/release.sh deploy/backup.sh deploy/restore.sh "$T/"
+cp deploy/compose.prod.yaml "$T/compose.yaml"
+cp deploy/Caddyfile deploy/release.sh deploy/backup.sh deploy/restore.sh deploy/broker_user.sh deploy/broker_cert.sh "$T/"
+mkdir -p "$T/broker" && cp deploy/broker/mosquitto.conf deploy/broker/brokercert.sh backend/ingestion/broker/acl "$T/broker/"
 
 # Caddy makes its local CA on first start; the release's own HTTPS check needs it, so the first run trusts nothing
 # and is expected to fail only at that check. Take the CA out, then release again.
@@ -41,8 +48,8 @@ for line in sys.stdin:
         c=json.loads(line)
         pub |= {c["Service"] + ":" + str(p["PublishedPort"]) for p in c.get("Publishers") or [] if p.get("PublishedPort")}
 print(" ".join(sorted(pub)))')"
-[ "$PORTS" = "caddy:443 caddy:80" ] || fail "published ports should be only caddy 80 and 443, got: $PORTS"
-pass "only Caddy is reachable from outside (80, 443); database, API and website have no published ports"
+[ "$PORTS" = "broker:8883 caddy:443 caddy:80" ] || fail "published ports should be only caddy 80, 443 and broker 8883, got: $PORTS"
+pass "only Caddy (80, 443) and the broker (8883) are reachable from outside; database, API, website and worker are not"
 
 C="curl -fsS --cacert $T/root.crt"
 $C "https://app.localhost/en/status" | grep -q "System status" || fail "website over HTTPS"
@@ -80,6 +87,40 @@ $C -b "$T/jar" https://app.localhost/en/models > "$T/models.html" || fail "forec
 [ "$(grep -o 'data-status="NOT_PROMOTED"' "$T/models.html" | wc -l | tr -d ' ')" = 42 ] || fail "the models page does not list 42 not-promoted models"
 grep -q "Naive (last price)" "$T/models.html" || fail "the models page does not name the model in use"
 pass "forecast models page over HTTPS: 42 comparisons, none promoted, naive in use"
+
+# P3-2 storage broker: TLS with the certificate Caddy obtained for mqtt.<domain>, server-only users, the worker stores
+[ "$(stat -c %a "$T/broker" 2>/dev/null || stat -f %Lp "$T/broker")" = 700 ] || fail "the broker folder is not private"
+grep -q '^ingestion:\$7\$' "$T/broker/auth/passwd" || fail "the broker has no ingestion user"
+pass "release.sh made the broker's ingestion user (hash only in broker/auth/passwd; broker/ is private)"
+echo | openssl s_client -connect 127.0.0.1:8883 -servername mqtt.localhost -CAfile "$T/root.crt" -verify_return_error \
+  -verify_hostname mqtt.localhost 2>/dev/null | grep -q "Verify return code: 0" || fail "broker TLS on 8883 is not Caddy's certificate for mqtt.localhost"
+pass "the broker serves Caddy's certificate for mqtt.localhost on 8883 (verified chain and host name)"
+dc logs ingest | grep -q "subscribing kisaniti/v1/devices/+/telemetry" || fail "kn-ingest is not subscribed"
+pass "kn-ingest connected to the broker by its public name over TLS and subscribed"
+DEV="kn-prod-$(date +%s | tail -c 6)"
+$C -o /dev/null -b "$T/jar" -H "X-CSRF-Token: $CSRF" -H 'Origin: https://app.localhost' -H 'Content-Type: application/json' \
+  -d "{\"device_id\":\"$DEV\",\"source_origin\":\"SIMULATOR\"}" https://app.localhost/api/v1/devices || fail "device registration"
+DPW="$(od -An -N12 -tx1 /dev/urandom | tr -d ' \n')"
+H="$(mktemp -d)"
+docker run --rm -u "$(id -u):$(id -g)" -v "$H:/a" eclipse-mosquitto:2.0.20 mosquitto_passwd -b -c /a/p "$DEV" "$DPW" >/dev/null
+sh "$T/broker_user.sh" < "$H/p" > "$T/user.out" 2>&1 || { cat "$T/user.out"; fail "broker_user.sh"; }
+rm -rf "$H"
+if echo "evil:plain" | sh "$T/broker_user.sh" > /dev/null 2>&1; then fail "broker_user.sh accepted a line that is not a password hash"; fi
+if echo 'ingestion:$7$101$AAAA$BBBB' | sh "$T/broker_user.sh" > /dev/null 2>&1; then fail "broker_user.sh replaced the ingestion user"; fi
+pass "broker_user.sh adds a device from a password hash on stdin; plain text and the service user are refused"
+SIM() { dc run --rm --no-deps -T --entrypoint python ingest -m kisaniti_ingestion.simulator --scenario stable_dry --seed 3 \
+  --device-id "$DEV" --host mqtt.localhost --port 8883 --ca /run/kn/tls/local-root.crt --user "$DEV" --ack-timeout 10 "$@"; }
+if SIM --steps 1 --password wrong-password > "$T/simbad.out" 2>&1; then fail "the broker accepted a wrong device password"; fi
+SIM --steps 4 --password "$DPW" > "$T/sim.out" 2>&1 || { cat "$T/sim.out"; dc logs --tail 20 broker ingest; fail "software node over the public broker"; }
+N="$(dc exec -T db sh -c "psql -U \"\$POSTGRES_USER\" -d \"\$POSTGRES_DB\" -tAc \"select count(*) from sensor_readings where device_id='$DEV'\"")"
+[ "$N" = 4 ] || { cat "$T/sim.out"; fail "expected 4 stored readings for $DEV, found $N"; }
+pass "a software node with its own broker user published 4 readings over TLS; all 4 stored and acknowledged; a wrong password is refused"
+R1="$(sh "$T/broker_cert.sh")"; echo "$R1" | grep -q "unchanged" || fail "broker_cert.sh after a release: $R1"
+dc exec -T brokercert sh -c 'echo 99 > /tls/serial'
+R2="$(sh "$T/broker_cert.sh")"; echo "$R2" | grep -q "broker restarted" || fail "broker_cert.sh after a renewal: $R2"
+ok=0; for i in $(seq 1 30); do [ "$(dc logs ingest | grep -c 'subscribing kisaniti')" -ge 3 ] && { ok=1; break; }; sleep 2; done
+[ "$ok" = 1 ] || fail "kn-ingest did not resubscribe after the broker restart"
+pass "broker_cert.sh leaves the broker alone while the certificate is unchanged, restarts it after a renewal; kn-ingest reconnects"
 
 (export COMPOSE_FILE="$T/compose.yaml" CURL_CA_BUNDLE="$T/root.crt"; SMOKE_SEED_MARKET=1 scripts/smoke_access.sh https://app.localhost) \
   > "$T/smoke.out" 2>&1 || { cat "$T/smoke.out"; fail "smoke_access.sh through Caddy"; }
