@@ -1,0 +1,33 @@
+Real DHT22 node kn-node-001 on the public broker mqtt.kisaniti.in:8883 (P3-2, b6e74c0), 28 Nov 2026
+Provisioned with scripts/provision_node.py --server (live chain check PASS with mbedTLS 2.28; broker user sent as hash only).
+Node on the owner's home Wi-Fi; no laptop in the path. Registered on https://app.kisaniti.in by the owner (fictional owner FPO).
+Before registration the server kept its readings as QUARANTINED/UNREGISTERED_DEVICE and sent no ack (as designed).
+
+--- serial (115200), boot 1475a75d, local times IST ---
+13:06:41 [kn] KisanNiti node kn-node-001 firmware kn-fw-1.0.0 origin DEVICE boot_id 1475a75d interval 300s app_ack 1
+13:06:43 [kn] DHT22 found on GPIO 4 (T=29.3C RH=49.7%)
+13:06:48 [kn] sample seq=0 T=29.30C RH=49.70% time=UNSYNCED buffered=1
+13:06:48 [kn] wifi connecting to Pathshalajio_4G
+13:07:02 [kn] clock synced 2026-11-28T07:37:02.773Z; back-filled 1 earlier samples
+13:07:02 [kn] mqtt connecting to mqtt.kisaniti.in:8883 as kn-node-001-1475a75d
+13:07:07 [kn] mqtt connected
+13:07:07 TX kisaniti/v1/devices/kn-node-001/telemetry {"schema":"kisaniti.device_telemetry.v1","device_id":"kn-node-001","boot_id":"1475a75d","seq":0,"measured_at":"2026-11-28T07:36:45.978Z","time_quality":"UPTIME_BACKFILLED","uptime_ms":4537,"temperature_c":29.30,"humidity_pct":49.70,"read_status":"OK","sensor_model":"DHT22","firmware_version":"kn-fw-1.0.0","source_origin":"DEVICE","sample_interv
+13:07:07 [kn] ack seq=0 buffered=0
+13:07:41 [kn] health wifi=1 mqtt=1 clock=1 buffered=0 dropped=0 published=1 acked=1
+
+--- server kn-ingest (UTC) ---
+2026-11-28 07:27:51,876 INFO kisaniti/v1/devices/kn-node-001/telemetry 394 -> NEW
+2026-11-28 07:28:51,350 INFO kisaniti/v1/devices/kn-node-001/telemetry 393 -> DUPLICATE
+2026-11-28 07:29:28,201 INFO kisaniti/v1/devices/kn-node-001/telemetry 394 -> NEW
+2026-11-28 07:30:28,203 INFO kisaniti/v1/devices/kn-node-001/telemetry 393 -> DUPLICATE
+2026-11-28 07:31:28,212 INFO kisaniti/v1/devices/kn-node-001/telemetry 393 -> DUPLICATE
+2026-11-28 07:32:28,313 INFO kisaniti/v1/devices/kn-node-001/telemetry 393 -> DUPLICATE
+2026-11-28 07:33:28,223 INFO kisaniti/v1/devices/kn-node-001/telemetry 393 -> DUPLICATE
+2026-11-28 07:34:20,657 INFO kisaniti/v1/devices/kn-node-001/telemetry 389 -> NEW
+2026-11-28 07:34:28,224 INFO kisaniti/v1/devices/kn-node-001/telemetry 393 -> DUPLICATE
+2026-11-28 07:35:20,638 INFO kisaniti/v1/devices/kn-node-001/telemetry 388 -> DUPLICATE
+2026-11-28 07:35:28,220 INFO kisaniti/v1/devices/kn-node-001/telemetry 393 -> DUPLICATE
+2026-11-28 07:37:07,725 INFO kisaniti/v1/devices/kn-node-001/telemetry 394 -> NEW
+
+--- live TLS check ---
+PASS: the ESP32 will accept the chain served for mqtt.kisaniti.in
