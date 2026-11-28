@@ -29,6 +29,8 @@ if [ ! -f .env ]; then
   echo "created .env for $KN_DOMAIN"
 fi
 val() { sed -n "s/^$1=//p" .env | tail -1; }
+# BUG-011: deploy.sh passes KN_DOMAIN even when it is empty; an empty shell value would override .env for compose
+[ -n "${KN_DOMAIN:-}" ] || unset KN_DOMAIN
 
 # P3-2 storage broker, when this commit's stack has one: its users exist only on this server. The ingestion worker's
 # password is made once here and never printed. broker/ is private to this account; inside it, auth/passwd (hashes)

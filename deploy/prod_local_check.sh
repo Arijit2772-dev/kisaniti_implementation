@@ -160,6 +160,8 @@ DBQ "update alembic_version set version_num='$REV'" >/dev/null
 sh "$T/release.sh" "$SHA" > "$T/again.out" 2>&1 || { cat "$T/again.out"; fail "release after restoring the revision"; }
 pass "a release onto an unknown newer migration is REFUSED and recorded; with the migration known it releases again"
 
+(KN_DOMAIN='' sh "$T/release.sh" "$SHA") > "$T/nodomain.out" 2>&1 || { cat "$T/nodomain.out"; fail "a later release with KN_DOMAIN empty (as deploy.sh sends it) failed (BUG-011)"; }
+pass "a later release with KN_DOMAIN empty uses the domain from .env (BUG-011)"
 if sh "$T/release.sh" not-a-commit > /dev/null 2>&1; then fail "a short or invalid commit was accepted"; fi
 pass "an invalid commit hash is refused"
 cat "$T/deploys.log"
